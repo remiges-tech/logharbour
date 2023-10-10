@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	logHarbour "go-framework/logHarbour"
+	logHarbour "logharbour/logHarbour"
 	"time"
 )
 

@@ -1,4 +1,4 @@
-module go-framework
+module logharbour
 
 go 1.21.1
 

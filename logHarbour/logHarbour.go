@@ -3,10 +3,10 @@ package logHarbour
 
 import (
 	"context"
-	kafkaUtil "go-framework/kafkaUtil"
 	"io"
 	"log"
 	"log/slog"
+	kafkaUtil "logharbour/kafkaUtil"
 	"os"
 	"runtime"
 	"runtime/debug"
