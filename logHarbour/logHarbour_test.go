@@ -77,14 +77,14 @@ func TestLogWrite(t *testing.T) {
 	checkFieldPresentInLog(t, loggers.ActivityLogger, LevelInfo, "app")
 	checkFieldPresentInLog(t, loggers.DataChangeLogger, LevelError, "module")
 	checkFieldPresentInLog(t, loggers.DebugLogger, LevelDebug0, "system")
-	checkFieldPresentInLog(t, loggers.ActivityLogger, LevelInfo, "handle")
+	checkFieldPresentInLog(t, loggers.ActivityLogger, LevelWarning, "handle")
 
 	//Check activityLogger does not have DataChangeObj
-	checkFieldNotPresentInLog(t, loggers.ActivityLogger, LevelInfo, "oldVal")
+	checkFieldNotPresentInLog(t, loggers.ActivityLogger, LevelCritical, "oldVal")
 	//Check DebugLogger does not have DataChangeObj
 	checkFieldNotPresentInLog(t, loggers.DebugLogger, LevelDebug0, "oldVal")
 	//Check DataChangeLogger does have DataChangeObj
-	checkFieldPresentInLog(t, loggers.DataChangeLogger, LevelInfo, "oldVal")
+	checkFieldPresentInLog(t, loggers.DataChangeLogger, LevelSec, "oldVal")
 
 	//Loghandles should be correct for respective type of logs
 	checkLogHandleField(t, loggers.ActivityLogger, "A", "Handle of ActivityLogger should be of type "+ACTIVITY_LOGGER)
@@ -102,6 +102,8 @@ func TestLogWrite(t *testing.T) {
 	checkFieldNotPresentInLog(t, loggers.DataChangeLogger, LevelDebug0, "pid")
 	checkFieldNotPresentInLog(t, loggers.ActivityLogger, LevelInfo, "callTrace")
 	checkFieldNotPresentInLog(t, loggers.ActivityLogger, LevelError, "source")
+
+	checkDataChangeLoggerShouldHaveDataChangeObj(t, loggers)
 }
 
 func checkInvalidIpAddress(t *testing.T, loggers LogHandles, ipAddr string) {
@@ -281,8 +283,6 @@ func checkLogHandleField(t *testing.T, loggers *slog.Logger, handle string, test
 func checkWhenCannotBeInFuture(t *testing.T, loggers LogHandles) {
 	t.Run("When Cannot be in Future", func(t *testing.T) {
 		setupEmptyFile()
-
-		// Test case 1: when is in future, DEFAULT Logger should write error
 		LogWrite(loggers.ActivityLogger, LevelInfo, "spanid1", "correlationid1", time.Now().AddDate(1, 0, 0), "bhavya", "127.0.0.1",
 			"newLog", "valueBeingUpdated", "id1", 1, "This is an activity logger info message", "somekey", "somevalue", "key2", "value2")
 		readFile, err := os.Open(getRigelLogFileName())
@@ -303,6 +303,37 @@ func checkWhenCannotBeInFuture(t *testing.T, loggers LogHandles) {
 				} else {
 					t.Log("Log message is test passed")
 				}
+			}
+		}
+		readFile.Close()
+	})
+}
+
+func checkDataChangeLoggerShouldHaveDataChangeObj(t *testing.T, loggers LogHandles) {
+	t.Run("Log DataChangeLogger Should Have DataChangeObj", func(t *testing.T) {
+		setupEmptyFile()
+		LogWrite(loggers.DataChangeLogger, LevelInfo, "spanid1", "correlationid1", time.Now(), "bhavya", "127.0.0.1",
+			"newLog", "valueBeingUpdated", "id1", 1, "This is an activity logger info message", "somekey", "somevalue", "key2", "value2")
+		readFile, err := os.Open(getRigelLogFileName())
+		if err != nil {
+			fmt.Println(err)
+		}
+		fileScanner := bufio.NewScanner(readFile)
+		fileScanner.Split(bufio.ScanLines)
+		var errorLog errorLogMsg
+		for fileScanner.Scan() {
+			fmt.Println("line read::::::::", fileScanner.Text())
+			json.Unmarshal(fileScanner.Bytes(), &errorLog)
+			if (errorLog.LogMsgStr == logMsg{}) {
+				errorLog = errorLogMsg{}
+				continue
+			} else {
+				if errorLog.Level == "ERROR" && errorLog.Msg == "Error in log message: DataChangeLogger does not have DataChangeObjects" {
+					t.Log("Log message is test passed")
+				} else {
+					t.Error("Log message is test failed")
+				}
+				errorLog = errorLogMsg{}
 			}
 		}
 		readFile.Close()
