@@ -6,7 +6,7 @@ import (
 	"io"
 	"log"
 	"log/slog"
-	kafkaUtil "logharbour/kafkaUtil"
+	kafkaUtil "github.com/remiges-tech/logharbour/kafkaUtil"
 	"os"
 	"runtime"
 	"runtime/debug"
