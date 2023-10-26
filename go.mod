@@ -5,6 +5,7 @@ go 1.21.1
 require (
 	github.com/confluentinc/confluent-kafka-go/v2 v2.2.0
 	github.com/go-playground/validator/v10 v10.15.5
+        github.com/remiges-tech/logharbour/kafkaUtil
 )
 
 require (
