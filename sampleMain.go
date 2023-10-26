@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	logHarbour "logharbour/logHarbour"
+	"github.com/remiges-tech/logharbour/logHarbour"
 	"time"
 )
 
