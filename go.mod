@@ -1,4 +1,4 @@
-module logharbour
+module github.com/remiges-tech/logharbour
 
 go 1.21.1
 
