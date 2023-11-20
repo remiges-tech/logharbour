@@ -1,11 +1,8 @@
-module github.com/remiges-tech/logharbour
+module github.com/ssd532/logdock
 
-go 1.21.1
+go 1.21.3
 
-require (
-	github.com/confluentinc/confluent-kafka-go/v2 v2.2.0
-	github.com/go-playground/validator/v10 v10.15.5
-)
+require github.com/go-playground/validator/v10 v10.16.0
 
 require (
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
