@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/ssd532/logdock/logharbour"
+	"github.com/remiges-tech/logharbour/logharbour"
 )
 
 func main() {

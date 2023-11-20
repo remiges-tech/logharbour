@@ -5,15 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/ssd532/logdock/logharbour"
+	"github.com/remiges-tech/logharbour/logharbour"
 )
-
-type ValidatorFunc func(entry any) error
-
-// Ensure ValidatorFunc implements the logharbour.Validator interface by providing a Validate method.
-func (vf ValidatorFunc) Validate(entry any) error {
-	return vf(entry)
-}
 
 // mockWriter is a simple in-memory writer to capture log outputs for testing.
 type mockWriter struct {
@@ -33,9 +26,7 @@ func TestPriorityLevelPrinting(t *testing.T) {
 	fallbackWriter := logharbour.NewFallbackWriter(output, output)
 
 	// Initialize the logger with a basic context and validator, and a test priority level.
-	logger := logharbour.NewLogger("TestApp", ValidatorFunc(func(entry any) error {
-		return nil
-	}), fallbackWriter)
+	logger := logharbour.NewLogger("TestApp", fallbackWriter)
 
 	// log a message at Debug1 level.
 	logger.LogDebug("Debug1 message", logharbour.DebugInfo{})
