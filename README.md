@@ -1,5 +1,11 @@
 # LogHarbour
 
+[![GoDoc][doc-img]][doc] 
+
+> [!WARNING]  
+> LogHarbour is currently under active development: bugs and breaking changes can happen. 
+> We highly appreciate any feedback and contributions.
+
 LogHarbour is a powerful and flexible logging library for Go applications. It provides a simple and intuitive API for logging various types of information, including activities, data changes, and debug information.
 Features
 
@@ -107,3 +113,6 @@ func Example() {
 
 }
 ```
+
+[doc-img]: https://pkg.go.dev/badge/go.uber.org/nilaway.svg
+[doc]: https://pkg.go.dev/github.com/remiges-tech/logharbour/logharbour
