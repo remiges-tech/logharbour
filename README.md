@@ -114,5 +114,5 @@ func Example() {
 }
 ```
 
-[doc-img]: https://pkg.go.dev/badge/go.uber.org/nilaway.svg
+[doc-img]: https://pkg.go.dev/badge/github.com/remiges-tech/logharbour/logharbour.svg
 [doc]: https://pkg.go.dev/github.com/remiges-tech/logharbour/logharbour
