@@ -19,7 +19,7 @@ Here is a basic example of how to use LogHarbour:
 
 
 ```Go
-// Example of using With prefixed methods to set various fields of the logger.
+// Example of using logharbour package
 func Example() {
 	// Open a file for logging.
 	file, err := os.OpenFile("log.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
