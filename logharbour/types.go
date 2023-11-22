@@ -114,20 +114,20 @@ const (
 
 // LogEntry encapsulates all the relevant information for a log message.
 type LogEntry struct {
-	AppName        string      // Name of the application.
-	System         string      // System where the application is running.
-	Module         string      // The module or subsystem within the application
-	Type           LogType     // Type of the log entry.
-	Priority       LogPriority // Severity level of the log entry.
-	When           time.Time   // Time at which the log entry was created.
-	Who            string      // User or service performing the operation.
-	Op             string      // Operation being performed
-	WhatClass      string      // Unique ID, name of the object instance on which the operation was being attempted
-	WhatInstanceId string      // Unique ID, name, or other "primary key" information of the object instance on which the operation was being attempted
-	Status         Status      // 0 or 1, indicating success (1) or failure (0), or some other binary representation
-	RemoteIP       string      // IP address of the caller from where the operation is being performed.
-	Message        string      // A descriptive message for the log entry.
-	Data           any         // The payload of the log entry, can be any type.
+	AppName        string      `json:"app_name"`         // Name of the application.
+	System         string      `json:"system"`           // System where the application is running.
+	Module         string      `json:"module"`           // The module or subsystem within the application
+	Type           LogType     `json:"type"`             // Type of the log entry.
+	Priority       LogPriority `json:"priority"`         // Severity level of the log entry.
+	When           time.Time   `json:"when"`             // Time at which the log entry was created.
+	Who            string      `json:"who"`              // User or service performing the operation.
+	Op             string      `json:"op"`               // Operation being performed
+	WhatClass      string      `json:"what_class"`       // Unique ID, name of the object instance on which the operation was being attempted
+	WhatInstanceId string      `json:"what_instance_id"` // Unique ID, name, or other "primary key" information of the object instance on which the operation was being attempted
+	Status         Status      `json:"status"`           // 0 or 1, indicating success (1) or failure (0), or some other binary representation
+	RemoteIP       string      `json:"remote_ip"`        // IP address of the caller from where the operation is being performed.
+	Message        string      `json:"message"`          // A descriptive message for the log entry.
+	Data           any         `json:"data"`             // The payload of the log entry, can be any type.
 }
 
 // ChangeInfo holds information about data changes such as creations, updates, or deletions.
