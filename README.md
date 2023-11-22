@@ -13,7 +13,7 @@ Features
 - Contextual Logging: You can attach additional context to your logs, such as the module name, user information, and more.
 - Fallback Mechanism: LogHarbour provides a fallback mechanism to ensure that your logs are always captured, even if the primary logging destination fails.
 
-Usage
+# Usage
 
 Here is a basic example of how to use LogHarbour:
 
@@ -113,6 +113,10 @@ func Example() {
 
 }
 ```
+
+## License
+
+This project is copyright 2023 Remiges Technologies, and licensed under Apache 2.0.
 
 [doc-img]: https://pkg.go.dev/badge/github.com/remiges-tech/logharbour/logharbour.svg
 [doc]: https://pkg.go.dev/github.com/remiges-tech/logharbour/logharbour
