@@ -5,6 +5,7 @@ package logharbour
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"sync"
 	"time"
@@ -37,7 +38,7 @@ const (
 )
 
 // String returns the string representation of the logPriority.
-func (lp LogPriority) string() string {
+func (lp LogPriority) String() string {
 	switch lp {
 	case Debug2:
 		return LogPriorityDebug2
@@ -63,7 +64,32 @@ func (lp LogPriority) string() string {
 // MarshalJSON is required by the encoding/json package.
 // It converts the logPriority to its string representation and returns it as a JSON-encoded value.
 func (lp LogPriority) MarshalJSON() ([]byte, error) {
-	return json.Marshal(lp.string())
+	return json.Marshal(lp.String())
+}
+
+func (lp *LogPriority) UnmarshalJSON(data []byte) error {
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return err
+	}
+
+	value, ok := map[string]LogPriority{
+		"Debug2": Debug2,
+		"Debug1": Debug1,
+		"Debug0": Debug0,
+		"Info":   Info,
+		"Warn":   Warn,
+		"Err":    Err,
+		"Crit":   Crit,
+		// Add other LogPriority values here
+	}[s]
+
+	if !ok {
+		return fmt.Errorf("invalid LogPriority %q", s)
+	}
+
+	*lp = value
+	return nil
 }
 
 // LogType defines the category of a log message.
@@ -76,6 +102,8 @@ const (
 	Activity
 	// Debug represents a log entry for debug information.
 	Debug
+	// Unknown represents an unknown log type.
+	Unknown
 )
 
 const (
@@ -86,7 +114,7 @@ const (
 )
 
 // String returns the string representation of the LogType.
-func (lt LogType) string() string {
+func (lt LogType) String() string {
 	switch lt {
 	case Change:
 		return LogTypeChange
@@ -102,7 +130,29 @@ func (lt LogType) string() string {
 // MarshalJSON is required by the encoding/json package.
 // It converts the LogType to its string representation and returns it as a JSON-encoded value.
 func (lt LogType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(lt.string())
+	return json.Marshal(lt.String())
+}
+
+func (lt *LogType) UnmarshalJSON(data []byte) error {
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return err
+	}
+
+	value, ok := map[string]LogType{
+		"Unknown":  Unknown,
+		"Activity": Activity,
+		"Change":   Change,
+		"Debug":    Debug,
+		// Add other LogType values here
+	}[s]
+
+	if !ok {
+		return fmt.Errorf("invalid LogType %q", s)
+	}
+
+	*lt = value
+	return nil
 }
 
 type Status int

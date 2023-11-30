@@ -1,9 +1,39 @@
 package logharbour
 
 import (
+	"bytes"
+	"encoding/json"
 	"log"
 	"os"
+	"strings"
+	"testing"
 )
+
+func TestLog(t *testing.T) {
+	var buf bytes.Buffer
+	logger := NewLogger("testApp", &buf)
+
+	message := "test message"
+	err := logger.Log(message)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	logged := buf.String()
+	if !strings.Contains(logged, message) {
+		t.Errorf("Expected '%s' to be logged. Got: %s", message, logged)
+	}
+
+	var loggedEntry LogEntry
+	err = json.Unmarshal([]byte(logged), &loggedEntry)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	if loggedEntry.Type != Activity {
+		t.Errorf("Expected Type to be '%s'. Got: '%s'", Activity.String(), loggedEntry.Type.String())
+	}
+}
 
 // Example of using With prefixed methods to set various fields of the logger.
 func Example() {

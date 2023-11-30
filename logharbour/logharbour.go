@@ -220,6 +220,11 @@ func (l *Logger) LogDebug(message string, data DebugInfo) error {
 	return l.log(entry)
 }
 
+// Log logs a generic message as an activity event.
+func (l *Logger) Log(message string) error {
+	return l.LogActivity("", message)
+}
+
 // ChangePriority changes the priority level of the Logger.
 func (l *Logger) ChangePriority(newPriority LogPriority) {
 	l.mu.Lock()
