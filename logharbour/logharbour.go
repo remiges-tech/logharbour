@@ -2,6 +2,7 @@ package logharbour
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"runtime"
@@ -20,6 +21,7 @@ const DefaultPriority = Info
 //
 // If the writer is a FallbackWriter and validation of a log entry fails,
 // the Logger will automatically write the invalid entry to the FallbackWriter's fallback writer.
+// If writing to fallback writer also fails then it writes to STDERR.
 //
 // The 'With' prefixed methods in the Logger are used to create a new Logger instance
 // with a specific field set to a new value. These methods  create a copy of the current Logger,
@@ -141,23 +143,34 @@ func (l *Logger) WithRemoteIP(remoteIP string) *Logger {
 }
 
 // log writes a log entry. It locks the Logger's mutex to prevent concurrent write operations.
-func (l *Logger) log(entry LogEntry) error {
+// If there's a problem with writing the log entry or if the log entry is invalid,
+// it attempts to write the error and the log entry to the fallback writer (if available).
+// If writing to the fallback writer fails or if the fallback writer is not available,
+// it writes the error and the log entry to stderr.
+func (l *Logger) log(entry LogEntry) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
 	entry.AppName = l.appName
 	if !l.shouldLog(entry.Priority) {
-		return nil
+		return
 	}
 	if err := l.validator.Struct(entry); err != nil {
 		// Check if the writer is a FallbackWriter
 		if fw, ok := l.writer.(*FallbackWriter); ok {
 			// Write to the fallback writer if validation fails
-			return formatAndWriteEntry(fw.fallback, entry)
+			if err := formatAndWriteEntry(fw.fallback, entry); err != nil {
+				// If writing to the fallback writer fails, write to stderr
+				fmt.Fprintf(os.Stderr, "Error: %v, LogEntry: %+v\n", err, entry)
+			}
+		} else {
+			fmt.Fprintf(os.Stderr, "Error: %v, LogEntry: %+v\n", err, entry)
 		}
-		return err
+		return
 	}
-	return formatAndWriteEntry(l.writer, entry)
+	if err := formatAndWriteEntry(l.writer, entry); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v, LogEntry: %+v\n", err, entry)
+	}
 }
 
 // shouldLog determines whether a log entry should be written based on its priority.
@@ -196,33 +209,33 @@ func (l *Logger) newLogEntry(message string, data any) LogEntry {
 }
 
 // LogDataChange logs a data change event.
-func (l *Logger) LogDataChange(message string, data ChangeInfo) error {
+func (l *Logger) LogDataChange(message string, data ChangeInfo) {
 	entry := l.newLogEntry(message, data)
 	entry.Type = Change
-	return l.log(entry)
+	l.log(entry)
 }
 
 // LogActivity logs an activity event.
-func (l *Logger) LogActivity(message string, data ActivityInfo) error {
+func (l *Logger) LogActivity(message string, data ActivityInfo) {
 	entry := l.newLogEntry(message, data)
 	entry.Type = Activity
-	return l.log(entry)
+	l.log(entry)
 }
 
 // LogDebug logs a debug event.
-func (l *Logger) LogDebug(message string, data DebugInfo) error {
+func (l *Logger) LogDebug(message string, data DebugInfo) {
 	data.FileName, data.LineNumber, data.FunctionName, data.StackTrace = GetDebugInfo(2)
 	data.Pid = os.Getpid()
 	data.Runtime = runtime.Version()
 
 	entry := l.newLogEntry(message, data)
 	entry.Type = Debug
-	return l.log(entry)
+	l.log(entry)
 }
 
 // Log logs a generic message as an activity event.
-func (l *Logger) Log(message string) error {
-	return l.LogActivity("", message)
+func (l *Logger) Log(message string) {
+	l.LogActivity("", message)
 }
 
 // ChangePriority changes the priority level of the Logger.
