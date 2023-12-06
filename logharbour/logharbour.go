@@ -38,6 +38,7 @@ type Logger struct {
 	whatClass      string              // Class of the object instance involved.
 	whatInstanceId string              // Unique ID of the object instance.
 	status         Status              // Status of the operation.
+	err            string              // Error associated with the operation.
 	remoteIP       string              // IP address of the remote endpoint.
 	writer         io.Writer           // Writer interface for log entries.
 	validator      *validator.Validate // Validator for log entries.
@@ -56,6 +57,7 @@ func (l *Logger) clone() *Logger {
 		whatClass:      l.whatClass,
 		whatInstanceId: l.whatInstanceId,
 		status:         l.status,
+		err:            l.err,
 		remoteIP:       l.remoteIP,
 		writer:         l.writer,
 		validator:      l.validator,
@@ -125,6 +127,13 @@ func (l *Logger) WithWhatInstanceId(whatInstanceId string) *Logger {
 func (l *Logger) WithStatus(status Status) *Logger {
 	newLogger := l.clone()
 	newLogger.status = status
+	return newLogger
+}
+
+// Err sets the "error" field for the logger.
+func (l *Logger) Error(err error) *Logger {
+	newLogger := l.clone()
+	newLogger.err = err.Error()
 	return newLogger
 }
 
@@ -214,6 +223,7 @@ func (l *Logger) newLogEntry(message string, data any) LogEntry {
 		WhatClass:      l.whatClass,
 		WhatInstanceId: l.whatInstanceId,
 		Status:         l.status,
+		Error:          l.err,
 		RemoteIP:       l.remoteIP,
 		Message:        message,
 		Data:           data,

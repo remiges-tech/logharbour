@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -99,6 +100,34 @@ func TestLog(t *testing.T) {
 
 	if loggedEntry.Type != Activity {
 		t.Errorf("Expected Type to be '%s'. Got: '%s'", Activity.String(), loggedEntry.Type.String())
+	}
+}
+
+func TestErrMethods(t *testing.T) {
+	// Create a new logger
+	logger := NewLogger("testApp", nil)
+
+	// Test Error method
+	err := errors.New("test error")
+	logger = logger.Error(err)
+	if logger.err != err.Error() {
+		t.Errorf("Expected error to be '%s', got '%s'", err.Error(), logger.err)
+	}
+
+	// Create an error chain
+	err1 := errors.New("error 1")
+	err2 := fmt.Errorf("error 2: %w", err1)
+	err3 := fmt.Errorf("error 3: %w", err2)
+
+	// Use the ErrorChain method
+	logger = logger.Error(err3)
+
+	// The expected error chain is 'error 3: error 2: error 1'
+	expectedErrChain := "error 3: error 2: error 1"
+
+	// Check if the error chain in the logger is as expected
+	if logger.err != expectedErrChain {
+		t.Errorf("Expected error chain to be '%s', got '%s'", expectedErrChain, logger.err)
 	}
 }
 

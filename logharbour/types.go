@@ -175,6 +175,7 @@ type LogEntry struct {
 	WhatClass      string      `json:"what_class"`       // Unique ID, name of the object instance on which the operation was being attempted
 	WhatInstanceId string      `json:"what_instance_id"` // Unique ID, name, or other "primary key" information of the object instance on which the operation was being attempted
 	Status         Status      `json:"status"`           // 0 or 1, indicating success (1) or failure (0), or some other binary representation
+	Error          string      `json:"error,omitempty"`  // Error message or error chain related to the log entry, if any.
 	RemoteIP       string      `json:"remote_ip"`        // IP address of the caller from where the operation is being performed.
 	Message        string      `json:"message"`          // A descriptive message for the log entry.
 	Data           any         `json:"data"`             // The payload of the log entry, can be any type.
