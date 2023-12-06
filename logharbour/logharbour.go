@@ -129,6 +129,18 @@ func (l *Logger) WithStatus(status Status) *Logger {
 }
 
 // WithPriority returns a new Logger with the 'priority' field set to the specified value.
+//
+// There are shortcut functions like Info(), Warn(), etc. provided as a convenient way to
+// set the priority level for a single call.
+// Each of these function creates a new Logger instance with the specified priority and returns it.
+// The original Logger instance remains unchanged.
+// For example, instead of writing
+//
+//	logger.WithPriority(logharbour.Info).LogChange(...),
+//
+// you can simply write
+//
+//	logger.Info().LogChange(...)
 func (l *Logger) WithPriority(priority LogPriority) *Logger {
 	newLogger := l.clone()
 	newLogger.priority = priority
@@ -243,4 +255,44 @@ func (l *Logger) ChangePriority(newPriority LogPriority) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	l.priority = newPriority
+}
+
+// Debug2 returns a new Logger with the 'priority' field set to Debug2.
+func (l *Logger) Debug2() *Logger {
+	return l.WithPriority(Debug2)
+}
+
+// Debug1 returns a new Logger with the 'priority' field set to Debug1.
+func (l *Logger) Debug1() *Logger {
+	return l.WithPriority(Debug1)
+}
+
+// Debug0 returns a new Logger with the 'priority' field set to Debug0.
+func (l *Logger) Debug0() *Logger {
+	return l.WithPriority(Debug0)
+}
+
+// Info returns a new Logger with the 'priority' field set to Info.
+func (l *Logger) Info() *Logger {
+	return l.WithPriority(Info)
+}
+
+// Warn returns a new Logger with the 'priority' field set to Warn.
+func (l *Logger) Warn() *Logger {
+	return l.WithPriority(Warn)
+}
+
+// Err returns a new Logger with the 'priority' field set to Err.
+func (l *Logger) Err() *Logger {
+	return l.WithPriority(Err)
+}
+
+// Crit returns a new Logger with the 'priority' field set to Crit.
+func (l *Logger) Crit() *Logger {
+	return l.WithPriority(Crit)
+}
+
+// Sec returns a new Logger with the 'priority' field set to Sec.
+func (l *Logger) Sec() *Logger {
+	return l.WithPriority(Sec)
 }
