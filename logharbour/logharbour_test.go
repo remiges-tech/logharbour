@@ -141,7 +141,7 @@ func Example() {
 		Variables: map[string]any{"sessionID": "12345"},
 	})
 
-	// Output:
+	//
 	// {
 	//     "app_name": "MyApp",
 	//     "module": "Module1",
