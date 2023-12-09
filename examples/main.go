@@ -10,8 +10,11 @@ func main() {
 	// Create a fallback writer that uses stdout as the fallback.
 	fallbackWriter := logharbour.NewFallbackWriter(os.Stdout, os.Stdout)
 
+	// Create a logger context with the default priority.
+	lctx := logharbour.NewLoggerContext(logharbour.Info)
+
 	// Initialize the logger with the context, validator, default priority, and fallback writer.
-	logger := logharbour.NewLogger("MyApp", fallbackWriter)
+	logger := logharbour.NewLogger(lctx, "MyApp", fallbackWriter)
 
 	// log an activity entry.
 	logger.LogActivity("User logged in", map[string]any{"username": "john"})
@@ -28,7 +31,7 @@ func main() {
 		Variables: map[string]any{"sessionID": "12345"},
 	})
 	// Change logger priority at runtime.
-	logger.ChangePriority(logharbour.Debug2)
+	logger.ChangeMinLogPriority(logharbour.Debug2)
 
 	// log another debug entry with a higher verbosity level.
 	logger.LogDebug("Detailed debugging info", logharbour.DebugInfo{

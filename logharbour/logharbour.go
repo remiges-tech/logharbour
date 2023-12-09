@@ -14,6 +14,25 @@ import (
 
 const DefaultPriority = Info
 
+// LoggerContext provides a shared context (state) for instances of Logger.
+// It contains a minLogPriority field that determines the minimum log priority level
+// that should be logged by any Logger using this context.
+// The mu Mutex ensures that all operations on the minLogPriority field are mutually exclusive,
+// regardless of which goroutine they are performed in.
+type LoggerContext struct {
+	minLogPriority LogPriority
+	mu             sync.Mutex
+}
+
+// NewLoggerContext creates a new LoggerContext with the specified minimum log priority.
+// The returned LoggerContext can be used to create Logger instances with a shared context for all the
+// Logger instances.
+func NewLoggerContext(minLogPriority LogPriority) *LoggerContext {
+	return &LoggerContext{
+		minLogPriority: minLogPriority,
+	}
+}
+
 // Logger provides a structured interface for logging.
 // It's designed for each goroutine to have its own instance.
 // Logger is safe for concurrent use. However, it's not recommended
@@ -29,6 +48,7 @@ const DefaultPriority = Info
 // This approach provides a flexible way to create a new Logger with specific settings,
 // without having to provide all settings at once or change the settings of an existing Logger.
 type Logger struct {
+	context        *LoggerContext      // Context for the logger. It is shared by all clones of the logger.
 	appName        string              // Name of the application.
 	system         string              // System where the application is running.
 	module         string              // Module or subsystem within the application.
@@ -48,6 +68,7 @@ type Logger struct {
 // clone creates and returns a new Logger with the same values as the original.
 func (l *Logger) clone() *Logger {
 	return &Logger{
+		context:        l.context,
 		appName:        l.appName,
 		system:         l.system,
 		module:         l.module,
@@ -66,8 +87,9 @@ func (l *Logger) clone() *Logger {
 
 // NewLogger creates a new Logger with the specified application name and writer.
 // We recommend using NewLoggerWithFallback instead of this method.
-func NewLogger(appName string, writer io.Writer) *Logger {
+func NewLogger(context *LoggerContext, appName string, writer io.Writer) *Logger {
 	return &Logger{
+		context:   context,
 		appName:   appName,
 		system:    getSystemName(),
 		writer:    writer,
@@ -78,8 +100,9 @@ func NewLogger(appName string, writer io.Writer) *Logger {
 
 // NewLoggerWithFallback creates a new Logger with a fallback writer.
 // The fallback writer is used if the primary writer fails or if validation of a log entry fails.
-func NewLoggerWithFallback(appName string, fallbackWriter *FallbackWriter) *Logger {
+func NewLoggerWithFallback(context *LoggerContext, appName string, fallbackWriter *FallbackWriter) *Logger {
 	return &Logger{
+		context:   context,
 		appName:   appName,
 		system:    getSystemName(),
 		writer:    fallbackWriter,
@@ -196,7 +219,9 @@ func (l *Logger) log(entry LogEntry) {
 
 // shouldLog determines whether a log entry should be written based on its priority.
 func (l *Logger) shouldLog(p LogPriority) bool {
-	return p >= l.priority
+	l.context.mu.Lock()
+	defer l.context.mu.Unlock()
+	return p >= l.context.minLogPriority
 }
 
 // formatAndWriteEntry formats a log entry as JSON and writes it to the Logger's writer.
@@ -261,10 +286,10 @@ func (l *Logger) Log(message string) {
 }
 
 // ChangePriority changes the priority level of the Logger.
-func (l *Logger) ChangePriority(newPriority LogPriority) {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	l.priority = newPriority
+func (l *Logger) ChangeMinLogPriority(minLogPriority LogPriority) {
+	l.context.mu.Lock()
+	defer l.context.mu.Unlock()
+	l.context.minLogPriority = minLogPriority
 }
 
 // Debug2 returns a new Logger with the 'priority' field set to Debug2.

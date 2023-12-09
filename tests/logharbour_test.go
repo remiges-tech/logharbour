@@ -25,14 +25,17 @@ func TestPriorityLevelPrinting(t *testing.T) {
 	// Create a fallback writer that uses the mock writer for both primary and fallback outputs.
 	fallbackWriter := logharbour.NewFallbackWriter(output, output)
 
+	// Create a logger context with the default priority.
+	lctx := logharbour.NewLoggerContext(logharbour.Info)
+
 	// Initialize the logger with a basic context and validator, and a test priority level.
-	logger := logharbour.NewLogger("TestApp", fallbackWriter)
+	logger := logharbour.NewLogger(lctx, "TestApp", fallbackWriter)
 
 	// log a message at Debug1 level.
 	logger.LogDebug("Debug1 message", logharbour.DebugInfo{})
 
 	// Change logger priority to a more verbose level (Debug2).
-	logger.ChangePriority(logharbour.Debug2)
+	logger.ChangeMinLogPriority(logharbour.Debug2)
 
 	// log another message at Debug2 level.
 	logger.LogDebug("Debug2 message", logharbour.DebugInfo{})

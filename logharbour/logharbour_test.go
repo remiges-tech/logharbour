@@ -25,8 +25,10 @@ func TestFallbackWriter(t *testing.T) {
 	// Create a buffer to act as the fallback writer
 	fallbackBuffer := &bytes.Buffer{}
 
+	lctx := NewLoggerContext(Info)
+
 	// Create a logger with a FallbackWriter
-	logger := NewLoggerWithFallback("testApp", NewFallbackWriter(&failWriter, fallbackBuffer))
+	logger := NewLoggerWithFallback(lctx, "testApp", NewFallbackWriter(&failWriter, fallbackBuffer))
 
 	// Create a log message
 	message := "test message"
@@ -47,8 +49,11 @@ func TestFallbackWriter_Stderr(t *testing.T) {
 	// Create another custom writer that also always fails
 	failFallbackWriter := FailWriter{}
 
+	// Create a buffer to act as the fallback writer
+	lctx := NewLoggerContext(Info)
+
 	// Create a logger with a FallbackWriter
-	logger := NewLoggerWithFallback("testApp", NewFallbackWriter(&failWriter, &failFallbackWriter))
+	logger := NewLoggerWithFallback(lctx, "testApp", NewFallbackWriter(&failWriter, &failFallbackWriter))
 
 	// Create a log message
 	message := "test message"
@@ -81,8 +86,9 @@ func TestFallbackWriter_Stderr(t *testing.T) {
 }
 
 func TestLog(t *testing.T) {
+	lctx := NewLoggerContext(Info)
 	var buf bytes.Buffer
-	logger := NewLogger("testApp", &buf)
+	logger := NewLogger(lctx, "testApp", &buf)
 
 	message := "test message"
 	logger.Log(message)
@@ -104,8 +110,9 @@ func TestLog(t *testing.T) {
 }
 
 func TestErrMethods(t *testing.T) {
+	lctx := NewLoggerContext(Info)
 	// Create a new logger
-	logger := NewLogger("testApp", nil)
+	logger := NewLogger(lctx, "testApp", nil)
 
 	// Test Error method
 	err := errors.New("test error")
@@ -131,6 +138,34 @@ func TestErrMethods(t *testing.T) {
 	}
 }
 
+func TestLoggerContextPriorityPropagation(t *testing.T) {
+	// Create a shared LoggerContext with default priority
+	lctx := NewLoggerContext(Info)
+
+	// Create a new Logger with the shared context
+	logger := NewLogger(lctx, "myApp", &bytes.Buffer{})
+
+	// Create new loggers using WithModule
+	logger1 := logger.WithModule("module1")
+	logger2 := logger1.WithModule("module2")
+
+	// Change the priority in the original context
+	logger.ChangeMinLogPriority(Warn)
+
+	// Check that the priority change propagated to all loggers
+	t.Run("Priority propagation to logger1", func(t *testing.T) {
+		if logger1.context.minLogPriority != Warn {
+			t.Errorf("Expected logger1 priority to be %v, got %v", Warn, logger1.context.minLogPriority)
+		}
+	})
+
+	t.Run("Priority propagation to logger2", func(t *testing.T) {
+		if logger2.context.minLogPriority != Warn {
+			t.Errorf("Expected logger2 priority to be %v, got %v", Warn, logger2.context.minLogPriority)
+		}
+	})
+}
+
 // Example of using With prefixed methods to set various fields of the logger.
 func Example() {
 	// Open a file for logging.
@@ -143,8 +178,11 @@ func Example() {
 	// Create a fallback writer that uses the file as the primary writer and stdout as the fallback.
 	fallbackWriter := NewFallbackWriter(file, os.Stdout)
 
+	// Create a logger context with the default priority.
+	lctx := NewLoggerContext(Info)
+
 	// Initialize the logger.
-	logger := NewLogger("MyApp", fallbackWriter)
+	logger := NewLogger(lctx, "MyApp", fallbackWriter)
 
 	// Create a new logger with various fields set.
 	logger = logger.WithModule("Module1").
@@ -163,7 +201,7 @@ func Example() {
 	})
 
 	// Change logger priority at runtime.
-	logger.ChangePriority(Debug2)
+	logger.ChangeMinLogPriority(Debug2)
 
 	// Log a debug entry.
 	logger.LogDebug("Debugging user session", DebugInfo{
