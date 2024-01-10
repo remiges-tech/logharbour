@@ -215,7 +215,7 @@ type DebugInfo struct {
 	LineNumber   int            `json:"lineNumber"`
 	FunctionName string         `json:"functionName"`
 	StackTrace   string         `json:"stackTrace"`
-	Variables    map[string]any `json:"variables"`
+	Data         map[string]any `json:"data"`
 }
 
 // FallbackWriter provides an io.Writer that automatically falls back to a secondary writer if the primary writer fails.

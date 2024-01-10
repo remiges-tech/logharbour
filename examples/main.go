@@ -26,16 +26,13 @@ func main() {
 			AddChange("email", "oldEmail@example.com", "john@example.com"))
 
 	// log a debug entry.
-	logger.LogDebug("Debugging user session", logharbour.DebugInfo{
-		Variables: map[string]any{"sessionID": "12345"},
-	})
+	logger.LogDebug("Debugging user session", map[string]any{"sessionID": "12345"})
+
 	// Change logger priority at runtime.
 	logger.ChangeMinLogPriority(logharbour.Debug2)
 
 	// log another debug entry with a higher verbosity level.
-	logger.LogDebug("Detailed debugging info", logharbour.DebugInfo{
-		Variables: map[string]any{"sessionID": "12345", "userID": "john"},
-	})
+	logger.LogDebug("Detailed debugging info", map[string]any{"sessionID": "12345", "userID": "john"})
 
 	logger.Debug0().LogActivity("debug0 test", nil)
 
@@ -45,9 +42,7 @@ func main() {
 
 func innerFunction(logger *logharbour.Logger) {
 	// log a debug entry.
-	logger.LogDebug("Debugging inner function", logharbour.DebugInfo{
-		Variables: map[string]any{"innerVar": "innerValue"},
-	})
+	logger.LogDebug("Debugging inner function", map[string]any{"innerVar": "innerValue"})
 }
 
 func outerFunction(logger *logharbour.Logger) {

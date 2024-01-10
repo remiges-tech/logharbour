@@ -256,9 +256,7 @@ func Example() {
 	logger.ChangeMinLogPriority(Debug2)
 
 	// Log a debug entry.
-	logger.LogDebug("Debugging user session", DebugInfo{
-		Variables: map[string]any{"sessionID": "12345"},
-	})
+	logger.LogDebug("Debugging user session", map[string]any{"sessionID": "12345"})
 
 	//
 	// {

@@ -270,12 +270,16 @@ func (l *Logger) LogActivity(message string, data ActivityInfo) {
 }
 
 // LogDebug logs a debug event.
-func (l *Logger) LogDebug(message string, data DebugInfo) {
-	data.FileName, data.LineNumber, data.FunctionName, data.StackTrace = GetDebugInfo(2)
-	data.Pid = os.Getpid()
-	data.Runtime = runtime.Version()
+func (l *Logger) LogDebug(message string, data any) {
+	debugInfo := DebugInfo{
+		Pid:     os.Getpid(),
+		Runtime: runtime.Version(),
+		Data:    map[string]any{"context": data},
+	}
 
-	entry := l.newLogEntry(message, data)
+	debugInfo.FileName, debugInfo.LineNumber, debugInfo.FunctionName, debugInfo.StackTrace = GetDebugInfo(2)
+
+	entry := l.newLogEntry(message, debugInfo)
 	entry.Type = Debug
 	l.log(entry)
 }
