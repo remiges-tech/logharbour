@@ -331,3 +331,28 @@ func (l *Logger) Crit() *Logger {
 func (l *Logger) Sec() *Logger {
 	return l.WithPriority(Sec)
 }
+
+// NewChangeDetail creates a new ChangeDetail instance.
+func NewChangeDetail(field string, oldValue, newValue any) ChangeDetail {
+	return ChangeDetail{
+		Field:    field,
+		OldValue: oldValue,
+		NewValue: newValue,
+	}
+}
+
+// AddChange adds a new ChangeDetail to a ChangeInfo instance and returns the ChangeInfo.
+func (ci *ChangeInfo) AddChange(field string, oldValue, newValue any) *ChangeInfo {
+	change := NewChangeDetail(field, oldValue, newValue)
+	ci.Changes = append(ci.Changes, change)
+	return ci
+}
+
+// NewChangeInfo creates a new ChangeInfo instance.
+func NewChangeInfo(entity, operation string) *ChangeInfo {
+	return &ChangeInfo{
+		Entity:    entity,
+		Operation: operation,
+		Changes:   []ChangeDetail{},
+	}
+}

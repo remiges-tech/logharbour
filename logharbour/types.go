@@ -181,11 +181,27 @@ type LogEntry struct {
 	Data           any         `json:"data"`             // The payload of the log entry, can be any type.
 }
 
+type ChangeDetail struct {
+	Field    string `json:"field"`
+	OldValue any    `json:"old_value"`
+	NewValue any    `json:"new_value"`
+}
+
 // ChangeInfo holds information about data changes such as creations, updates, or deletions.
+//
+// Example usage of ChangeInfo and ChangeDetail to log changes to an entity.
+//
+//	func LogEntityChange() {
+//		 // Create a new ChangeInfo for the "User" entity undergoing an "Update" operation and add changes.
+//		 changeInfo := NewChangeInfo("User", "Update").
+//			 AddChange("email", "oldEmail@example.com", "newEmail@example.com").
+//			 AddChange("username", "oldUsername", "newUsername")
+//		 logger.LogDataChange("User details updated", *changeInfo)
+//	}
 type ChangeInfo struct {
 	Entity    string         `json:"entity"`
 	Operation string         `json:"operation"`
-	Changes   map[string]any `json:"changes"`
+	Changes   []ChangeDetail `json:"changes"`
 }
 
 // ActivityInfo holds information about system activities like web service calls or function executions.

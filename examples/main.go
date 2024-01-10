@@ -20,11 +20,10 @@ func main() {
 	logger.LogActivity("User logged in", map[string]any{"username": "john"})
 
 	// log a data change entry.
-	logger.LogDataChange("User updated profile", logharbour.ChangeInfo{
-		Entity:    "User",
-		Operation: "Update",
-		Changes:   map[string]any{"email": "john@example.com"},
-	})
+	// log a data change entry.
+	logger.LogDataChange("User updated profile",
+		*logharbour.NewChangeInfo("User", "Update").
+			AddChange("email", "oldEmail@example.com", "john@example.com"))
 
 	// log a debug entry.
 	logger.LogDebug("Debugging user session", logharbour.DebugInfo{
@@ -37,6 +36,8 @@ func main() {
 	logger.LogDebug("Detailed debugging info", logharbour.DebugInfo{
 		Variables: map[string]any{"sessionID": "12345", "userID": "john"},
 	})
+
+	logger.Debug0().LogActivity("debug0 test", nil)
 
 	outerFunction(logger)
 

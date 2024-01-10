@@ -166,6 +166,59 @@ func TestLoggerContextPriorityPropagation(t *testing.T) {
 	})
 }
 
+func TestLogDataChange(t *testing.T) {
+	// Create a buffer to use as the logger's writer
+	var buf bytes.Buffer
+
+	// Create a new logger with the buffer as its writer
+	logger := NewLogger(NewLoggerContext(Info), "TestApp", &buf)
+
+	// Create a new ChangeInfo and add a change
+	changeInfo := NewChangeInfo("User", "Update").
+		AddChange("email", "oldEmail@example.com", "newEmail@example.com")
+
+	// Log the data change
+	logger.LogDataChange("User updated profile", *changeInfo)
+
+	// Get the logged message
+	loggedMessage := buf.String()
+
+	// Unmarshal the logged message into a map
+	var loggedData map[string]interface{}
+	err := json.Unmarshal([]byte(loggedMessage), &loggedData)
+	if err != nil {
+		t.Fatalf("Failed to unmarshal logged message: %v", err)
+	}
+
+	// Check that the logged message contains the expected data
+	if loggedData["message"] != "User updated profile" {
+		t.Errorf("Expected message 'User updated profile', got '%s'", loggedData["message"])
+	}
+
+	// Extract and assert the ChangeInfo data from the map
+	changeData, ok := loggedData["data"].(map[string]interface{})
+	if !ok {
+		t.Fatalf("Expected ChangeInfo data, got %T", loggedData["data"])
+	}
+
+	// Extract and assert the Changes from the ChangeInfo data
+	changes, ok := changeData["changes"].([]interface{})
+	if !ok || len(changes) != 1 {
+		t.Fatalf("Expected 1 change, got %d", len(changes))
+	}
+
+	// Extract and assert the ChangeDetail from the Changes
+	changeDetail, ok := changes[0].(map[string]interface{})
+	if !ok {
+		t.Fatalf("Expected ChangeDetail, got %T", changes[0])
+	}
+
+	// Check the ChangeDetail fields
+	if changeDetail["field"] != "email" || changeDetail["old_value"] != "oldEmail@example.com" || changeDetail["new_value"] != "newEmail@example.com" {
+		t.Errorf("Expected email change from oldEmail@example.com to newEmail@example.com, got %v", changeDetail)
+	}
+}
+
 // Example of using With prefixed methods to set various fields of the logger.
 func Example() {
 	// Open a file for logging.
@@ -194,11 +247,10 @@ func Example() {
 	logger.LogActivity("User logged in", map[string]any{"username": "john"})
 
 	// Log a data change entry.
-	logger.LogDataChange("User updated profile", ChangeInfo{
-		Entity:    "User",
-		Operation: "Update",
-		Changes:   map[string]any{"email": "john@example.com"},
-	})
+	// log a data change entry.
+	logger.LogDataChange("User updated profile",
+		*NewChangeInfo("User", "Update").
+			AddChange("email", "oldEmail@example.com", "john@example.com"))
 
 	// Change logger priority at runtime.
 	logger.ChangeMinLogPriority(Debug2)
