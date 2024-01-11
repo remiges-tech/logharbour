@@ -13,7 +13,7 @@ func main() {
 	sw, err := logharbour.NewKafkaWriter(logharbour.KafkaConfig{
 		Brokers: []string{"localhost:9092"},
 		Topic:   "log_topic",
-	})
+	}, 10)
 	if err != nil {
 		log.Fatalf("unable to create Kafka writer: %v", err)
 	}
