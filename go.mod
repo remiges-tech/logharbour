@@ -3,12 +3,12 @@ module github.com/remiges-tech/logharbour
 go 1.21.3
 
 require (
+	github.com/IBM/sarama v1.42.1
 	github.com/go-playground/validator/v10 v10.16.0
 	github.com/twmb/franz-go v1.15.4
 )
 
 require (
-	github.com/IBM/sarama v1.42.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/eapache/go-resiliency v1.4.0 // indirect
 	github.com/eapache/go-xerial-snappy v0.0.0-20230731223053-c322873962e3 // indirect
