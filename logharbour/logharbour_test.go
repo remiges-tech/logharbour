@@ -302,7 +302,7 @@ func Example() {
 	//         "variables": {
 	//             "sessionID": "12345"
 	//         },
-	//         "fileName": "main.go",
+	//         "fileName": "main2.go",
 	//         "lineNumber": 30,
 	//         "functionName": "main",
 	//         "stackTrace": "...",
