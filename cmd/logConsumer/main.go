@@ -1,25 +1,35 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 
 	"github.com/IBM/sarama"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/remiges-tech/logharbour/logharbour"
 )
 
-func createElasticsearchClient() (*logharbour.ElasticsearchClient, error) {
-	esConfig := elasticsearch.Config{
-		Addresses: []string{"http://localhost:9200"},
+func getEnv(key, fallback string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
 	}
-	return logharbour.NewElasticsearchClient(esConfig)
+	return fallback
 }
 
-func createKafkaConsumer(brokers []string, topic string, handler logharbour.MessageHandler) (logharbour.Consumer, error) {
-	return logharbour.NewConsumer(brokers, topic, handler)
-}
+// func createElasticsearchClient() (*logharbour.ElasticsearchClient, error) {
+// 	esAddresses := getEnv("ELASTICSEARCH_ADDRESSES", "http://localhost:9200")
+// 	esConfig := elasticsearch.Config{
+// 		Addresses: strings.Split(esAddresses, ","),
+// 	}
+// 	return logharbour.NewElasticsearchClient(esConfig)
+// }
+
+// func createKafkaConsumer(brokers []string, topic string, handler logharbour.MessageHandler) (logharbour.Consumer, error) {
+// 	return logharbour.NewConsumer(brokers, topic, handler)
+// }
 
 func startKafkaConsumer(consumer logharbour.Consumer) (<-chan error, error) {
 	return consumer.Start(10)
@@ -47,10 +57,19 @@ func stopKafkaConsumer(consumer logharbour.Consumer) {
 }
 
 func main() {
-	brokers := []string{"localhost:9092"}
-	topic := "log_topic"
+	// Define flags with environment variables as default values
+	esAddresses := flag.String("esAddresses", getEnv("ELASTICSEARCH_ADDRESSES", "http://localhost:9200"), "Elasticsearch addresses (comma-separated)")
+	kafkaBrokers := flag.String("kafkaBrokers", getEnv("KAFKA_BROKERS", "localhost:9092"), "Kafka brokers (comma-separated)")
+	kafkaTopic := flag.String("kafkaTopic", getEnv("KAFKA_TOPIC", "log_topic"), "Kafka topic")
+	// brokers := strings.Split(getEnv("KAFKA_BROKERS", "localhost:9092"), ",")
+	// topic := getEnv("KAFKA_TOPIC", "log_topic")
 
-	esClient, err := createElasticsearchClient()
+	log.Printf("Elasticsearch Addresses: %s", *esAddresses)
+	log.Printf("Kafka Brokers: %s", *kafkaBrokers)
+	log.Printf("Kafka Topic: %s", *kafkaTopic)
+
+	esClient, err := createElasticsearchClient(*esAddresses)
+	// esClient, err := createElasticsearchClient()
 	if err != nil {
 		log.Fatalf("Error creating the Elasticsearch client: %s", err)
 	}
@@ -67,7 +86,7 @@ func main() {
 		return nil
 	}
 
-	consumer, err := createKafkaConsumer(brokers, topic, handler)
+	consumer, err := createKafkaConsumer(*kafkaBrokers, *kafkaTopic, handler)
 	if err != nil {
 		log.Fatalln("Failed to create consumer: ", err)
 	}
@@ -82,4 +101,15 @@ func main() {
 	waitForInterrupt()
 
 	stopKafkaConsumer(consumer)
+}
+
+func createElasticsearchClient(addresses string) (*logharbour.ElasticsearchClient, error) {
+	esConfig := elasticsearch.Config{
+		Addresses: strings.Split(addresses, ","),
+	}
+	return logharbour.NewElasticsearchClient(esConfig)
+}
+
+func createKafkaConsumer(brokers, topic string, handler logharbour.MessageHandler) (logharbour.Consumer, error) {
+	return logharbour.NewConsumer(strings.Split(brokers, ","), topic, handler)
 }
