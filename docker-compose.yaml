@@ -1,0 +1,39 @@
+version: '2'
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  elasticsearch:
+    image: 'bitnami/elasticsearch:latest'
+    networks:
+      - app-tier
+    ports:
+      - "9200:9200"
+
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - '2181:2181'
+
+  kafka:
+    image: 'bitnami/kafka:latest'
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+    ports:
+      - '9092:9092'
+    depends_on:
+      - zookeeper  
+
+  lhconsumer:
+    image: 'lhconsumer:latest'
+    network_mode: host
+    depends_on:
+      - kafka
+      - elasticsearch
