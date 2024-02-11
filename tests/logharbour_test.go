@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"errors"
+	"sync"
 	"testing"
 
 	"github.com/remiges-tech/logharbour/logharbour"
@@ -28,6 +29,8 @@ func TestPriorityLevelPrinting(t *testing.T) {
 	// Create a logger context with the default priority.
 	lctx := logharbour.NewLoggerContext(logharbour.Info)
 
+	lctx.SetDebugMode(true)
+
 	// Initialize the logger with a basic context and validator, and a test priority level.
 	logger := logharbour.NewLogger(lctx, "TestApp", fallbackWriter)
 
@@ -35,7 +38,7 @@ func TestPriorityLevelPrinting(t *testing.T) {
 	logger.LogDebug("Debug1 message", logharbour.DebugInfo{})
 
 	// Change logger priority to a more verbose level (Debug2).
-	logger.ChangeMinLogPriority(logharbour.Debug2)
+	lctx.ChangeMinLogPriority(logharbour.Debug2)
 
 	// log another message at Debug2 level.
 	logger.LogDebug("Debug2 message", logharbour.DebugInfo{})
@@ -82,5 +85,35 @@ func TestFallbackWriter(t *testing.T) {
 	// Check if the fallback writer has captured the message.
 	if fallback.String() != string(message) {
 		t.Errorf("Expected fallback writer to capture the message, got: %s", fallback.String())
+	}
+}
+
+// Helper function to create a default LoggerContext for tests
+func newTestLoggerContext() *logharbour.LoggerContext {
+	return &logharbour.LoggerContext{}
+}
+
+func TestLoggerContext_SetDebugMode(t *testing.T) {
+	lc := newTestLoggerContext()
+	var wg sync.WaitGroup
+
+	// Number of goroutines to spawn
+	numGoroutines := 100
+
+	wg.Add(numGoroutines)
+	for i := 0; i < numGoroutines; i++ {
+		go func() {
+			defer wg.Done()
+			lc.SetDebugMode(true)
+			if !lc.IsDebugMode() {
+				t.Errorf("Expected debug mode to be true")
+			}
+		}()
+	}
+	wg.Wait()
+
+	// Final check to ensure debugMode is true after all goroutines have run
+	if !lc.IsDebugMode() {
+		t.Errorf("Expected final debug mode to be true")
 	}
 }

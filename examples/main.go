@@ -29,7 +29,7 @@ func main() {
 	logger.LogDebug("Debugging user session", map[string]any{"sessionID": "12345"})
 
 	// Change logger priority at runtime.
-	logger.ChangeMinLogPriority(logharbour.Debug2)
+	lctx.ChangeMinLogPriority(logharbour.Debug2)
 
 	// log another debug entry with a higher verbosity level.
 	logger.LogDebug("Detailed debugging info", map[string]any{"sessionID": "12345", "userID": "john"})
