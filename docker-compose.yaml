@@ -1,0 +1,55 @@
+version: '2'
+
+networks:
+  lhnet:
+    driver: bridge
+
+services:
+  elasticsearch:
+    image: 'bitnami/elasticsearch:latest'
+    networks:
+      - lhnet
+    ports:
+      - "9200:9200"
+
+  kafka:
+    image: 'bitnami/kafka:latest'
+    networks:
+      - lhnet
+    ports:
+      - '9094:9094'
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://kafka:9094
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+
+  lhproducer:
+    image: lhproducer:latest
+    networks:
+      - lhnet
+    command: ["./lh-producer", "-nMessages=100000", "-nGoroutines=10"]
+    environment:
+      KAFKA_BROKERS: "kafka:9094"
+      KAFKA_TOPIC: "log_topic"
+    depends_on:
+      - kafka
+
+  lhconsumer:
+    image: 'lhconsumer:latest'
+    networks:
+      - lhnet
+    environment:
+      ELASTICSEARCH_ADDRESSES: "http://elasticsearch:9200"
+      KAFKA_BROKERS: "kafka:9094"
+      KAFKA_TOPIC: "log_topic"
+    depends_on:
+      - kafka
+      - elasticsearch
+
+

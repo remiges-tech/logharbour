@@ -1,23 +1,47 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"log"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
 	"github.com/remiges-tech/logharbour/logharbour"
 )
 
+func getEnv(key, fallback string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+	return fallback
+}
+
 func main() {
-	nGoroutines := 10
-	nMessages := 100000
-	messagesPerGoroutine := nMessages / nGoroutines
+	// Define flags with environment variables as default values
+	kafkaBrokers := flag.String("kafkaBrokers", getEnv("KAFKA_BROKERS", "localhost:9092"), "Kafka brokers (comma-separated)")
+	kafkaTopic := flag.String("kafkaTopic", getEnv("KAFKA_TOPIC", "benchmark_topic"), "Kafka topic")
+	nMessages := flag.Int("nMessages", 1000, "Number of messages to send")
+	nGoroutines := flag.Int("nGoroutines", 10, "Number of goroutines to use for sending messages")
+
+	flag.Parse()
+
+	// Use the flag values...
+	log.Printf("Kafka Brokers: %s", *kafkaBrokers)
+	log.Printf("Kafka Topic: %s", *kafkaTopic)
+	log.Printf("Number of Messages: %d", *nMessages)
+	log.Printf("Number of Goroutines: %d", *nGoroutines)
+	// nGoroutines := 10
+	// nMessages := 100000
+	messagesPerGoroutine := *nMessages / *nGoroutines
 
 	// Initialize Kafka connection pool and LogHarbour logger
+
 	kafkaConfig := logharbour.KafkaConfig{
-		Brokers: []string{"localhost:9092"},
-		Topic:   "log_topic",
+		Brokers: strings.Split(*kafkaBrokers, ","),
+		Topic:   *kafkaTopic,
 	}
 
 	// Define the maximum number of connections in the pool
@@ -35,12 +59,12 @@ func main() {
 	fallbackWriter := logharbour.NewFallbackWriter(kafkaWriter, os.Stdout)
 
 	var wg sync.WaitGroup
-	wg.Add(nGoroutines)
+	wg.Add(*nGoroutines)
 
 	// Start measuring time
 	startTime := time.Now()
 
-	for i := 0; i < nGoroutines; i++ {
+	for i := 0; i < *nGoroutines; i++ {
 		go func(id int) {
 			defer wg.Done()
 			appName := fmt.Sprintf("MyApp-%d", id)
@@ -70,7 +94,7 @@ func main() {
 
 	// Compute and display metrics
 	fmt.Printf("Total execution time: %v\n", duration)
-	fmt.Printf("Messages per second: %f\n", float64(nMessages)/duration.Seconds())
+	fmt.Printf("Messages per second: %f\n", float64(*nMessages)/duration.Seconds())
 }
 
 func logMessage(logger *logharbour.Logger, message string) {

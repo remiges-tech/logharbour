@@ -1,24 +1,24 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
+	"strings"
+	"time"
 
 	"github.com/IBM/sarama"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/remiges-tech/logharbour/logharbour"
 )
 
-func createElasticsearchClient() (*logharbour.ElasticsearchClient, error) {
-	esConfig := elasticsearch.Config{
-		Addresses: []string{"http://localhost:9200"},
+func getEnv(key, fallback string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
 	}
-	return logharbour.NewElasticsearchClient(esConfig)
-}
-
-func createKafkaConsumer(brokers []string, topic string, handler logharbour.MessageHandler) (logharbour.Consumer, error) {
-	return logharbour.NewConsumer(brokers, topic, handler)
+	return fallback
 }
 
 func startKafkaConsumer(consumer logharbour.Consumer) (<-chan error, error) {
@@ -46,19 +46,49 @@ func stopKafkaConsumer(consumer logharbour.Consumer) {
 	}
 }
 
-func main() {
-	brokers := []string{"localhost:9092"}
-	topic := "log_topic"
+func retryOperation(operation func() error, maxAttempts int, initialBackoff time.Duration) error {
+	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		err := operation()
+		if err == nil {
+			return nil // Success
+		}
 
-	esClient, err := createElasticsearchClient()
+		if attempt == maxAttempts {
+			return fmt.Errorf("after %d attempts, last error: %s", attempt, err)
+		}
+
+		wait := initialBackoff * time.Duration(1<<(attempt-1)) // Exponential backoff
+		log.Printf("Attempt %d failed, retrying in %v: %v", attempt, wait, err)
+		time.Sleep(wait)
+	}
+	return fmt.Errorf("reached max attempts without success")
+}
+
+func main() {
+	// Define flags with environment variables as default values
+	esAddresses := flag.String("esAddresses", getEnv("ELASTICSEARCH_ADDRESSES", "http://localhost:9200"), "Elasticsearch addresses (comma-separated)")
+	kafkaBrokers := flag.String("kafkaBrokers", getEnv("KAFKA_BROKERS", "localhost:9092"), "Kafka brokers (comma-separated)")
+	kafkaTopic := flag.String("kafkaTopic", getEnv("KAFKA_TOPIC", "log_topic"), "Kafka topic")
+	esIndex := flag.String("esIndex", getEnv("ELASTICSEARCH_INDEX", "logs"), "Elasticsearch index name")
+
+	log.Printf("Elasticsearch Addresses: %s", *esAddresses)
+	log.Printf("Kafka Brokers: %s", *kafkaBrokers)
+	log.Printf("Kafka Topic: %s", *kafkaTopic)
+	log.Printf("Elasticsearch Index: %s", *esIndex) // Added line
+
+	esClient, err := createElasticsearchClient(*esAddresses)
 	if err != nil {
 		log.Fatalf("Error creating the Elasticsearch client: %s", err)
 	}
 
 	handler := func(messages []*sarama.ConsumerMessage) error {
 		for _, message := range messages {
-			log.Printf("Received message from topic %s: %s", message.Topic, string(message.Value))
-			err := esClient.Write("logs", string(message.Key), string(message.Value))
+			// log debug
+			// log.Printf("Received message from topic %s: %s", message.Topic, string(message.Value))
+			// err := esClient.Write(*esIndex, string(message.Key), string(message.Value)) // Use the esIndex variable here
+			err := retryOperation(func() error {
+				return esClient.Write(*esIndex, string(message.Key), string(message.Value))
+			}, 10, 1*time.Second) // Adjust maxAttempts and initialBackoff as needed
 			if err != nil {
 				log.Printf("Failed to write message to Elasticsearch: %v", err)
 				return err
@@ -67,7 +97,7 @@ func main() {
 		return nil
 	}
 
-	consumer, err := createKafkaConsumer(brokers, topic, handler)
+	consumer, err := createKafkaConsumer(*kafkaBrokers, *kafkaTopic, handler)
 	if err != nil {
 		log.Fatalln("Failed to create consumer: ", err)
 	}
@@ -82,4 +112,15 @@ func main() {
 	waitForInterrupt()
 
 	stopKafkaConsumer(consumer)
+}
+
+func createElasticsearchClient(addresses string) (*logharbour.ElasticsearchClient, error) {
+	esConfig := elasticsearch.Config{
+		Addresses: strings.Split(addresses, ","),
+	}
+	return logharbour.NewElasticsearchClient(esConfig)
+}
+
+func createKafkaConsumer(brokers, topic string, handler logharbour.MessageHandler) (logharbour.Consumer, error) {
+	return logharbour.NewConsumer(strings.Split(brokers, ","), topic, handler)
 }

@@ -150,7 +150,7 @@ func TestLoggerContextPriorityPropagation(t *testing.T) {
 	logger2 := logger1.WithModule("module2")
 
 	// Change the priority in the original context
-	logger.ChangeMinLogPriority(Warn)
+	lctx.ChangeMinLogPriority(Warn)
 
 	// Check that the priority change propagated to all loggers
 	t.Run("Priority propagation to logger1", func(t *testing.T) {
@@ -253,7 +253,7 @@ func Example() {
 			AddChange("email", "oldEmail@example.com", "john@example.com"))
 
 	// Change logger priority at runtime.
-	logger.ChangeMinLogPriority(Debug2)
+	lctx.ChangeMinLogPriority(Debug2)
 
 	// Log a debug entry.
 	logger.LogDebug("Debugging user session", map[string]any{"sessionID": "12345"})

@@ -7,6 +7,7 @@ import (
 	"os"
 	"runtime"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -21,6 +22,7 @@ const DefaultPriority = Info
 // regardless of which goroutine they are performed in.
 type LoggerContext struct {
 	minLogPriority LogPriority
+	debugMode      int32 // int32 to represent the boolean flag atomically
 	mu             sync.Mutex
 }
 
@@ -271,6 +273,9 @@ func (l *Logger) LogActivity(message string, data ActivityInfo) {
 
 // LogDebug logs a debug event.
 func (l *Logger) LogDebug(message string, data any) {
+	if !l.context.IsDebugMode() {
+		return // Skip logging if debugMode is not enabled
+	}
 	debugInfo := DebugInfo{
 		Pid:     os.Getpid(),
 		Runtime: runtime.Version(),
@@ -289,11 +294,26 @@ func (l *Logger) Log(message string) {
 	l.LogActivity("", message)
 }
 
+// SetDebugMode sets the debug mode for all loggers sharing this context.
+// Passing true enables debug logging, while false disables it.
+func (lc *LoggerContext) SetDebugMode(enable bool) {
+	var val int32
+	if enable {
+		val = 1
+	}
+	atomic.StoreInt32(&lc.debugMode, val) // Atomically update debugMode
+}
+
+// IsDebugMode checks if debug mode is enabled atomically.
+func (lc *LoggerContext) IsDebugMode() bool {
+	return atomic.LoadInt32(&lc.debugMode) == 1 // Atomically read debugMode
+}
+
 // ChangePriority changes the priority level of the Logger.
-func (l *Logger) ChangeMinLogPriority(minLogPriority LogPriority) {
-	l.context.mu.Lock()
-	defer l.context.mu.Unlock()
-	l.context.minLogPriority = minLogPriority
+func (lc *LoggerContext) ChangeMinLogPriority(minLogPriority LogPriority) {
+	lc.mu.Lock()
+	defer lc.mu.Unlock()
+	lc.minLogPriority = minLogPriority
 }
 
 // Debug2 returns a new Logger with the 'priority' field set to Debug2.
