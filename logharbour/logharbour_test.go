@@ -191,8 +191,8 @@ func TestLogDataChange(t *testing.T) {
 	}
 
 	// Check that the logged message contains the expected data
-	if loggedData["message"] != "User updated profile" {
-		t.Errorf("Expected message 'User updated profile', got '%s'", loggedData["message"])
+	if loggedData["msg"] != "User updated profile" {
+		t.Errorf("Expected message 'User updated profile', got '%s'", loggedData["msg"])
 	}
 
 	// Extract and assert the ChangeInfo data from the map

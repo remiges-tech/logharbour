@@ -50,40 +50,40 @@ func NewLoggerContext(minLogPriority LogPriority) *LoggerContext {
 // This approach provides a flexible way to create a new Logger with specific settings,
 // without having to provide all settings at once or change the settings of an existing Logger.
 type Logger struct {
-	context        *LoggerContext      // Context for the logger. It is shared by all clones of the logger.
-	appName        string              // Name of the application.
-	system         string              // System where the application is running.
-	module         string              // Module or subsystem within the application.
-	priority       LogPriority         // Priority level of the log messages.
-	who            string              // User or service performing the operation.
-	op             string              // Operation being performed.
-	whatClass      string              // Class of the object instance involved.
-	whatInstanceId string              // Unique ID of the object instance.
-	status         Status              // Status of the operation.
-	err            string              // Error associated with the operation.
-	remoteIP       string              // IP address of the remote endpoint.
-	writer         io.Writer           // Writer interface for log entries.
-	validator      *validator.Validate // Validator for log entries.
-	mu             sync.Mutex          // Mutex for thread-safe operations.
+	context    *LoggerContext      // Context for the logger. It is shared by all clones of the logger.
+	app        string              // Name of the application.
+	system     string              // System where the application is running.
+	module     string              // Module or subsystem within the application.
+	pri        LogPriority         // Priority level of the log messages.
+	who        string              // User or service performing the operation.
+	op         string              // Operation being performed.
+	class      string              // Class of the object instance involved.
+	instanceId string              // Unique ID of the object instance.
+	status     Status              // Status of the operation.
+	err        string              // Error associated with the operation.
+	remoteIP   string              // IP address of the remote endpoint.
+	writer     io.Writer           // Writer interface for log entries.
+	validator  *validator.Validate // Validator for log entries.
+	mu         sync.Mutex          // Mutex for thread-safe operations.
 }
 
 // clone creates and returns a new Logger with the same values as the original.
 func (l *Logger) clone() *Logger {
 	return &Logger{
-		context:        l.context,
-		appName:        l.appName,
-		system:         l.system,
-		module:         l.module,
-		priority:       l.priority,
-		who:            l.who,
-		op:             l.op,
-		whatClass:      l.whatClass,
-		whatInstanceId: l.whatInstanceId,
-		status:         l.status,
-		err:            l.err,
-		remoteIP:       l.remoteIP,
-		writer:         l.writer,
-		validator:      l.validator,
+		context:    l.context,
+		app:        l.app,
+		system:     l.system,
+		module:     l.module,
+		pri:        l.pri,
+		who:        l.who,
+		op:         l.op,
+		class:      l.class,
+		instanceId: l.instanceId,
+		status:     l.status,
+		err:        l.err,
+		remoteIP:   l.remoteIP,
+		writer:     l.writer,
+		validator:  l.validator,
 	}
 }
 
@@ -92,11 +92,11 @@ func (l *Logger) clone() *Logger {
 func NewLogger(context *LoggerContext, appName string, writer io.Writer) *Logger {
 	return &Logger{
 		context:   context,
-		appName:   appName,
+		app:       appName,
 		system:    getSystemName(),
 		writer:    writer,
 		validator: validator.New(),
-		priority:  DefaultPriority,
+		pri:       DefaultPriority,
 	}
 }
 
@@ -105,11 +105,11 @@ func NewLogger(context *LoggerContext, appName string, writer io.Writer) *Logger
 func NewLoggerWithFallback(context *LoggerContext, appName string, fallbackWriter *FallbackWriter) *Logger {
 	return &Logger{
 		context:   context,
-		appName:   appName,
+		app:       appName,
 		system:    getSystemName(),
 		writer:    fallbackWriter,
 		validator: validator.New(),
-		priority:  DefaultPriority,
+		pri:       DefaultPriority,
 	}
 }
 
@@ -134,17 +134,17 @@ func (l *Logger) WithOp(op string) *Logger {
 	return newLogger
 }
 
-// WithWhatClass returns a new Logger with the 'whatClass' field set to the specified value.
-func (l *Logger) WithWhatClass(whatClass string) *Logger {
+// WithClass returns a new Logger with the 'whatClass' field set to the specified value.
+func (l *Logger) WithClass(whatClass string) *Logger {
 	newLogger := l.clone()
-	newLogger.whatClass = whatClass
+	newLogger.class = whatClass
 	return newLogger
 }
 
-// WithWhatInstanceId returns a new Logger with the 'whatInstanceId' field set to the specified value.
-func (l *Logger) WithWhatInstanceId(whatInstanceId string) *Logger {
+// WithInstanceId returns a new Logger with the 'whatInstanceId' field set to the specified value.
+func (l *Logger) WithInstanceId(whatInstanceId string) *Logger {
 	newLogger := l.clone()
-	newLogger.whatInstanceId = whatInstanceId
+	newLogger.instanceId = whatInstanceId
 	return newLogger
 }
 
@@ -177,7 +177,7 @@ func (l *Logger) Error(err error) *Logger {
 //	logger.Info().LogChange(...)
 func (l *Logger) WithPriority(priority LogPriority) *Logger {
 	newLogger := l.clone()
-	newLogger.priority = priority
+	newLogger.pri = priority
 	return newLogger
 }
 
@@ -197,8 +197,8 @@ func (l *Logger) log(entry LogEntry) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
-	entry.AppName = l.appName
-	if !l.shouldLog(entry.Priority) {
+	entry.App = l.app
+	if !l.shouldLog(entry.Pri) {
 		return
 	}
 	if err := l.validator.Struct(entry); err != nil {
@@ -240,20 +240,20 @@ func formatAndWriteEntry(writer io.Writer, entry LogEntry) error {
 // newLogEntry creates a new log entry with the specified message and data.
 func (l *Logger) newLogEntry(message string, data any) LogEntry {
 	return LogEntry{
-		AppName:        l.appName,
-		System:         l.system,
-		Module:         l.module,
-		Priority:       l.priority,
-		Who:            l.who,
-		Op:             l.op,
-		When:           time.Now().UTC(),
-		WhatClass:      l.whatClass,
-		WhatInstanceId: l.whatInstanceId,
-		Status:         l.status,
-		Error:          l.err,
-		RemoteIP:       l.remoteIP,
-		Message:        message,
-		Data:           data,
+		App:        l.app,
+		System:     l.system,
+		Module:     l.module,
+		Pri:        l.pri,
+		Who:        l.who,
+		Op:         l.op,
+		When:       time.Now().UTC(),
+		Class:      l.class,
+		InstanceId: l.instanceId,
+		Status:     l.status,
+		Error:      l.err,
+		RemoteIP:   l.remoteIP,
+		Msg:        message,
+		Data:       data,
 	}
 }
 
@@ -359,9 +359,9 @@ func (l *Logger) Sec() *Logger {
 // NewChangeDetail creates a new ChangeDetail instance.
 func NewChangeDetail(field string, oldValue, newValue any) ChangeDetail {
 	return ChangeDetail{
-		Field:    field,
-		OldValue: oldValue,
-		NewValue: newValue,
+		Field:  field,
+		OldVal: oldValue,
+		NewVal: newValue,
 	}
 }
 
@@ -375,8 +375,8 @@ func (ci *ChangeInfo) AddChange(field string, oldValue, newValue any) *ChangeInf
 // NewChangeInfo creates a new ChangeInfo instance.
 func NewChangeInfo(entity, operation string) *ChangeInfo {
 	return &ChangeInfo{
-		Entity:    entity,
-		Operation: operation,
-		Changes:   []ChangeDetail{},
+		Entity:  entity,
+		Op:      operation,
+		Changes: []ChangeDetail{},
 	}
 }

@@ -164,27 +164,27 @@ const (
 
 // LogEntry encapsulates all the relevant information for a log message.
 type LogEntry struct {
-	AppName        string      `json:"app_name"`         // Name of the application.
-	System         string      `json:"system"`           // System where the application is running.
-	Module         string      `json:"module"`           // The module or subsystem within the application
-	Type           LogType     `json:"type"`             // Type of the log entry.
-	Priority       LogPriority `json:"priority"`         // Severity level of the log entry.
-	When           time.Time   `json:"when"`             // Time at which the log entry was created.
-	Who            string      `json:"who"`              // User or service performing the operation.
-	Op             string      `json:"op"`               // Operation being performed
-	WhatClass      string      `json:"what_class"`       // Unique ID, name of the object instance on which the operation was being attempted
-	WhatInstanceId string      `json:"what_instance_id"` // Unique ID, name, or other "primary key" information of the object instance on which the operation was being attempted
-	Status         Status      `json:"status"`           // 0 or 1, indicating success (1) or failure (0), or some other binary representation
-	Error          string      `json:"error,omitempty"`  // Error message or error chain related to the log entry, if any.
-	RemoteIP       string      `json:"remote_ip"`        // IP address of the caller from where the operation is being performed.
-	Message        string      `json:"message"`          // A descriptive message for the log entry.
-	Data           any         `json:"data"`             // The payload of the log entry, can be any type.
+	App        string      `json:"app"`             // Name of the application.
+	System     string      `json:"system"`          // System where the application is running.
+	Module     string      `json:"module"`          // The module or subsystem within the application
+	Type       LogType     `json:"type"`            // Type of the log entry.
+	Pri        LogPriority `json:"pri"`             // Severity level of the log entry.
+	When       time.Time   `json:"when"`            // Time at which the log entry was created.
+	Who        string      `json:"who"`             // User or service performing the operation.
+	Op         string      `json:"op"`              // Operation being performed
+	Class      string      `json:"class"`           // Unique ID, name of the object instance on which the operation was being attempted
+	InstanceId string      `json:"instance"`        // Unique ID, name, or other "primary key" information of the object instance on which the operation was being attempted
+	Status     Status      `json:"status"`          // 0 or 1, indicating success (1) or failure (0), or some other binary representation
+	Error      string      `json:"error,omitempty"` // Error message or error chain related to the log entry, if any.
+	RemoteIP   string      `json:"remote_ip"`       // IP address of the caller from where the operation is being performed.
+	Msg        string      `json:"msg"`             // A descriptive message for the log entry.
+	Data       any         `json:"data"`            // The payload of the log entry, can be any type.
 }
 
 type ChangeDetail struct {
-	Field    string `json:"field"`
-	OldValue any    `json:"old_value"`
-	NewValue any    `json:"new_value"`
+	Field  string `json:"field"`
+	OldVal any    `json:"old_value"`
+	NewVal any    `json:"new_value"`
 }
 
 // ChangeInfo holds information about data changes such as creations, updates, or deletions.
@@ -199,9 +199,9 @@ type ChangeDetail struct {
 //		 logger.LogDataChange("User details updated", *changeInfo)
 //	}
 type ChangeInfo struct {
-	Entity    string         `json:"entity"`
-	Operation string         `json:"operation"`
-	Changes   []ChangeDetail `json:"changes"`
+	Entity  string         `json:"entity"`
+	Op      string         `json:"op"`
+	Changes []ChangeDetail `json:"changes"`
 }
 
 // ActivityInfo holds information about system activities like web service calls or function executions.
