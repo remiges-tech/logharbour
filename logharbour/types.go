@@ -107,10 +107,10 @@ const (
 )
 
 const (
-	LogTypeChange   = "Change"
-	LogTypeActivity = "Activity"
-	LogTypeDebug    = "Debug"
-	LogTypeUnknown  = "Unknown"
+	LogTypeChange   = "C"
+	LogTypeActivity = "A"
+	LogTypeDebug    = "D"
+	LogTypeUnknown  = "U"
 )
 
 // String returns the string representation of the LogType.
@@ -211,9 +211,9 @@ type ActivityInfo any
 type DebugInfo struct {
 	Pid          int            `json:"pid"`
 	Runtime      string         `json:"runtime"`
-	FileName     string         `json:"fileName"`
-	LineNumber   int            `json:"lineNumber"`
-	FunctionName string         `json:"functionName"`
+	FileName     string         `json:"file"`
+	LineNumber   int            `json:"line"`
+	FunctionName string         `json:"func"`
 	StackTrace   string         `json:"stackTrace"`
 	Data         map[string]any `json:"data"`
 }
