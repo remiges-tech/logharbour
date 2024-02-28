@@ -1,5 +1,7 @@
 package types
 
+
+
 type AppConfig struct {
 	DBConnURL              string `json:"db_conn_url"`
 	DBHost                 string `json:"db_host"`
@@ -14,15 +16,4 @@ type AppConfig struct {
 	CertificateFingerprint string `json:"certificate_fingerprint"`
 }
 
-/*
-LogReq: where
 
-	AppId = app ID
-	Priority = low watermark priority level
-	Age = number of days to cast net backwards
-*/
-type LogReq struct {
-	AppId    string `json:"app"`
-	Priority string `json:"pri"`
-	Days     int64  `json:"days"`
-}
