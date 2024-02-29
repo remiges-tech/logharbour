@@ -6,13 +6,13 @@
       "type": "Activity",
       "pri": "Info",
       "when": "2024-02-28T07:28:00.099424231Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFinstanceNew request received",
+      "msg": "GetWFinstanceNew request received",
       "data": {}
    },
    {
@@ -22,13 +22,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:00.099930124Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "Inside ValidateWFInstaceNewReq()",
+      "msg": "Inside ValidateWFInstaceNewReq()",
       "data": {}
    },
    {
@@ -38,13 +38,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:00.099957084Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "Inside validateWorkflow()",
+      "msg": "Inside validateWorkflow()",
       "data": {}
    },
    {
@@ -54,13 +54,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:00.099965864Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFinstanceNew||validateWorkflow()||verifying whether app present in request is valid",
+      "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether app present in request is valid",
       "data": {}
    },
    {
@@ -70,13 +70,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:00.101209365Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFinstanceNew||validateWorkflow()||verifying whether class present in request is valid",
+      "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether class present in request is valid",
       "data": {}
    },
    {
@@ -86,13 +86,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:00.101433702Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow active status is valid",
+      "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow active status is valid",
       "data": {}
    },
    {
@@ -102,13 +102,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:00.101704015Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow internal status is valid",
+      "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow internal status is valid",
       "data": {}
    },
    {
@@ -118,13 +118,13 @@
       "type": "Activity",
       "pri": "Info",
       "when": "2024-02-28T07:28:00.101976917Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFinstanceNew||validateWorkflow()||verifying whether record is already exist in wfinstance table",
+      "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether record is already exist in wfinstance table",
       "data": {}
    },
    {
@@ -134,13 +134,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:00.102556794Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFinstanceNew||validateWFInstanceNewReq()||patternschema :",
+      "msg": "GetWFinstanceNew||validateWFInstanceNewReq()||patternschema :",
       "data": {
          "class": "inventoryitems",
          "attr": [
@@ -204,13 +204,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:00.102594064Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "Inside validateEntity()",
+      "msg": "Inside validateEntity()",
       "data": {}
    },
    {
@@ -220,13 +220,13 @@
       "type": "Activity",
       "pri": "Info",
       "when": "2024-02-28T07:28:00.10259862Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "validating entity attributes",
+      "msg": "validating entity attributes",
       "data": {}
    },
    {
@@ -236,13 +236,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:00.102604301Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "wfinstanceNewRequest after adding additional attributes :",
+      "msg": "wfinstanceNewRequest after adding additional attributes :",
       "data": {
          "slice": 2,
          "app": "retailBANK",
@@ -268,13 +268,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:00.10262714Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "inside addTasks()",
+      "msg": "inside addTasks()",
       "data": {}
    },
    {
@@ -284,20 +284,20 @@
       "type": "Change",
       "pri": "Info",
       "when": "2024-02-28T07:28:00.110813597Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "wfinstance",
       "instance": "1",
       "status": 0,
       "remote_ip": "",
-      "message": "created wfinstance ",
+      "msg": "created wfinstance ",
       "data": {
          "entity": "wfinstance",
          "operation": "create",
          "changes": [
             {
                "field": "row",
-               "old_value": null,
+               "old_value": "",
                "new_value": {
                   "id": 1,
                   "entityid": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
@@ -307,7 +307,7 @@
                   "workflow": "discountcheck",
                   "step": "discount",
                   "loggedat": "2024-02-28T12:58:00.102803Z",
-                  "doneat": null,
+                  "doneat": "",
                   "nextstep": "coupondistribution",
                   "parent": 77
                }
@@ -322,20 +322,20 @@
       "type": "Change",
       "pri": "Info",
       "when": "2024-02-28T07:28:00.110907849Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "wfinstance",
       "instance": "2",
       "status": 0,
       "remote_ip": "",
-      "message": "created wfinstance ",
+      "msg": "created wfinstance ",
       "data": {
          "entity": "wfinstance",
          "operation": "create",
          "changes": [
             {
                "field": "row",
-               "old_value": null,
+               "old_value": "",
                "new_value": {
                   "id": 2,
                   "entityid": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
@@ -345,7 +345,7 @@
                   "workflow": "discountcheck",
                   "step": "yearendsale",
                   "loggedat": "2024-02-28T12:58:00.102803Z",
-                  "doneat": null,
+                  "doneat": "",
                   "nextstep": "coupondistribution",
                   "parent": 77
                }
@@ -360,13 +360,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:00.110916867Z",
-      "who": "",
+      "who": "Tushar",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "WFInstanceNew||addTasks()||verifying whether step is workflow if it is, then append it to subflow",
+      "msg": "WFInstanceNew||addTasks()||verifying whether step is workflow if it is, then append it to subflow",
       "data": {}
    },
    {
@@ -376,13 +376,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:00.111253409Z",
-      "who": "",
+      "who": "Aniket",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "Inside getResponse()",
+      "msg": "Inside getResponse()",
       "data": {}
    },
    {
@@ -392,13 +392,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:00.111273118Z",
-      "who": "",
+      "who": "Aniket",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "response of addTask() :",
+      "msg": "response of addTask() :",
       "data": {
          "tasks": [
             {
@@ -413,7 +413,7 @@
          "subflows": {
             "yearendsale": "doyearendsalechk"
          },
-         "tracedata": null
+         "tracedata": ""
       }
    },
    {
@@ -423,13 +423,13 @@
       "type": "Activity",
       "pri": "Info",
       "when": "2024-02-28T07:28:03.442988651Z",
-      "who": "",
+      "who": "Aniket",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFInstanceList request received",
+      "msg": "GetWFInstanceList request received",
       "data": {}
    },
    {
@@ -439,13 +439,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:03.44317494Z",
-      "who": "",
+      "who": "Aniket",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFInstanceList|parameters from request :",
+      "msg": "GetWFInstanceList|parameters from request :",
       "data": {
          "Slice": 2,
          "EntityID": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
@@ -461,13 +461,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:03.443773904Z",
-      "who": "",
+      "who": "Aniket",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFInstanceList||parentlist form WFInstanceList data:",
+      "msg": "GetWFInstanceList||parentlist form WFInstanceList data:",
       "data": [
          77
       ]
@@ -479,13 +479,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:03.443789358Z",
-      "who": "",
+      "who": "Aniket",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFInstanceList||inside for loop : if parentList is Not Nil ",
+      "msg": "GetWFInstanceList||inside for loop : if parentList is Not Nil ",
       "data": {}
    },
    {
@@ -495,13 +495,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:03.444053647Z",
-      "who": "",
+      "who": "Aniket",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFInstanceList||updated ParentList :",
+      "msg": "GetWFInstanceList||updated ParentList :",
       "data": [
          78
       ]
@@ -513,13 +513,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:03.444077845Z",
-      "who": "",
+      "who": "Aniket",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFInstanceList||inside for loop : if parentList is Not Nil ",
+      "msg": "GetWFInstanceList||inside for loop : if parentList is Not Nil ",
       "data": {}
    },
    {
@@ -529,14 +529,14 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:03.444159767Z",
-      "who": "",
+      "who": "Aniket",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFInstanceList||updated ParentList :",
-      "data": null
+      "msg": "GetWFInstanceList||updated ParentList :",
+      "data": {}
    },
    {
       "app": "crux",
@@ -545,13 +545,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:03.444171472Z",
-      "who": "",
+      "who": "Aniket",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "Record found finished execution of GetWFInstanceList request",
+      "msg": "Record found finished execution of GetWFInstanceList request",
       "data": {}
    },
    {
@@ -561,13 +561,13 @@
       "type": "Activity",
       "pri": "Info",
       "when": "2024-02-28T07:28:05.26876182Z",
-      "who": "",
+      "who": "Aniket",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFInstanceAbort request received",
+      "msg": "GetWFInstanceAbort request received",
       "data": {}
    },
    {
@@ -577,13 +577,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:05.268897548Z",
-      "who": "",
+      "who": "Aniket",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFInstanceAbort||present values :",
+      "msg": "GetWFInstanceAbort||present values :",
       "data": {
          "EntityId": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
          "ID": 0
@@ -596,13 +596,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:05.273451616Z",
-      "who": "",
+      "who": "Kanchan",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFInstanceAbort||parentlist form WFInstanceListByID data:",
+      "msg": "GetWFInstanceAbort||parentlist form WFInstanceListByID data:",
       "data": [
          77
       ]
@@ -614,13 +614,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:05.273482727Z",
-      "who": "",
+      "who": "Kanchan",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFInstanceAbort||inside for loop : if parentList is Not Nil ",
+      "msg": "GetWFInstanceAbort||inside for loop : if parentList is Not Nil ",
       "data": {}
    },
    {
@@ -630,13 +630,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:05.284796292Z",
-      "who": "",
+      "who": "Kanchan",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFInstanceAbort||updated ParentList :",
+      "msg": "GetWFInstanceAbort||updated ParentList :",
       "data": [
          78
       ]
@@ -648,13 +648,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:05.284845655Z",
-      "who": "",
+      "who": "Kanchan",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFInstanceAbort||inside for loop : if parentList is Not Nil ",
+      "msg": "GetWFInstanceAbort||inside for loop : if parentList is Not Nil ",
       "data": {}
    },
    {
@@ -664,13 +664,13 @@
       "type": "Activity",
       "pri": "Debug0",
       "when": "2024-02-28T07:28:05.396104311Z",
-      "who": "",
+      "who": "Kanchan",
       "op": "",
       "class": "wfinstance",
       "instance": "",
       "status": 0,
       "remote_ip": "",
-      "message": "GetWFInstanceAbort||updated ParentList :",
+      "msg": "GetWFInstanceAbort||updated ParentList :",
       "data": {}
    },
    {
@@ -680,13 +680,13 @@
       "type": "Change",
       "pri": "Info",
       "when": "2024-02-28T07:28:05.396158202Z",
-      "who": "",
+      "who": "Kanchan",
       "op": "",
       "class": "wfinstance",
       "instance": "1",
       "status": 0,
       "remote_ip": "",
-      "message": "deleted wfinstance ",
+      "msg": "deleted wfinstance ",
       "data": {
          "entity": "wfinstance",
          "operation": "delete",
@@ -702,11 +702,11 @@
                   "workflow": "discountcheck",
                   "step": "discount",
                   "loggedat": "2024-02-28T12:58:00.102803Z",
-                  "doneat": null,
+                  "doneat": "",
                   "nextstep": "coupondistribution",
                   "parent": 77
                },
-               "new_value": null
+               "new_value": ""
             }
          ]
       }
@@ -718,13 +718,13 @@
       "type": "Change",
       "pri": "Info",
       "when": "2024-02-28T07:28:05.396184839Z",
-      "who": "",
+      "who": "Kanchan",
       "op": "",
       "class": "wfinstance",
       "instance": "2",
       "status": 0,
       "remote_ip": "",
-      "message": "deleted wfinstance ",
+      "msg": "deleted wfinstance ",
       "data": {
          "entity": "wfinstance",
          "operation": "delete",
@@ -740,11 +740,11 @@
                   "workflow": "discountcheck",
                   "step": "yearendsale",
                   "loggedat": "2024-02-28T12:58:00.102803Z",
-                  "doneat": null,
+                  "doneat": "",
                   "nextstep": "coupondistribution",
                   "parent": 77
                },
-               "new_value": null
+               "new_value": ""
             }
          ]
       }
@@ -756,13 +756,13 @@
       "type": "Change",
       "pri": "Info",
       "when": "2024-02-28T07:28:05.396203358Z",
-      "who": "",
+      "who": "Kanchan",
       "op": "",
       "class": "wfinstance",
       "instance": "77",
       "status": 0,
       "remote_ip": "",
-      "message": "deleted wfinstance ",
+      "msg": "deleted wfinstance ",
       "data": {
          "entity": "wfinstance",
          "operation": "delete",
@@ -778,11 +778,11 @@
                   "workflow": "temp",
                   "step": "tempstep",
                   "loggedat": "2024-02-05T00:00:00Z",
-                  "doneat": null,
+                  "doneat": "",
                   "nextstep": "temp",
                   "parent": 78
                },
-               "new_value": null
+               "new_value": ""
             }
          ]
       }
@@ -794,13 +794,13 @@
       "type": "Change",
       "pri": "Info",
       "when": "2024-02-28T07:28:05.396218422Z",
-      "who": "",
+      "who": "Kanchan",
       "op": "",
       "class": "wfinstance",
       "instance": "78",
       "status": 0,
       "remote_ip": "",
-      "message": "deleted wfinstance ",
+      "msg": "deleted wfinstance ",
       "data": {
          "entity": "wfinstance",
          "operation": "delete",
@@ -816,11 +816,11 @@
                   "workflow": "temp",
                   "step": "tempstep",
                   "loggedat": "2024-02-05T00:00:00Z",
-                  "doneat": null,
+                  "doneat": "",
                   "nextstep": "temp",
-                  "parent": null
+                  "parent": ""
                },
-               "new_value": null
+               "new_value": ""
             }
          ]
       }

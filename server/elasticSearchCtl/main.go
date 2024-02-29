@@ -50,7 +50,7 @@ var createIndexBody = `{
 		  "type": "keyword"
 		},
 		"type": {
-		  "type": "keyword"
+		  "type": "text"
 		},
 		"pri": {
 		  "type": "keyword"
@@ -83,7 +83,7 @@ var createIndexBody = `{
 		  "type": "keyword"
 		},
 		"data": {
-		  "type": "keyword"
+		  "type": "nested"
 		}
 	  }
 	}
