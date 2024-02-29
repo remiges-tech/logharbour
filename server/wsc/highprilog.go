@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"slices"
-	"strconv"
 
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/core/search"
@@ -25,14 +24,14 @@ type HighPriReq struct {
 	Pri                  string `json:"pri"`
 	Days                 int64  `json:"days"`
 	SearchAfterTimestamp string `json:"search_after_timestamp"`
-	SearchAfterDocId     string `json:"search_after_doc_id"`
+	SearchAfterDocId     string `json:"search_after_doc_id,omitempty"`
 }
 
 func GetHighprilog(c *gin.Context, s *service.Service) {
-	fmt.Println("<<<<<<<<<<<<<<<<<< inside GetHighprilog")
 	var (
-		from    int
-		request HighPriReq
+		request  HighPriReq
+		srchAftr []types.FieldValue
+		pageSize = 10
 	)
 	// step 1: json request binding with a struct
 	err := wscutils.BindJSON(c, &request)
@@ -45,7 +44,6 @@ func GetHighprilog(c *gin.Context, s *service.Service) {
 	priFrom := slices.Index(Priority, request.Pri)
 
 	requiredPri := Priority[priFrom:]
-	fmt.Println(">>>>>>", requiredPri)
 
 	clnt, ok := s.Dependencies["client"].(*elasticsearch.TypedClient)
 	if !ok {
@@ -58,36 +56,41 @@ func GetHighprilog(c *gin.Context, s *service.Service) {
 		return
 	}
 
-	pageSize := 10
-	page := 1
-	fmt.Println("==============", request.SearchAfterDocId)
-	// Calculate the `From` parameter based on the page and page size
-	if request.SearchAfterDocId == "" || &request.SearchAfterDocId == nil {
-		fmt.Println("==============inside nil")
-		from = (page - 1) * pageSize
-	} else {
-		from, err = strconv.Atoi(request.SearchAfterDocId)
-		if err != nil {
-			wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(404, "ErrCode_NotANumber"))
-			return
-		}
+	if request.SearchAfterDocId != "" || len(request.SearchAfterDocId) > 0 {
+		srchAftr = append(srchAftr, request.SearchAfterDocId)
 	}
 
 	// WORKING ____________________________________________________________
-	fmt.Println("from:", from, " pageSize:", pageSize)
+	fmt.Println("index:", index, " from:", request.SearchAfterDocId, " pageSize:", pageSize)
 	sortOrder := types.SortOptions{
 		SortOptions: map[string]types.FieldSort{
-			"when": {Order: &sortorder.Asc},
+			"when": {Order: &sortorder.Desc},
+			// "status": {Order: &sortorder.Asc},
+			// "_id":  {Order: &sortorder.Desc},
 		}}
 
+	var qry []types.Query
+
+	for _, v := range requiredPri {
+		termQry := types.Query{
+			Match: map[string]types.MatchQuery{
+				"pri": {Query: v},
+			},
+		}
+		qry = append(qry, termQry)
+	}
+
 	searchQuery, err := clnt.Search().
-		Index(index).From(from).Size(pageSize).
+		Index(index).
 		Request(&search.Request{
-			Query: &types.Query{Match: map[string]types.MatchQuery{
-				"priority": {Query: request.Pri},
-			}},
+			Size: &pageSize,
+			Query: &types.Query{
+				Bool: &types.BoolQuery{
+					Should: qry,
+				},
+			},
 			Sort:        []types.SortCombinations{sortOrder},
-			SearchAfter: []types.FieldValue{from},
+			SearchAfter: srchAftr,
 		}).Do(context.Background())
 	// WORKING ____________________________________________________________
 
@@ -98,5 +101,4 @@ func GetHighprilog(c *gin.Context, s *service.Service) {
 	}
 	// write log here
 	wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(searchQuery.Hits.Hits))
-	// wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(res.Hits))
 }
