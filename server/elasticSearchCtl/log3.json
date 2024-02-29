@@ -1,0 +1,1220 @@
+[
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Info",
+        "when": "2024-02-29T06:28:23.300476222Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "Creates a new instance of EtcdStorage with endpoints",
+        "data": "localhost:2379"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Info",
+        "when": "2024-02-29T06:28:23.300803738Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "Creates a new instance of rigel",
+        "data": {
+            "Storage": {
+                "Client": {
+                    "Cluster": {},
+                    "KV": {},
+                    "Lease": {},
+                    "Watcher": {},
+                    "Auth": {},
+                    "Maintenance": {},
+                    "Username": "",
+                    "Password": ""
+                }
+            },
+            "Cache": {},
+            "App": "crux",
+            "Module": "WFE",
+            "Version": 1,
+            "Config": "devConfig"
+        }
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Info",
+        "when": "2024-02-29T06:28:23.304664654Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "Retrieves the configuration data from rigel"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Info",
+        "when": "2024-02-29T06:29:19.658325716Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "GetWFinstanceNew request received"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:19.658638346Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "Inside ValidateWFInstaceNewReq()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:19.658652906Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "Inside validateWorkflow()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:19.658657181Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "GetWFinstanceNew||validateWorkflow()||verifying whether app present in request is valid"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:20.115230451Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "GetWFinstanceNew||validateWorkflow()||verifying whether class present in request is valid"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:20.116038368Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow active status is valid"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:20.11672342Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow internal status is valid"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Info",
+        "when": "2024-02-29T06:29:20.117147475Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "GetWFinstanceNew||validateWorkflow()||verifying whether record is already exist in wfinstance table"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:20.195755604Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "GetWFinstanceNew||validateWFInstanceNewReq()||patternschema :",
+        "data": {
+            "class": "inventoryitems",
+            "attr": [
+                {
+                    "name": "cat",
+                    "shortdesc": "Category of item",
+                    "longdesc": "Each item can belong to one of the following categories: textbooks, notebooks, stationery, or reference books.",
+                    "valtype": "enum",
+                    "vals": [
+                        "textbook",
+                        "notebook",
+                        "stationery",
+                        "refbooks"
+                    ],
+                    "enumdesc": [
+                        "Text books",
+                        "Notebooks",
+                        "Stationery and miscellaneous items",
+                        "Reference books, library books"
+                    ]
+                },
+                {
+                    "name": "mrp",
+                    "shortdesc": "Maximum retail price",
+                    "longdesc": "The maximum retail price of the item in INR as declared by the manufacturer.",
+                    "valtype": "float",
+                    "valmax": 20000,
+                    "valmin": 0
+                },
+                {
+                    "name": "fullname",
+                    "shortdesc": "Full name of item",
+                    "longdesc": "The full human-readable name of the item. Not unique, therefore sometimes confusing.",
+                    "valtype": "str",
+                    "lenmax": 40,
+                    "lenmin": 5
+                },
+                {
+                    "name": "ageinstock",
+                    "shortdesc": "Age in stock, in days",
+                    "longdesc": "The age in days that the oldest sample of this item has been lying in stock",
+                    "valtype": "int",
+                    "valmax": 1000,
+                    "valmin": 1
+                },
+                {
+                    "name": "inventoryqty",
+                    "shortdesc": "Number of items in inventory",
+                    "longdesc": "How many of these items are currently present in the inventory",
+                    "valtype": "int",
+                    "valmax": 10000,
+                    "valmin": 0
+                }
+            ]
+        }
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:20.195936555Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "Inside validateEntity()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Info",
+        "when": "2024-02-29T06:29:20.195958423Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "validating entity attributes"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:20.195980708Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "wfinstanceNewRequest after adding additional attributes :",
+        "data": {
+            "slice": 2,
+            "app": "retailBANK",
+            "entityid": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
+            "entity": {
+                "ageinstock": "2",
+                "class": "inventoryitems",
+                "fullname": "belampally",
+                "inventoryqty": "2",
+                "mrp": "200.00",
+                "step": "START",
+                "stepfailed": "false"
+            },
+            "workflow": "discountcheck",
+            "trace": 0,
+            "parent": 77
+        }
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:20.196048698Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "inside addTasks()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Change",
+        "pri": "Info",
+        "when": "2024-02-29T06:29:20.273446935Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "created wfinstance ",
+        "data": {
+            "entity": "wfinstance",
+            "op": "create",
+            "changes": [
+                {
+                    "field": "row",
+                    "old_value": null,
+                    "new_value": {
+                        "id": 3,
+                        "entityid": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
+                        "slice": 2,
+                        "app": "retailBANK",
+                        "class": "inventoryitems",
+                        "workflow": "discountcheck",
+                        "step": "discount",
+                        "loggedat": "2024-02-29T11:59:20.198716Z",
+                        "doneat": null,
+                        "nextstep": "coupondistribution",
+                        "parent": 77
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Change",
+        "pri": "Info",
+        "when": "2024-02-29T06:29:20.273653132Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "created wfinstance ",
+        "data": {
+            "entity": "wfinstance",
+            "op": "create",
+            "changes": [
+                {
+                    "field": "row",
+                    "old_value": null,
+                    "new_value": {
+                        "id": 4,
+                        "entityid": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
+                        "slice": 2,
+                        "app": "retailBANK",
+                        "class": "inventoryitems",
+                        "workflow": "discountcheck",
+                        "step": "yearendsale",
+                        "loggedat": "2024-02-29T11:59:20.198716Z",
+                        "doneat": null,
+                        "nextstep": "coupondistribution",
+                        "parent": 77
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:20.273674834Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "WFInstanceNew||addTasks()||verifying whether step is workflow if it is, then append it to subflow"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:20.274917868Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "Inside getResponse()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:20.274944037Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "response of addTask() :",
+        "data": {
+            "tasks": [
+                {
+                    "discount": 3
+                },
+                {
+                    "yearendsale": 4
+                }
+            ],
+            "nextstep": "coupondistribution",
+            "loggedat": "2024-02-29T11:59:20.198716Z",
+            "subflows": {
+                "yearendsale": "doyearendsalechk"
+            },
+            "tracedata": null
+        }
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Info",
+        "when": "2024-02-29T06:29:25.397058226Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "GetWFInstanceList request received"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:25.397204896Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "GetWFInstanceList|parameters from request :",
+        "data": {
+            "Slice": 2,
+            "EntityID": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
+            "App": "retailBANK",
+            "Workflow": "discountcheck",
+            "Parent": 77
+        }
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:25.397640226Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "GetWFInstanceList||parentlist form WFInstanceList data:",
+        "data": [
+            77
+        ]
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:25.397666607Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "GetWFInstanceList||inside for loop : if parentList is Not Nil "
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:25.41170026Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "GetWFInstanceList||updated ParentList :",
+        "data": null
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:25.411747648Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "Record found finished execution of GetWFInstanceList request"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Info",
+        "when": "2024-02-29T06:29:33.949636763Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "GetWFInstanceAbort request received"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:33.949792659Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "GetWFInstanceAbort||present values :",
+        "data": {
+            "EntityId": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
+            "ID": 0
+        }
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:33.987505898Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "GetWFInstanceAbort||parentlist form WFInstanceListByID data:",
+        "data": [
+            77
+        ]
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:33.987584779Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "GetWFInstanceAbort||inside for loop : if parentList is Not Nil "
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:29:33.988281421Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "GetWFInstanceAbort||updated ParentList :",
+        "data": null
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Change",
+        "pri": "Info",
+        "when": "2024-02-29T06:29:33.988328777Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "deleted wfinstance ",
+        "data": {
+            "entity": "wfinstance",
+            "op": "delete",
+            "changes": [
+                {
+                    "field": "row",
+                    "old_value": {
+                        "id": 3,
+                        "entityid": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
+                        "slice": 2,
+                        "app": "retailBANK",
+                        "class": "inventoryitems",
+                        "workflow": "discountcheck",
+                        "step": "discount",
+                        "loggedat": "2024-02-29T11:59:20.198716Z",
+                        "doneat": null,
+                        "nextstep": "coupondistribution",
+                        "parent": 77
+                    },
+                    "new_value": null
+                }
+            ]
+        }
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Change",
+        "pri": "Info",
+        "when": "2024-02-29T06:29:33.988360297Z",
+        "who": "",
+        "op": "",
+        "class": "wfinstance",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "deleted wfinstance ",
+        "data": {
+            "entity": "wfinstance",
+            "op": "delete",
+            "changes": [
+                {
+                    "field": "row",
+                    "old_value": {
+                        "id": 4,
+                        "entityid": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
+                        "slice": 2,
+                        "app": "retailBANK",
+                        "class": "inventoryitems",
+                        "workflow": "discountcheck",
+                        "step": "yearendsale",
+                        "loggedat": "2024-02-29T11:59:20.198716Z",
+                        "doneat": null,
+                        "nextstep": "coupondistribution",
+                        "parent": 77
+                    },
+                    "new_value": null
+                }
+            ]
+        }
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Info",
+        "when": "2024-02-29T06:31:30.12608756Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "SchemaGet request received"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Info",
+        "when": "2024-02-29T06:31:30.250027139Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "bindSchemaGetResp request received"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:31:30.250201022Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "record found finished execution of SchemaGet()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:31:36.949109134Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "starting execution of SchemaList()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:31:36.950026183Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "finished execution of SchemaList()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:31:40.78983454Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "Starting execution of SchemaNew()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:31:44.791721914Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "Starting execution of SchemaUpdate()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Info",
+        "when": "2024-02-29T06:31:44.819400441Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "Error while Updating schema",
+        "data": "no rows in result set"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Info",
+        "when": "2024-02-29T06:31:49.126632859Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "SchemaDelete request received"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:31:49.184228948Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "Record deleted finished execution of SchemaDelete()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:32:00.201220061Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "Starting execution of WorkFlowNew()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:32:00.291520461Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "Finished execution of WorkFlowNew()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:32:04.12052814Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "WorkflowGet request received"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:32:04.121411313Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "record found finished execution of WorkflowGet()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Info",
+        "when": "2024-02-29T06:32:09.840500804Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "WorkflowList request received"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:32:09.840715382Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "processRequest request received"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:32:09.840733956Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "user not have root cap"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:32:09.840741548Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "app not present hence all user 'ruleset' rights:",
+        "data": [
+            "retailBANK",
+            "nedbank"
+        ]
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:32:09.841206653Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "record found finished execution of WorkflowList()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:32:13.295565842Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "Starting execution of WorkflowUpdate()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Change",
+        "pri": "Info",
+        "when": "2024-02-29T06:32:13.333280114Z",
+        "who": "",
+        "op": "",
+        "class": "ruleset",
+        "instance": "\u0001",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "Updated ruleset",
+        "data": {
+            "entity": "ruleset",
+            "op": "Update",
+            "changes": [
+                {
+                    "field": "brwf",
+                    "old_value": "W",
+                    "new_value": "W"
+                },
+                {
+                    "field": "setname",
+                    "old_value": "workflow",
+                    "new_value": "workflow"
+                },
+                {
+                    "field": "ruleset",
+                    "old_value": "[{\"ruleactions\": {\"tasks\": [\"aadhaarcheck\"], \"properties\": [{\"val\": \"aadhaarcheck\", \"name\": \"nextstep\"}]}, \"rulepattern\": [{\"op\": \"eq\", \"val\": \"initialdoc\", \"attr\": \"step\"}, {\"op\": \"eq\", \"val\": \"rural\", \"attr\": \"branchtype\"}, {\"op\": \"eq\", \"val\": \"savings\", \"attr\": \"accttype\"}]}, {\"ruleactions\": {\"tasks\": [\"creditbureauchk\", \"bankdetails\", \"panchk\"], \"properties\": [{\"val\": \"creditbureauchk\", \"name\": \"nextstep\"}]}, \"rulepattern\": [{\"op\": \"eq\", \"val\": \"initialdoc\", \"attr\": \"step\"}, {\"op\": \"eq\", \"val\": \"semirural\", \"attr\": \"branchtype\"}, {\"op\": \"ne\", \"val\": \"ppf\", \"attr\": \"accttype\"}]}]",
+                    "new_value": [
+                        {
+                            "rulepattern": [
+                                {
+                                    "attr": "step",
+                                    "op": "eq",
+                                    "val": "initialdoc"
+                                },
+                                {
+                                    "attr": "branchtype",
+                                    "op": "eq",
+                                    "val": "rural"
+                                },
+                                {
+                                    "attr": "accttype",
+                                    "op": "eq",
+                                    "val": "savings"
+                                }
+                            ],
+                            "ruleactions": {
+                                "tasks": [
+                                    "aadhaarcheck"
+                                ],
+                                "properties": [
+                                    {
+                                        "name": "nextstep",
+                                        "val": "aadhaarcheck"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "rulepattern": [
+                                {
+                                    "attr": "step",
+                                    "op": "eq",
+                                    "val": "initialdoc"
+                                },
+                                {
+                                    "attr": "branchtype",
+                                    "op": "eq",
+                                    "val": "semirural"
+                                },
+                                {
+                                    "attr": "accttype",
+                                    "op": "ne",
+                                    "val": "ppf"
+                                }
+                            ],
+                            "ruleactions": {
+                                "tasks": [
+                                    "creditbureauchk",
+                                    "bankdetails",
+                                    "panchk"
+                                ],
+                                "properties": [
+                                    {
+                                        "name": "nextstep",
+                                        "val": "creditbureauchk"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:32:13.333377284Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "Finished execution of WorkflowUpdate()"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Info",
+        "when": "2024-02-29T06:32:18.376147788Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "",
+        "data": "WorkflowDelete request received"
+    },
+    {
+        "app": "crux",
+        "system": "merceadm-Latitude-3420",
+        "module": "",
+        "type": "Activity",
+        "pri": "Debug0",
+        "when": "2024-02-29T06:32:18.377277953Z",
+        "who": "",
+        "op": "",
+        "class": "",
+        "instance": "",
+        "status": 0,
+        "remote_ip": "",
+        "msg": "failed to delete data from db:",
+        "data": "DELETE 0"
+    }
+]
