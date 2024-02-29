@@ -1,11 +1,11 @@
 build:
-	go build -o elasticCLI
+	cd elasticSearchCtl/; go build -o elasticSearchCtl
 
 create-index:
-	 cd elasticSearchCtl/; ./elasticCLI create logharbour
+	cd elasticSearchCtl/; ./elasticSearchCtl create logharbour
 
 add-logs:
-	cd elasticSearchCtl/; ./elasticCLI add ./logs.json
+	cd elasticSearchCtl/; ./elasticSearchCtl add ./logs.json
 
 all:
-  cd elasticSearchCtl/; go build -o elasticCLI; ./elasticCLI create logharbour; ./elasticCLI add ./logs.json;
+  	cd elasticSearchCtl/; go build -o elasticSearchCtl; ./elasticSearchCtl create logharbour; ./elasticSearchCtl add ./logs.json;
