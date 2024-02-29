@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 
-	// "main/elasticSearchCtl"
 	"os"
 	"strconv"
 	"strings"
@@ -33,59 +32,6 @@ type config struct {
 	Addresses              []string
 	CertificateFingerprint string
 }
-
-// type LogEntry struct {
-// 	App        string      `json:"app"`             // Name of the application.
-// 	System     string      `json:"system"`          // System where the application is running.
-// 	Module     string      `json:"module"`          // The module or subsystem within the application
-// 	Type       LogType     `json:"type"`            // Type of the log entry.
-// 	Pri        LogPriority `json:"pri"`             // Severity level of the log entry.
-// 	When       time.Time   `json:"when"`            // Time at which the log entry was created.
-// 	Who        string      `json:"who"`             // User or service performing the operation.
-// 	Op         string      `json:"op"`              // Operation being performed
-// 	Class      string      `json:"class"`           // Unique ID, name of the object instance on which the operation was being attempted
-// 	InstanceId string      `json:"instance"`        // Unique ID, name, or other "primary key" information of the object instance on which the operation was being attempted
-// 	Status     Status      `json:"status"`          // 0 or 1, indicating success (1) or failure (0), or some other binary representation
-// 	Error      string      `json:"error,omitempty"` // Error message or error chain related to the log entry, if any.
-// 	RemoteIP   string      `json:"remote_ip"`       // IP address of the caller from where the operation is being performed.
-// 	Msg        string      `json:"msg"`             // A descriptive message for the log entry.
-// 	Data       any         `json:"data"`            // The payload of the log entry, can be any type.
-// }
-// type LogType int
-
-// const (
-// 	// Change represents a log entry for data changes.
-// 	Change LogType = iota + 1
-// 	// Activity represents a log entry for activities such as web service calls.
-// 	Activity
-// 	// Debug represents a log entry for debug information.
-// 	Debug
-// 	// Unknown represents an unknown log type.
-// 	Unknown
-// )
-
-// // logPriority defines the severity level of a log message.
-// type LogPriority int
-
-// const (
-// 	Debug2 LogPriority = iota + 1 // Debug2 represents extremely verbose debugging information.
-// 	Debug1                        // Debug1 represents detailed debugging information.
-// 	Debug0                        // Debug0 represents high-level debugging information.
-// 	Info                          // Info represents informational messages.
-// 	Warn                          // Warn represents warning messages.
-// 	Err                           // Err represents error messages where operations failed to complete.
-// 	Crit                          // Crit represents critical failure messages.
-// 	Sec                           // Sec represents security alert messages.
-// )
-
-// type Status int
-
-// const (
-// 	Success Status = iota
-// 	Failure
-// )
-
-var indexName = "logharbour"
 
 var createIndexBody = `{
 	"settings": {
@@ -128,16 +74,16 @@ var createIndexBody = `{
 		  "type": "integer"
 		},
 		"error": {
-		  "type": "text"
+		  "type": "keyword"
 		},
 		"remote_ip": {
-		  "type": "text"
+		  "type": "keyword"
 		},
 		"msg": {
-		  "type": "text"
+		  "type": "keyword"
 		},
 		"data": {
-		  "type": "nested"
+		  "type": "keyword"
 		}
 	  }
 	}
@@ -181,17 +127,18 @@ func main() {
 	var insertCmd = &cobra.Command{
 		Use:   "add [logFile]",
 		Short: "Import data from a file into the Elasticsearch datastore.",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if es == nil {
 				return fmt.Errorf("elasticsearch client is not configured")
 			}
 			logFile := args[0]
+			indexName := args[1]
 			log, err := ReadLogFromFile(logFile)
 			if err != nil {
 				return fmt.Errorf("error converting data from log file:%v", err)
 			}
-			if err := InsertLog(es, log); err != nil {
+			if err := InsertLog(es, log, indexName); err != nil {
 				return fmt.Errorf("error while inserting data: %v", err)
 			}
 			fmt.Println("Logs inserted successfully.")
@@ -281,7 +228,7 @@ func GetElasticsearch(filepath string) (*elasticsearch.Client, error) {
 
 }
 
-func InsertLog(es *elasticsearch.Client, logs []logharbour.LogEntry) error {
+func InsertLog(es *elasticsearch.Client, logs []logharbour.LogEntry, indexName string) error {
 
 	for i, log := range logs {
 		dataJson, err := json.Marshal(log)

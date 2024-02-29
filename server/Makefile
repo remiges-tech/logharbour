@@ -7,5 +7,9 @@ create-index:
 add-logs:
 	cd elasticSearchCtl/; ./elasticSearchCtl add ./logs.json
 
-all:
+etcd:
+	cd ; cd etcd/bin; ./etcd
+
+all-es:
   	cd elasticSearchCtl/; go build -o elasticSearchCtl; ./elasticSearchCtl create logharbour; ./elasticSearchCtl add ./logs.json;
+.PHONY: build create-index all
