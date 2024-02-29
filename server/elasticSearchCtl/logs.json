@@ -1,0 +1,72 @@
+[
+   {
+      "app_name": "crux",
+      "system": "merceadm-Latitude-3420",
+      "module": "",
+      "type": "Activity",
+      "priority": "Debug0",
+      "when": "2024-02-28T07:28:00.102556794Z",
+      "who": "",
+      "op": "",
+      "what_class": "wfinstance",
+      "what_instance_id": "",
+      "status": 0,
+      "remote_ip": "",
+      "message": "GetWFinstanceNew||validateWFInstanceNewReq()||patternschema :",
+      "data": {
+         "class": "inventoryitems",
+         "attr": [
+            {
+               "name": "cat",
+               "shortdesc": "Category of item",
+               "longdesc": "Each item can belong to one of the following categories: textbooks, notebooks, stationery, or reference books.",
+               "valtype": "enum",
+               "vals": [
+                  "textbook",
+                  "notebook",
+                  "stationery",
+                  "refbooks"
+               ],
+               "enumdesc": [
+                  "Text books",
+                  "Notebooks",
+                  "Stationery and miscellaneous items",
+                  "Reference books, library books"
+               ]
+            },
+            {
+               "name": "mrp",
+               "shortdesc": "Maximum retail price",
+               "longdesc": "The maximum retail price of the item in INR as declared by the manufacturer.",
+               "valtype": "float",
+               "valmax": 20000,
+               "valmin": 0
+            },
+            {
+               "name": "fullname",
+               "shortdesc": "Full name of item",
+               "longdesc": "The full human-readable name of the item. Not unique, therefore sometimes confusing.",
+               "valtype": "str",
+               "lenmax": 40,
+               "lenmin": 5
+            },
+            {
+               "name": "ageinstock",
+               "shortdesc": "Age in stock, in days",
+               "longdesc": "The age in days that the oldest sample of this item has been lying in stock",
+               "valtype": "int",
+               "valmax": 1000,
+               "valmin": 1
+            },
+            {
+               "name": "inventoryqty",
+               "shortdesc": "Number of items in inventory",
+               "longdesc": "How many of these items are currently present in the inventory",
+               "valtype": "int",
+               "valmax": 10000,
+               "valmin": 0
+            }
+         ]
+      }
+   }
+]
