@@ -2,7 +2,6 @@ package wsc
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/core/search"
@@ -14,14 +13,17 @@ import (
 	"github.com/remiges-tech/alya/wscutils"
 )
 
+var size = 5
+
 type LogRequest struct {
 	App                  string  `json:"app" validate:"required"`
-	Who                  string  `json:"who,omitempty"`
-	Class                string  `json:"class,omitempty"`
-	InstanceID           string  `json:"instance_id,omitempty"`
+	Who                  *string `json:"who,omitempty"`
+	Class                *string `json:"class,omitempty"`
+	InstanceID           *string `json:"instance_id,omitempty"`
 	Days                 int     `json:"days" validate:"required"`
 	SearchAfterTimestamp *string `json:"search_after_timestamp,omitempty"`
 	SearchAfterDocID     *string `json:"search_after_doc_id,omitempty"`
+	SortID               *int    `json:"sort_id,omitempty"`
 }
 
 func ShowActivitylog(c *gin.Context, s *service.Service) {
@@ -35,7 +37,6 @@ func ShowActivitylog(c *gin.Context, s *service.Service) {
 		l.Debug0().Error(err).Log("error unmarshalling request payload to struct")
 		return
 	}
-	fmt.Println("req", req)
 
 	// Validate request
 	validationErrors := wscutils.WscValidate(req, func(err validator.FieldError) []string { return []string{} })
@@ -55,81 +56,75 @@ func ShowActivitylog(c *gin.Context, s *service.Service) {
 		wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(404, "ErrCode_IndexNotFound"))
 		return
 	}
+	var matchFeild []types.Query
 
-	app := types.Query{
-		Match: map[string]types.MatchQuery{
-			"app_name": {Query: req.App},
-		},
+	if req.App != "" {
+		app := types.Query{
+			Match: map[string]types.MatchQuery{
+				"app": {Query: req.App},
+			},
+		}
+		matchFeild = append(matchFeild, app)
 	}
+
+	if req.Who != nil {
+		who := types.Query{
+			Match: map[string]types.MatchQuery{
+				"who": {Query: *req.Who},
+			},
+		}
+		matchFeild = append(matchFeild, who)
+	}
+
+	if req.Class != nil {
+		class := types.Query{
+			Match: map[string]types.MatchQuery{
+				"class": {Query: *req.Class},
+			},
+		}
+		matchFeild = append(matchFeild, class)
+	}
+
+	if req.InstanceID != nil {
+		instanceId := types.Query{
+			Match: map[string]types.MatchQuery{
+				"instance": {Query: *req.InstanceID},
+			},
+		}
+		matchFeild = append(matchFeild, instanceId)
+	}
+
 	logtype := types.Query{
 		Match: map[string]types.MatchQuery{
-			"type": {Query: "Activity"},
+			"type": {Query: "A"},
 		},
 	}
-	who := types.Query{
-		Match: map[string]types.MatchQuery{
-			"who": {Query: req.Who},
-		},
-	}
-
-	class := types.Query{
-		Match: map[string]types.MatchQuery{
-			"class": {Query: req.Class},
-		},
-	}
-
-	instanceId := types.Query{
-		Match: map[string]types.MatchQuery{
-			"instance_id": {Query: req.InstanceID},
-		},
-	}
-
-	// searchAfterTimestamp := types.Query{
-	// 	Match: map[string]types.MatchQuery{
-	// 		"search_after_timestamp": {Query: req.SearchAfterTimestamp},
-	// 	},
-	// }
-
-	// searchAfterDocID := types.Query{
-	// 	Match: map[string]types.MatchQuery{
-	// 		"search_after_doc_id": {Query: req.SearchAfterDocID},
-	// 	},
-	// }
+	matchFeild = append(matchFeild, logtype)
 
 	query := &types.Query{
 		Bool: &types.BoolQuery{
-			Must:   []types.Query{logtype, app},
-			Should: []types.Query{class, instanceId, who},
+			Must: matchFeild,
 		},
 	}
-	// q := &types.Query{
-	// 	Bool: &types.BoolQuery{
-	// 		Must: []types.Query{types.Query{
-	// 			Match: map[string]types.MatchQuery{
-	// 				"type":     {Query: "Activity"},
-	// 				"app_name": {Query: req.App},
-	// 			},
-	// 		}},
-	// 		Should: []types.Query{class, instanceId, who},
+
+	sortByWhen := types.SortOptions{
+		SortOptions: map[string]types.FieldSort{
+			"when": {Order: &sortorder.Desc},
+		},
+	}
+
+	// sortById := types.SortOptions{
+	// 	SortOptions: map[string]types.FieldSort{
+	// 		"_id": {Order: &sortorder.Desc},
 	// 	},
 	// }
 
-	if req.SearchAfterDocID != nil || req.SearchAfterTimestamp != nil {
-		from := 1
-		size := 5
-
-		sortOpti := types.SortOptions{
-			SortOptions: map[string]types.FieldSort{
-				"when":     {Order: &sortorder.Desc},
-				"app_name": {Order: &sortorder.Desc},
-			},
-		}
+	if req.SortID != nil {
 		res, err := es.Search().Index(index).Request(&search.Request{
-			From:        &from,
 			Size:        &size,
 			Query:       query,
-			SearchAfter: []types.FieldValue{},
-			Sort:        []types.SortCombinations{sortOpti},
+			SearchAfter: []types.FieldValue{req.SortID},
+			Sort:        []types.SortCombinations{sortByWhen},
 		}).Do(context.Background())
 		if err != nil {
 			// write log here
@@ -137,25 +132,13 @@ func ShowActivitylog(c *gin.Context, s *service.Service) {
 			return
 		}
 		wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(res.Hits))
-
 	} else {
-
-		from := 1
-		size := 5
-
-		sortOpti := types.SortOptions{
-			SortOptions: map[string]types.FieldSort{
-				"when": {Order: &sortorder.Asc},
-			},
-		}
 		res, err := es.Search().Index(index).Request(&search.Request{
-			From:  &from,
 			Size:  &size,
 			Query: query,
-			Sort:  []types.SortCombinations{sortOpti},
+			Sort:  []types.SortCombinations{sortByWhen},
 		}).Do(context.Background())
 		if err != nil {
-			// write log here
 			wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(222, err.Error()))
 			return
 		}
