@@ -1,0 +1,9 @@
+{
+    "db_host": "https://127.0.0.1",
+    "db_port": 9200,
+    "app_server_port": "8090",
+    "db_user": "elastic",
+    "index_name": "logharbour",
+    "db_password": "9jjWQryjHca-9flzDcKU",
+    "certificate_fingerprint": "3395adb7832f24e043ea7101b7f821bd97786fc808c335ba439a3681585119fc"
+}

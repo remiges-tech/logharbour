@@ -1,9 +1,9 @@
 {
-    "db_host": "https://localhost",
+    "db_host": "https://10.10.10.220",
     "db_port": 9200,
     "app_server_port": "8090",
-    "db_user" : "elastic",
+    "db_user": "elastic",
     "index_name": "logharbour",
-    "db_password" : "Yga1QzMVaqzw-UnMBt=n",
-    "certificate_fingerprint":"2a0808ed5628b523dec26435eb2761b4e27305a0e7c44f295eea7feabf208a22"
+    "db_password": "Yga1QzMVaqzw-UnMBt=n",
+    "certificate_fingerprint": "2a0808ed5628b523dec26435eb2761b4e27305a0e7c44f295eea7feabf208a22"
 }
