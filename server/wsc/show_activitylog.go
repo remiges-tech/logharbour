@@ -2,6 +2,7 @@ package wsc
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/core/search"
@@ -56,7 +57,19 @@ func ShowActivitylog(c *gin.Context, s *service.Service) {
 		wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(404, "ErrCode_IndexNotFound"))
 		return
 	}
-	var matchFeild []types.Query
+	var matchField []types.Query
+
+	if req.Days > 0 {
+		dd := fmt.Sprintf("now-%dd/d", req.Days)
+		days := types.Query{
+			Range: map[string]types.RangeQuery{
+				"when": types.DateRangeQuery{
+					Gte: &dd,
+				},
+			},
+		}
+		matchField = append(matchField, days)
+	}
 
 	if req.App != "" {
 		app := types.Query{
@@ -64,7 +77,7 @@ func ShowActivitylog(c *gin.Context, s *service.Service) {
 				"app": {Query: req.App},
 			},
 		}
-		matchFeild = append(matchFeild, app)
+		matchField = append(matchField, app)
 	}
 
 	if req.Who != nil {
@@ -73,7 +86,7 @@ func ShowActivitylog(c *gin.Context, s *service.Service) {
 				"who": {Query: *req.Who},
 			},
 		}
-		matchFeild = append(matchFeild, who)
+		matchField = append(matchField, who)
 	}
 
 	if req.Class != nil {
@@ -82,7 +95,7 @@ func ShowActivitylog(c *gin.Context, s *service.Service) {
 				"class": {Query: *req.Class},
 			},
 		}
-		matchFeild = append(matchFeild, class)
+		matchField = append(matchField, class)
 	}
 
 	if req.InstanceID != nil {
@@ -91,7 +104,7 @@ func ShowActivitylog(c *gin.Context, s *service.Service) {
 				"instance": {Query: *req.InstanceID},
 			},
 		}
-		matchFeild = append(matchFeild, instanceId)
+		matchField = append(matchField, instanceId)
 	}
 
 	logtype := types.Query{
@@ -99,11 +112,11 @@ func ShowActivitylog(c *gin.Context, s *service.Service) {
 			"type": {Query: "A"},
 		},
 	}
-	matchFeild = append(matchFeild, logtype)
+	matchField = append(matchField, logtype)
 
 	query := &types.Query{
 		Bool: &types.BoolQuery{
-			Must: matchFeild,
+			Must: matchField,
 		},
 	}
 

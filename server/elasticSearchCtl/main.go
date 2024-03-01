@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/elastic/go-elasticsearch/v8"
@@ -35,8 +35,8 @@ type config struct {
 
 var createIndexBody = `{
 	"settings": {
-		"number_of_shards": 1,
-		"number_of_replicas": 0
+	  "number_of_shards": 1,
+	  "number_of_replicas": 0
 	},
 	"mappings": {
 	  "properties": {
@@ -50,7 +50,7 @@ var createIndexBody = `{
 		  "type": "keyword"
 		},
 		"type": {
-		  "type": "text"
+		  "type": "keyword"
 		},
 		"pri": {
 		  "type": "keyword"
@@ -83,12 +83,26 @@ var createIndexBody = `{
 		  "type": "keyword"
 		},
 		"data": {
-		  "type": "nested"
+		  "type": "object",
+		  "properties": {
+			"changes": {
+			  "properties": {
+				"field": {
+				  "type": "keyword"
+				},
+				"new_value": {
+				  "type": "keyword"
+				},
+				"old_value": {
+				  "type": "keyword"
+				}
+			  }
+			}
+		  }
 		}
 	  }
 	}
-  }
-  `
+  }`
 
 func main() {
 	var rootCmd = &cobra.Command{
