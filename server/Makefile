@@ -5,7 +5,7 @@ create-index:
 	cd elasticSearchCtl/; ./elasticSearchCtl create logharbour
 
 add-logs:
-	cd elasticSearchCtl/; 
+	cd elasticSearchCtl/; ./elasticSearchCtl add ./logs2.json logharbour
 
 etcd:
 	cd ; cd etcd/bin; ./etcd
