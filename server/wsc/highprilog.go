@@ -10,9 +10,9 @@ import (
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/sortorder"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"github.com/remiges-tech/alya/service"
 	"github.com/remiges-tech/alya/wscutils"
-	// "github.com/remiges-tech/logharbour/server/types"
 )
 
 var (
@@ -20,38 +20,56 @@ var (
 )
 
 type HighPriReq struct {
-	App                  string `json:"app" validation:"alpha"`
-	Pri                  string `json:"pri"`
-	Days                 int64  `json:"days"`
-	SearchAfterTimestamp string `json:"search_after_timestamp"`
+	App                  string `json:"app" validate:"required,alpha"`
+	Pri                  string `json:"pri" validate:"required,alpha"`
+	Days                 int64  `json:"days" validate:"number,required"`
+	SearchAfterTimestamp string `json:"search_after_timestamp" validate:"omitempty,datetime=2006-01-02"`
 	SearchAfterDocId     string `json:"search_after_doc_id,omitempty"`
 }
 
 func GetHighprilog(c *gin.Context, s *service.Service) {
+	lh := s.LogHarbour
+	lh.Debug0().Log("starting execution of GetHighprilog()")
 	var (
-		request  HighPriReq
-		srchAftr []types.FieldValue
-		pageSize = 10
+		request     HighPriReq
+		srchAftr    []types.FieldValue
+		pageSize    = 10
+		requiredPri []string
 	)
 	// step 1: json request binding with a struct
 	err := wscutils.BindJSON(c, &request)
 	if err != nil {
-		// lh.Debug0().LogActivity("error while binding json request error:", err.Error())
+		lh.Err().Error(err).Log("error while binding json request error")
 		wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(404, err.Error()))
 		return
 	}
 
-	priFrom := slices.Index(Priority, request.Pri)
+	// Validate request
+	validationErrors := wscutils.WscValidate(request, func(err validator.FieldError) []string { return []string{} })
+	if len(validationErrors) > 0 {
+		lh.Debug0().LogDebug("standard validation errors", validationErrors)
+		wscutils.SendErrorResponse(c, wscutils.NewResponse(wscutils.ErrorStatus, nil, validationErrors))
+		return
+	}
 
-	requiredPri := Priority[priFrom:]
+	//________________Day calculation___________________________________________________
+	afDays := fmt.Sprintf("now-%dd", request.Days)
+
+	//___________________________________________________________________
+	priFrom := slices.Index(Priority, request.Pri)
+	if priFrom > 0 {
+		requiredPri = Priority[priFrom:]
+	}
 
 	clnt, ok := s.Dependencies["client"].(*elasticsearch.TypedClient)
 	if !ok {
+		lh.Debug0().Log("client dependency not found")
 		wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(100, "ErrCode_DatabaseError"))
 		return
 	}
 	index, ok := s.Dependencies["index"].(string)
 	if !ok {
+		lh.Debug0().Log("index dependency not found")
 		wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(404, "ErrCode_IndexNotFound"))
 		return
 	}
@@ -61,7 +79,6 @@ func GetHighprilog(c *gin.Context, s *service.Service) {
 	}
 
 	// WORKING ____________________________________________________________
-	fmt.Println("index:", index, " from:", request.SearchAfterDocId, " pageSize:", pageSize)
 	sortOrder := types.SortOptions{
 		SortOptions: map[string]types.FieldSort{
 			"when": {Order: &sortorder.Desc},
@@ -79,13 +96,29 @@ func GetHighprilog(c *gin.Context, s *service.Service) {
 		}
 		qry = append(qry, termQry)
 	}
-
+	// WORKING ____________________________________________________________
 	searchQuery, err := clnt.Search().
 		Index(index).
 		Request(&search.Request{
 			Size: &pageSize,
 			Query: &types.Query{
 				Bool: &types.BoolQuery{
+					Filter: []types.Query{
+						types.Query{
+							Range: map[string]types.RangeQuery{
+								"when": types.DateRangeQuery{
+									Gte: &afDays,
+								},
+							},
+						},
+						types.Query{
+							Match: map[string]types.MatchQuery{
+								"app": types.MatchQuery{
+									Query: request.App,
+								},
+							},
+						},
+					},
 					Should: qry,
 				},
 			},
@@ -95,10 +128,10 @@ func GetHighprilog(c *gin.Context, s *service.Service) {
 	// WORKING ____________________________________________________________
 
 	if err != nil {
-		// write log here
+		lh.Err().Error(err).Log("error while retriving data from db")
 		wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(222, err.Error()))
 		return
 	}
-	// write log here
+	lh.Info().Log("exit from GetHighprilog")
 	wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(searchQuery.Hits.Hits))
 }
