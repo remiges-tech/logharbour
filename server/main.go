@@ -1,22 +1,19 @@
 package main
 
 import (
-	"context"
-	"flag"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/gin-gonic/gin"
+	"github.com/remiges-tech/alya/config"
 	"github.com/remiges-tech/alya/service"
 	"github.com/remiges-tech/alya/wscutils"
 	"github.com/remiges-tech/logharbour/logharbour"
+	"github.com/remiges-tech/logharbour/server/types"
 	"github.com/remiges-tech/logharbour/server/wsc"
-	"github.com/remiges-tech/rigel"
-	"github.com/remiges-tech/rigel/etcd"
 )
 
 /********************************************************************************
@@ -25,96 +22,90 @@ import (
 *		 make sure "db_host" starts with prefix "https://"
 *********************************************************************************/
 func main() {
-	// var appConfig *types.AppConfig
+	var appConfig *types.AppConfig
 
-	// // Load error code and msg's
-	// errorCodeSetup()
+	// Load error code and msg's
+	errorCodeSetup()
 
-	// err := config.LoadConfigFromFile("./config_dev_aniket.json", &appConfig)
-	// if err != nil {
-	// 	log.Fatalf("Error loading config: %v", err)
-	// }
+	err := config.LoadConfigFromFile("./config_dev_kanchan.json", &appConfig)
+	if err != nil {
+		log.Fatalf("Error loading config: %v", err)
+	}
 
 	// logger setup
 	fallbackWriter := logharbour.NewFallbackWriter(os.Stdout, os.Stdout)
 	lctx := logharbour.NewLoggerContext(logharbour.Debug0)
 	l := logharbour.NewLogger(lctx, "logharbour", fallbackWriter)
 
-	rigelAppName := flag.String("appName", "logharbour", "The name of the application")
-	rigelModuleName := flag.String("moduleName", "WSC", "The name of the module")
-	rigelVersionNumber := flag.Int("versionNumber", 1, "The number of the version")
-	rigelConfigName := flag.String("configName", "devConfig", "The name of the configuration")
-	etcdEndpoints := flag.String("etcdEndpoints", "localhost:2379", "Comma-separated list of etcd endpoints")
+	// rigelAppName := flag.String("appName", "logharbour", "The name of the application")
+	// rigelModuleName := flag.String("moduleName", "WSC", "The name of the module")
+	// rigelVersionNumber := flag.Int("versionNumber", 1, "The number of the version")
+	// rigelConfigName := flag.String("configName", "devConfig", "The name of the configuration")
+	// etcdEndpoints := flag.String("etcdEndpoints", "localhost:2379", "Comma-separated list of etcd endpoints")
 
-	flag.Parse()
-	// Create a new EtcdStorage instance
-	etcdStorage, err := etcd.NewEtcdStorage([]string{*etcdEndpoints})
-	if err != nil {
-		l.LogActivity("Error while Creating new instance of EtcdStorage", err)
-		log.Fatalf("Failed to create EtcdStorage: %v", err)
-	}
-	l.LogActivity("Creates a new instance of EtcdStorage with endpoints", "localhost:2379")
+	// flag.Parse()
+	// // Create a new EtcdStorage instance
+	// etcdStorage, err := etcd.NewEtcdStorage([]string{*etcdEndpoints})
+	// if err != nil {
+	// 	l.LogActivity("Error while Creating new instance of EtcdStorage", err)
+	// 	log.Fatalf("Failed to create EtcdStorage: %v", err)
+	// }
+	// l.LogActivity("Creates a new instance of EtcdStorage with endpoints", "localhost:2379")
 
-	// Create a new Rigel instance
-	rigel := rigel.New(etcdStorage, *rigelAppName, *rigelModuleName, *rigelVersionNumber, *rigelConfigName)
-	l.LogActivity("Creates a new instance of rigel", rigel)
+	// // Create a new Rigel instance
+	// rigel := rigel.New(etcdStorage, *rigelAppName, *rigelModuleName, *rigelVersionNumber, *rigelConfigName)
+	// l.LogActivity("Creates a new instance of rigel", rigel)
 
-	// Create a context with a timeout
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	// // Create a context with a timeout
+	// ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	// defer cancel()
 
-	dbHost, err := rigel.GetString(ctx, "db_host")
-	if err != nil {
-		l.LogActivity("Error while getting db_host from rigel", err)
-		log.Fatalf("Failed to get db_host from rigel: %v", err)
-	}
+	// dbHost, err := rigel.GetString(ctx, "db_host")
+	// if err != nil {
+	// 	l.LogActivity("Error while getting db_host from rigel", err)
+	// 	log.Fatalf("Failed to get db_host from rigel: %v", err)
+	// }
 
-	dbPort, err := rigel.GetInt(ctx, "db_port")
-	if err != nil {
-		l.LogActivity("Error while getting db_port from rigel", err)
-		log.Fatalf("Failed to get db_port from rigel: %v", err)
-	}
+	// dbPort, err := rigel.GetInt(ctx, "db_port")
+	// if err != nil {
+	// 	l.LogActivity("Error while getting db_port from rigel", err)
+	// 	log.Fatalf("Failed to get db_port from rigel: %v", err)
+	// }
 
-	dbUser, err := rigel.GetString(ctx, "db_user")
-	if err != nil {
-		l.LogActivity("Error while getting db_user from rigel", err)
-		log.Fatalf("Failed to get db_user from rigel: %v", err)
-	}
+	// dbUser, err := rigel.GetString(ctx, "db_user")
+	// if err != nil {
+	// 	l.LogActivity("Error while getting db_user from rigel", err)
+	// 	log.Fatalf("Failed to get db_user from rigel: %v", err)
+	// }
 
-	dbPassword, err := rigel.GetString(ctx, "db_password")
-	if err != nil {
-		l.LogActivity("Error while getting db_password from rigel", err)
-		log.Fatalf("Failed to get db_password from rigel: %v", err)
-	}
+	// dbPassword, err := rigel.GetString(ctx, "db_password")
+	// if err != nil {
+	// 	l.LogActivity("Error while getting db_password from rigel", err)
+	// 	log.Fatalf("Failed to get db_password from rigel: %v", err)
+	// }
 
-	certificateFingerprint, err := rigel.GetString(ctx, "certificate_fingerprint")
-	if err != nil {
-		l.LogActivity("Error while getting certificate_fingerprint from rigel", err)
-		log.Fatalf("Failed to get certificate_fingerprint from rigel: %v", err)
-	}
+	// certificateFingerprint, err := rigel.GetString(ctx, "certificate_fingerprint")
+	// if err != nil {
+	// 	l.LogActivity("Error while getting certificate_fingerprint from rigel", err)
+	// 	log.Fatalf("Failed to get certificate_fingerprint from rigel: %v", err)
+	// }
 
-	appServerPort, err := rigel.GetString(ctx, "app_server_port")
-	if err != nil {
-		l.LogActivity("Error while getting app_server_port from rigel", err)
-		log.Fatalf("Failed to get app_server_port from rigel: %v", err)
-	}
+	// appServerPort, err := rigel.GetString(ctx, "app_server_port")
+	// if err != nil {
+	// 	l.LogActivity("Error while getting app_server_port from rigel", err)
+	// 	log.Fatalf("Failed to get app_server_port from rigel: %v", err)
+	// }
 
 	// Load error code and msg's
 	errorCodeSetup()
-
-	// err := config.LoadConfigFromFile("./config_dev.json", &appConfig)
-	// if err != nil {
-	// 	log.Fatalf("Error loading config: %v", err)
-	// }
-
 	// Database connection
-	url := dbHost + ":" + strconv.Itoa(dbPort)
+	url := appConfig.DBHost + ":" + strconv.Itoa(appConfig.DBPort)
 
 	dbConfig := elasticsearch.Config{
 		Addresses:              []string{url},
-		Username:               dbUser,
-		Password:               dbPassword,
-		CertificateFingerprint: certificateFingerprint,
+		Username:               appConfig.DBUser,
+		Password:               appConfig.DBPassword,
+		CertificateFingerprint: appConfig.CertificateFingerprint,
 	}
 	client, err := elasticsearch.NewTypedClient(dbConfig)
 	if err != nil {
@@ -138,8 +129,9 @@ func main() {
 
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodGet, "/highprilog", wsc.GetHighprilog)
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/showActivitylog", wsc.ShowActivitylog)
+	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/show_debuglog", wsc.GetDebugLog)
 
-	r.Run(":" + appServerPort)
+	r.Run(":" + appConfig.AppServerPort)
 	if err != nil {
 		l.LogActivity("Failed to start server", err)
 		log.Fatalf("Failed to start server: %v", err)
