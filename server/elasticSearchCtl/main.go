@@ -91,10 +91,10 @@ var createIndexBody = `{
 				  "type": "keyword"
 				},
 				"new_value": {
-				  "type": "keyword"
+				  "type": "text"
 				},
 				"old_value": {
-				  "type": "keyword"
+				  "type": "text"
 				}
 			  }
 			}
@@ -194,11 +194,8 @@ func main() {
 				}
 				log.Fatalf("Error creating the index: %s", errorResponse["error"].(map[string]interface{})["reason"])
 			} else {
-				// var successResponse map[string]interface{}
-				// if err := json.NewDecoder(res.Body).Decode(&successResponse); err != nil {
-				// 	log.Fatalf("Error parsing the success response body: %s", err)
-				// }
-				fmt.Println("Index created successfully:") //, successResponse["index"].(map[string]interface{})["created"])
+
+				fmt.Println("Index created successfully:")
 			}
 			return nil
 
