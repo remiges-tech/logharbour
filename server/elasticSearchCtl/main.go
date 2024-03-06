@@ -83,26 +83,30 @@ var createIndexBody = `{
 		  "type": "keyword"
 		},
 		"data": {
-		  "type": "object",
-		  "properties": {
-			"changes": {
-			  "properties": {
-				"field": {
-				  "type": "keyword"
-				},
-				"new_value": {
-				  "type": "text"
-				},
-				"old_value": {
-				  "type": "text"
-				}
-			  }
-			}
-		  }
+		  "type": "text"
 		}
 	  }
 	}
   }`
+
+//   {
+// 	"type": "object",
+// 	"properties": {
+// 	  "changes": {
+// 		"properties": {
+// 		  "field": {
+// 			"type": "keyword"
+// 		  },
+// 		  "new_value": {
+// 			"type": "text"
+// 		  },
+// 		  "old_value": {
+// 			"type": "text"
+// 		  }
+// 		}
+// 	  }
+// 	}
+//   }
 
 func main() {
 	var rootCmd = &cobra.Command{

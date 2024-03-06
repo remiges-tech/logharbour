@@ -3,7 +3,7 @@
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Info",
       "when": "2024-02-29T07:28:00.099424231Z",
       "who": "Tushar",
@@ -13,13 +13,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFinstanceNew request received",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-02-01T07:28:00.099930124Z",
       "who": "Tushar",
@@ -29,13 +29,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "Inside ValidateWFInstaceNewReq()",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-02-01T07:28:00.099957084Z",
       "who": "Tushar",
@@ -45,13 +45,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "Inside validateWorkflow()",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-02-01T07:28:00.099965864Z",
       "who": "Tushar",
@@ -61,13 +61,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether app present in request is valid",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-02-01T07:28:00.101209365Z",
       "who": "Tushar",
@@ -77,13 +77,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether class present in request is valid",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-02-15T07:28:00.101433702Z",
       "who": "Tushar",
@@ -93,13 +93,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow active status is valid",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-02-15T07:28:00.101704015Z",
       "who": "Tushar",
@@ -109,13 +109,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow internal status is valid",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Info",
       "when": "2024-02-15T07:28:00.101976917Z",
       "who": "Tushar",
@@ -125,13 +125,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether record is already exist in wfinstance table",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-02-15T07:28:00.102556794Z",
       "who": "Tushar",
@@ -141,67 +141,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFinstanceNew||validateWFInstanceNewReq()||patternschema :",
-      "data": {
-         "class": "inventoryitems",
-         "attr": [
-            {
-               "name": "cat",
-               "shortdesc": "Category of item",
-               "longdesc": "Each item can belong to one of the following categories: textbooks, notebooks, stationery, or reference books.",
-               "valtype": "enum",
-               "vals": [
-                  "textbook",
-                  "notebook",
-                  "stationery",
-                  "refbooks"
-               ],
-               "enumdesc": [
-                  "Text books",
-                  "Notebooks",
-                  "Stationery and miscellaneous items",
-                  "Reference books, library books"
-               ]
-            },
-            {
-               "name": "mrp",
-               "shortdesc": "Maximum retail price",
-               "longdesc": "The maximum retail price of the item in INR as declared by the manufacturer.",
-               "valtype": "float",
-               "valmax": 20000,
-               "valmin": 0
-            },
-            {
-               "name": "fullname",
-               "shortdesc": "Full name of item",
-               "longdesc": "The full human-readable name of the item. Not unique, therefore sometimes confusing.",
-               "valtype": "str",
-               "lenmax": 40,
-               "lenmin": 5
-            },
-            {
-               "name": "ageinstock",
-               "shortdesc": "Age in stock, in days",
-               "longdesc": "The age in days that the oldest sample of this item has been lying in stock",
-               "valtype": "int",
-               "valmax": 1000,
-               "valmin": 1
-            },
-            {
-               "name": "inventoryqty",
-               "shortdesc": "Number of items in inventory",
-               "longdesc": "How many of these items are currently present in the inventory",
-               "valtype": "int",
-               "valmax": 10000,
-               "valmin": 0
-            }
-         ]
-      }
+      "data": "{\"class\":\"inventoryitems\",\"attr\":[{\"name\":\"cat\",\"shortdesc\":\"Categoryofitem\",\"longdesc\":\"Eachitemcanbelongtooneofthefollowingcategories:textbooks,notebooks,stationery,orreferencebooks.\",\"valtype\":\"enum\",\"vals\":[\"textbook\",\"notebook\",\"stationery\",\"refbooks\"],\"enumdesc\":[\"Textbooks\",\"Notebooks\",\"Stationeryandmiscellaneousitems\",\"Referencebooks,librarybooks\"]},{\"name\":\"mrp\",\"shortdesc\":\"Maximumretailprice\",\"longdesc\":\"ThemaximumretailpriceoftheiteminINRasdeclaredbythemanufacturer.\",\"valtype\":\"float\",\"valmax\":20000,\"valmin\":0},{\"name\":\"fullname\",\"shortdesc\":\"Fullnameofitem\",\"longdesc\":\"Thefullhuman-readablenameoftheitem.Notunique,thereforesometimesconfusing.\",\"valtype\":\"str\",\"lenmax\":40,\"lenmin\":5},{\"name\":\"ageinstock\",\"shortdesc\":\"Ageinstock,indays\",\"longdesc\":\"Theageindaysthattheoldestsampleofthisitemhasbeenlyinginstock\",\"valtype\":\"int\",\"valmax\":1000,\"valmin\":1},{\"name\":\"inventoryqty\",\"shortdesc\":\"Numberofitemsininventory\",\"longdesc\":\"Howmanyoftheseitemsarecurrentlypresentintheinventory\",\"valtype\":\"int\",\"valmax\":10000,\"valmin\":0}]}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-02-15T07:28:00.102594064Z",
       "who": "Tushar",
@@ -211,13 +157,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "Inside validateEntity()",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Info",
       "when": "2024-02-25T07:28:00.10259862Z",
       "who": "Tushar",
@@ -227,13 +173,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "validating entity attributes",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-02-25T07:28:00.102604301Z",
       "who": "Tushar",
@@ -243,29 +189,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "wfinstanceNewRequest after adding additional attributes :",
-      "data": {
-         "slice": 2,
-         "app": "retailBANK",
-         "entityid": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
-         "entity_have_to_change": {
-            "ageinstock": "2",
-            "class": "inventoryitems",
-            "fullname": "belampally",
-            "inventoryqty": "2",
-            "mrp": "200.00",
-            "step": "START",
-            "stepfailed": "false"
-         },
-         "workflow": "discountcheck",
-         "trace": 0,
-         "parent": 77
-      }
+      "data": "{\"slice\":2,\"app\":\"retailBANK\",\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"entity_have_to_change\":{\"ageinstock\":\"2\",\"class\":\"inventoryitems\",\"fullname\":\"belampally\",\"inventoryqty\":\"2\",\"mrp\":\"200.00\",\"step\":\"START\",\"stepfailed\":\"false\"},\"workflow\":\"discountcheck\",\"trace\":0,\"parent\":77}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-02-25T07:28:00.10262714Z",
       "who": "Tushar",
@@ -275,13 +205,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "inside addTasks()",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Change",
+      "type": "C",
       "pri": "Info",
       "when": "2024-02-25T07:28:00.110813597Z",
       "who": "Tushar",
@@ -291,35 +221,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "created wfinstance ",
-      "data": {
-         "entity": "wfinstance",
-         "operation": "create",
-         "changes": [
-            {
-               "field": "row",
-               "old_value": "",
-               "new_value": {
-                  "id": 1,
-                  "entityid": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
-                  "slice": 2,
-                  "app": "retailBANK",
-                  "class": "inventoryitems",
-                  "workflow": "discountcheck",
-                  "step": "discount",
-                  "loggedat": "2024-02-25T12:58:00.102803Z",
-                  "doneat": "",
-                  "nextstep": "coupondistribution",
-                  "parent": 77
-               }
-            }
-         ]
-      }
+      "data": "{\"entity\":\"wfinstance\",\"operation\":\"create\",\"changes\":[{\"field\":\"row\",\"old_value\":\"\",\"new_value\":{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-02-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}}]}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Change",
+      "type": "C",
       "pri": "Info",
       "when": "2024-01-25T07:28:00.110907849Z",
       "who": "Tushar",
@@ -329,35 +237,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "created wfinstance ",
-      "data": {
-         "entity": "wfinstance",
-         "operation": "create",
-         "changes": [
-            {
-               "field": "row",
-               "old_value": "",
-               "new_value": {
-                  "id": 2,
-                  "entityid": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
-                  "slice": 2,
-                  "app": "retailBANK",
-                  "class": "inventoryitems",
-                  "workflow": "discountcheck",
-                  "step": "yearendsale",
-                  "loggedat": "2024-01-25T12:58:00.102803Z",
-                  "doneat": "",
-                  "nextstep": "coupondistribution",
-                  "parent": 77
-               }
-            }
-         ]
-      }
+      "data": "{\"entity\":\"wfinstance\",\"operation\":\"create\",\"changes\":[{\"field\":\"row\",\"old_value\":\"\",\"new_value\":{\"id\":2,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"yearendsale\",\"loggedat\":\"2024-01-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}}]}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-25T07:28:00.110916867Z",
       "who": "Tushar",
@@ -367,13 +253,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "WFInstanceNew||addTasks()||verifying whether step is workflow if it is, then append it to subflow",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-25T07:28:00.111253409Z",
       "who": "Aniket",
@@ -383,13 +269,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "Inside getResponse()",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-25T07:28:00.111273118Z",
       "who": "Aniket",
@@ -399,28 +285,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "response of addTask() :",
-      "data": {
-         "tasks": [
-            {
-               "discount": 1
-            },
-            {
-               "yearendsale": 2
-            }
-         ],
-         "nextstep": "coupondistribution",
-         "loggedat": "2024-01-25T12:58:00.102803Z",
-         "subflows": {
-            "yearendsale": "doyearendsalechk"
-         },
-         "tracedata": ""
-      }
+      "data": "{\"tasks\":[{\"discount\":1},{\"yearendsale\":2}],\"nextstep\":\"coupondistribution\",\"loggedat\":\"2024-01-25T12:58:00.102803Z\",\"subflows\":{\"yearendsale\":\"doyearendsalechk\"},\"tracedata\":\"\"}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Info",
       "when": "2024-01-10T07:28:03.442988651Z",
       "who": "Aniket",
@@ -430,13 +301,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFInstanceList request received",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-10T07:28:03.44317494Z",
       "who": "Aniket",
@@ -446,19 +317,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFInstanceList|parameters from request :",
-      "data": {
-         "Slice": 2,
-         "EntityID": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
-         "App": "retailBANK",
-         "Workflow": "discountcheck",
-         "Parent": 77
-      }
+      "data": "{\"Slice\":2,\"EntityID\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"App\":\"retailBANK\",\"Workflow\":\"discountcheck\",\"Parent\":77}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-10T07:28:03.443773904Z",
       "who": "Aniket",
@@ -468,15 +333,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFInstanceList||parentlist form WFInstanceList data:",
-      "data": [
-         77
-      ]
+      "data": "[77]"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-10T07:28:03.443789358Z",
       "who": "Aniket",
@@ -486,13 +349,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFInstanceList||inside for loop : if parentList is Not Nil ",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-10T07:28:03.444053647Z",
       "who": "Aniket",
@@ -502,15 +365,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFInstanceList||updated ParentList :",
-      "data": [
-         78
-      ]
+      "data": "[78]"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-01T07:28:03.444077845Z",
       "who": "Aniket",
@@ -520,13 +381,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFInstanceList||inside for loop : if parentList is Not Nil ",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-01T07:28:03.444159767Z",
       "who": "Aniket",
@@ -536,13 +397,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFInstanceList||updated ParentList :",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-01T07:28:03.444171472Z",
       "who": "Aniket",
@@ -552,13 +413,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "Record found finished execution of GetWFInstanceList request",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Info",
       "when": "2024-01-01T07:28:05.26876182Z",
       "who": "Aniket",
@@ -568,13 +429,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFInstanceAbort request received",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-01T07:28:05.268897548Z",
       "who": "Aniket",
@@ -584,16 +445,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFInstanceAbort||present values :",
-      "data": {
-         "EntityId": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
-         "ID": 0
-      }
+      "data": "{\"EntityId\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"ID\":0}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-01T07:28:05.273451616Z",
       "who": "Kanchan",
@@ -603,15 +461,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFInstanceAbort||parentlist form WFInstanceListByID data:",
-      "data": [
-         77
-      ]
+      "data": "[77]"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-01T07:28:05.273482727Z",
       "who": "Kanchan",
@@ -621,13 +477,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFInstanceAbort||inside for loop : if parentList is Not Nil ",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-01T07:28:05.284796292Z",
       "who": "Kanchan",
@@ -637,15 +493,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFInstanceAbort||updated ParentList :",
-      "data": [
-         78
-      ]
+      "data": "[78]"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-01T07:28:05.284845655Z",
       "who": "Kanchan",
@@ -655,13 +509,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFInstanceAbort||inside for loop : if parentList is Not Nil ",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Activity",
+      "type": "A",
       "pri": "Debug0",
       "when": "2024-01-01T07:28:05.396104311Z",
       "who": "Kanchan",
@@ -671,13 +525,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "GetWFInstanceAbort||updated ParentList :",
-      "data": {}
+      "data": "{}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Change",
+      "type": "C",
       "pri": "Info",
       "when": "2024-01-01T07:28:05.396158202Z",
       "who": "Kanchan",
@@ -687,35 +541,13 @@
       "status": 0,
       "remote_ip": "",
       "msg": "deleted wfinstance ",
-      "data": {
-         "entity": "wfinstance",
-         "operation": "delete",
-         "changes": [
-            {
-               "field": "row",
-               "old_value": {
-                  "id": 1,
-                  "entityid": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
-                  "slice": 2,
-                  "app": "retailBANK",
-                  "class": "inventoryitems",
-                  "workflow": "discountcheck",
-                  "step": "discount",
-                  "loggedat": "2024-01-01T12:58:00.102803Z",
-                  "doneat": "",
-                  "nextstep": "coupondistribution",
-                  "parent": 77
-               },
-               "new_value": ""
-            }
-         ]
-      }
+      "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77},\"new_value\":\"\"}]}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Change",
+      "type": "C",
       "pri": "Info",
       "when": "2024-01-01T07:28:05.396184839Z",
       "who": "Kanchan",
@@ -725,73 +557,29 @@
       "status": 0,
       "remote_ip": "",
       "msg": "deleted wfinstance ",
-      "data": {
-         "entity": "wfinstance",
-         "operation": "delete",
-         "changes": [
-            {
-               "field": "row",
-               "old_value": {
-                  "id": 2,
-                  "entityid": "0eb8da50-aece-11ee-b168-3b192f7cd2b6",
-                  "slice": 2,
-                  "app": "retailBANK",
-                  "class": "inventoryitems",
-                  "workflow": "discountcheck",
-                  "step": "yearendsale",
-                  "loggedat": "2024-01-01T12:58:00.102803Z",
-                  "doneat": "",
-                  "nextstep": "coupondistribution",
-                  "parent": 77
-               },
-               "new_value": ""
-            }
-         ]
-      }
+      "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":2,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"yearendsale\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77},\"new_value\":\"\"}]}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Change",
+      "type": "C",
       "pri": "Info",
       "when": "2024-01-01T07:28:05.396203358Z",
-      "who": "Kanchan",
+      "who": "Kanchan", 
       "op": "",
       "class": "wfinstance",
       "instance": "77",
       "status": 0,
       "remote_ip": "",
       "msg": "deleted wfinstance ",
-      "data": {
-         "entity": "wfinstance",
-         "operation": "delete",
-         "changes": [
-            {
-               "field": "row",
-               "old_value": {
-                  "id": 77,
-                  "entityid": "tempentityid",
-                  "slice": 2,
-                  "app": "retailBANK",
-                  "class": "inventoryitems",
-                  "workflow": "temp",
-                  "step": "tempstep",
-                  "loggedat": "2024-02-05T00:00:00Z",
-                  "doneat": "",
-                  "nextstep": "temp",
-                  "parent": 78
-               },
-               "new_value": ""
-            }
-         ]
-      }
+      "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":77,\"entityid\":\"tempentityid\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"temp\",\"step\":\"tempstep\",\"loggedat\":\"2024-02-05T00:00:00Z\",\"doneat\":\"\",\"nextstep\":\"temp\",\"parent\":78},\"new_value\":\"\"}]}"
    },
    {
       "app": "crux",
       "system": "merceadm-Latitude-3420",
       "module": "",
-      "type": "Change",
+      "type": "C",
       "pri": "Info",
       "when": "2024-01-01T07:28:05.396218422Z",
       "who": "Kanchan",
@@ -801,28 +589,6 @@
       "status": 0,
       "remote_ip": "",
       "msg": "deleted wfinstance ",
-      "data": {
-         "entity": "wfinstance",
-         "operation": "delete",
-         "changes": [
-            {
-               "field": "row",
-               "old_value": {
-                  "id": 78,
-                  "entityid": "tempentityid",
-                  "slice": 2,
-                  "app": "retailBANK",
-                  "class": "inventoryitems",
-                  "workflow": "temp",
-                  "step": "tempstep",
-                  "loggedat": "2024-02-05T00:00:00Z",
-                  "doneat": "",
-                  "nextstep": "temp",
-                  "parent": ""
-               },
-               "new_value": ""
-            }
-         ]
-      }
+      "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":78,\"entityid\":\"tempentityid\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"temp\",\"step\":\"tempstep\",\"loggedat\":\"2024-02-05T00:00:00Z\",\"doneat\":\"\",\"nextstep\":\"temp\",\"parent\":\"\"},\"new_value\":\"\"}]}"
    }
 ]

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"slices"
 	"time"
 
 	"github.com/elastic/go-elasticsearch/v8"
@@ -12,11 +13,28 @@ import (
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/sortorder"
 )
 
-var layout = "2006-01-02T15:04:05"
-var index = "logharbour"
-var LOGHARBOUR_GETLOGS_MAXREC = 5
-var res *search.Response
-var err error
+const (
+	when      = "when"
+	app       = "app"
+	typeConst = "type"
+	who       = "who"
+	class     = "class"
+	instance  = "instance"
+	op        = "op"
+	remote_ip = "remote_ip"
+	pri       = "pri"
+	id        = "id" // document id
+	layout    = "2006-01-02T15:04:05Z"
+)
+
+var (
+	index                     = "logharbour"
+	LOGHARBOUR_GETLOGS_MAXREC = 15
+	res                       *search.Response
+	err                       error
+	Priority                  = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
+	requiredPri               []string
+)
 
 type GetLogsParam struct {
 	App              *string
@@ -29,158 +47,134 @@ type GetLogsParam struct {
 	ToTS             *time.Time
 	NDays            *int
 	RemoteIP         *string
-	Priority         *LogPriority
+	Priority         *string
 	SearchAfterTS    *string
 	SearchAfterDocID *string
 }
 
 func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetLogsParam) ([]LogEntry, int, error) {
 
-	var matchField []types.Query
-	var logentry []LogEntry
+	var queries []types.Query
+	var logEntries []LogEntry
 
+	// appending query if both present fromTs and toTs
 	if logParam.FromTS != nil && logParam.ToTS != nil {
 		fromTs := logParam.FromTS.Format(layout)
 		toTs := logParam.ToTS.Format(layout)
 		if logParam.FromTS.Before(*logParam.ToTS) {
 			days := types.Query{
 				Range: map[string]types.RangeQuery{
-					"when": types.DateRangeQuery{
+					when: types.DateRangeQuery{
 						Gte: &fromTs,
 						Lte: &toTs,
 					},
 				},
 			}
-			matchField = append(matchField, days)
+			queries = append(queries, days)
 		} else {
 			return nil, 0, fmt.Errorf("tots must be after fromts")
 		}
+
+		// appending query if FromTs is present
 	} else if logParam.FromTS != nil && logParam.ToTS == nil {
 		fromTs := logParam.FromTS.Format(layout)
 		days := types.Query{
 			Range: map[string]types.RangeQuery{
-				"when": types.DateRangeQuery{
+				when: types.DateRangeQuery{
 					Gte: &fromTs,
 				},
 			},
 		}
-		matchField = append(matchField, days)
+		queries = append(queries, days)
 
+		// appending query if ToTS is present
 	} else if logParam.FromTS == nil && logParam.ToTS != nil {
 		toTs := logParam.ToTS.Format(layout)
 		days := types.Query{
 			Range: map[string]types.RangeQuery{
-				"when": types.DateRangeQuery{
+				when: types.DateRangeQuery{
 					Lte: &toTs,
 				},
 			},
 		}
-		matchField = append(matchField, days)
+		queries = append(queries, days)
 
+		// appending query for get log for n number of day
 	} else if logParam.NDays != nil && logParam.FromTS == nil && logParam.ToTS == nil {
 		if *logParam.NDays > 0 {
-			day := fmt.Sprintf("now-%dd/d", *logParam.NDays)
+			day := fmt.Sprintf("now-%dd/d", *logParam.NDays) // now-5d
 			days := types.Query{
 				Range: map[string]types.RangeQuery{
-					"when": types.DateRangeQuery{
+					when: types.DateRangeQuery{
 						Gte: &day,
 					},
 				},
 			}
-			matchField = append(matchField, days)
+			queries = append(queries, days)
 		}
 	}
 
-	if logParam.App != nil {
-		app := types.Query{
-			Match: map[string]types.MatchQuery{
-				"app": {Query: *logParam.App},
-			},
-		}
-		matchField = append(matchField, app)
+	if ok, app := termQueryForField(app, logParam.App); ok {
+		queries = append(queries, app)
+	}
+	logTypeStr := logParam.Type.String()
+	if ok, logType := termQueryForField(typeConst, &logTypeStr); ok {
+
+		queries = append(queries, logType)
 	}
 
-	if logParam.Type != nil {
-		types := types.Query{
-			Match: map[string]types.MatchQuery{
-				"type": {Query: logParam.Type.String()},
-			},
-		}
-		matchField = append(matchField, types)
-	}
+	if ok, who := termQueryForField(WHO, logParam.Who); ok {
 
-	if logParam.Who != nil {
-		who := types.Query{
-			Match: map[string]types.MatchQuery{
-				"who": {Query: *logParam.Who},
-			},
-		}
-		matchField = append(matchField, who)
+		queries = append(queries, who)
 	}
+	if ok, class := termQueryForField(class, logParam.Class); ok {
 
-	if logParam.Class != nil {
-		class := types.Query{
-			Match: map[string]types.MatchQuery{
-				"class": {Query: *logParam.Class},
-			},
-		}
-		matchField = append(matchField, class)
+		queries = append(queries, class)
 	}
+	if ok, instance := termQueryForField(instance, logParam.Instance); ok {
 
-	if logParam.Instance != nil {
-		instance := types.Query{
-			Match: map[string]types.MatchQuery{
-				"instance": {Query: *logParam.Instance},
-			},
-		}
-		matchField = append(matchField, instance)
+		queries = append(queries, instance)
 	}
+	if ok, op := termQueryForField(op, logParam.Operation); ok {
 
-	if logParam.Operation != nil {
-		op := types.Query{
-			Match: map[string]types.MatchQuery{
-				"op": {Query: *logParam.Operation},
-			},
-		}
-		matchField = append(matchField, op)
+		queries = append(queries, op)
 	}
+	if ok, remoteIp := termQueryForField(remote_ip, logParam.RemoteIP); ok {
 
-	if logParam.RemoteIP != nil {
-		remoteIp := types.Query{
-			Match: map[string]types.MatchQuery{
-				"remote_ip": {Query: *logParam.RemoteIP},
-			},
-		}
-		matchField = append(matchField, remoteIp)
+		queries = append(queries, remoteIp)
 	}
 
 	if logParam.Priority != nil {
-		pri := types.Query{
-			Match: map[string]types.MatchQuery{
-				"app": {Query: logParam.Priority.String()},
-			},
+		priFrom := slices.Index(Priority, *logParam.Priority)
+		if priFrom > 0 {
+			requiredPri = Priority[priFrom:]
 		}
-		matchField = append(matchField, pri)
+		if ok, pri := termQueryForField(pri, nil, requiredPri...); ok {
+			queries = append(queries, pri)
+		}
 	}
 
+	// creating elastic search bool query
 	query := &types.Query{
 		Bool: &types.BoolQuery{
-			Must: matchField,
+			Filter: queries,
 		},
 	}
 
+	// sorting record on base of when
 	sortByWhen := types.SortOptions{
 		SortOptions: map[string]types.FieldSort{
-			"when": {Order: &sortorder.Desc},
+			when: {Order: &sortorder.Desc},
 		},
 	}
 
 	// sortById := types.SortOptions{
 	// 	SortOptions: map[string]types.FieldSort{
-	// 		"_id": {Order: &sortorder.Desc},
+	// 		id : {Order: &sortorder.Desc},
 	// 	},
 	// }
 
+	//  calling search query when SearchAfterTS and SearchAfterDocID given
 	if logParam.SearchAfterTS != nil && logParam.SearchAfterDocID != nil {
 		res, err = client.Search().Index(index).Request(&search.Request{
 			Size:        &LOGHARBOUR_GETLOGS_MAXREC,
@@ -188,6 +182,7 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 			SearchAfter: []types.FieldValue{logParam.SearchAfterTS, logParam.SearchAfterDocID},
 			Sort:        []types.SortCombinations{sortByWhen},
 		}).Do(context.Background())
+		//  calling search query when SearchAfterTS is given
 	} else if logParam.SearchAfterTS != nil && logParam.SearchAfterDocID == nil {
 		res, err = client.Search().Index(index).Request(&search.Request{
 			Size:        &LOGHARBOUR_GETLOGS_MAXREC,
@@ -195,6 +190,7 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 			SearchAfter: []types.FieldValue{logParam.SearchAfterTS},
 			Sort:        []types.SortCombinations{sortByWhen},
 		}).Do(context.Background())
+		//  calling search query when is SearchAfterDocID
 	} else if logParam.SearchAfterTS == nil && logParam.SearchAfterDocID != nil {
 		res, err = client.Search().Index(index).Request(&search.Request{
 			Size:        &LOGHARBOUR_GETLOGS_MAXREC,
@@ -203,6 +199,7 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 			Sort:        []types.SortCombinations{sortByWhen},
 		}).Do(context.Background())
 	} else {
+		//  calling search query when SearchAfterTS and SearchAfterDocID not given
 		res, err = client.Search().Index(index).Request(&search.Request{
 			Size:  &LOGHARBOUR_GETLOGS_MAXREC,
 			Query: query,
@@ -212,27 +209,43 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 	if err != nil {
 		return nil, 0, fmt.Errorf("Error while searching document in es:%v", err)
 	}
-	var logg LogEntry
+	var logEnter LogEntry
 
+	// Unmarshalling hit.source into LogEntry
 	if res != nil {
 		for _, hit := range res.Hits.Hits {
-			if err := json.Unmarshal([]byte(hit.Source_), &logg); err != nil {
+			if err := json.Unmarshal([]byte(hit.Source_), &logEnter); err != nil {
 				return nil, 0, fmt.Errorf("error while unmarshalling response:%v", err)
 			}
-			logentry = append(logentry, logg)
+			logEntries = append(logEntries, logEnter)
 		}
 	}
-	return logentry, int(res.Hits.Total.Value), nil
+	return logEntries, int(res.Hits.Total.Value), nil
 }
 
-// func match(field string, query *string) types.Query {
-// 	var matchQuery types.Query
-// 	if query != nil {
-// 		matchQuery = types.Query{
-// 			Match: map[string]types.MatchQuery{
-// 				field: {Query: *query},
-// 			},
-// 		}
-// 	}
-// 	return matchQuery
-// }
+// termQueryForField constructs and returns a term query for a specified field and its corresponding value.
+func termQueryForField(field string, value *string, values ...string) (bool, types.Query) {
+	if value != nil {
+		matchQuery := types.Query{
+			Term: map[string]types.TermQuery{
+				field: {Value: value},
+			},
+		}
+		return true, matchQuery
+	}
+	if values != nil {
+		var vals []types.FieldValue
+		for _, val := range values {
+			vals = append(vals, val)
+		}
+		matchQuery := types.Query{
+			Terms: &types.TermsQuery{
+				TermsQuery: map[string]types.TermsQueryField{
+					field: vals,
+				},
+			},
+		}
+		return true, matchQuery
+	}
+	return false, types.Query{}
+}
