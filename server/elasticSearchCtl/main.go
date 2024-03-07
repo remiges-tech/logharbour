@@ -1,20 +1,14 @@
 package main
 
 import (
-	"context"
-	"encoding/json"
 	"fmt"
 	"log"
-	"strconv"
 
 	"os"
-	"strings"
 
 	"github.com/elastic/go-elasticsearch/v8"
-	"github.com/elastic/go-elasticsearch/v8/esapi"
-	"github.com/remiges-tech/logharbour/logharbour"
+	elasticsearchctl "github.com/remiges-tech/logharbour/server/elasticSearchCtl/elasticSearch"
 
-	// "github.com/remiges-tech/logharbour/logharbour"
 	"github.com/spf13/cobra"
 )
 
@@ -25,13 +19,6 @@ var (
 	password string
 	esCer    string
 )
-
-type config struct {
-	Username               string
-	Password               string
-	Addresses              []string
-	CertificateFingerprint string
-}
 
 var createIndexBody = `{
 	"settings": {
@@ -77,7 +64,7 @@ var createIndexBody = `{
 		  "type": "keyword"
 		},
 		"remote_ip": {
-		  "type": "keyword"
+		  "type": "ip"
 		},
 		"msg": {
 		  "type": "keyword"
@@ -152,11 +139,11 @@ func main() {
 			}
 			logFile := args[0]
 			indexName := args[1]
-			log, err := ReadLogFromFile(logFile)
+			logEntries, err := elasticsearchctl.ReadLogFromFile(logFile)
 			if err != nil {
 				return fmt.Errorf("error converting data from log file:%v", err)
 			}
-			if err := InsertLog(es, log, indexName); err != nil {
+			if err := elasticsearchctl.InsertLog(es, logEntries, indexName); err != nil {
 				return fmt.Errorf("error while inserting data: %v", err)
 			}
 			fmt.Println("Logs inserted successfully.")
@@ -174,33 +161,10 @@ func main() {
 			}
 			indexName := args[0]
 
-			indexBody := strings.NewReader(createIndexBody)
-			// Create the index request
-			req := esapi.IndicesCreateRequest{
-				Index: indexName,
-				Body:  indexBody,
+			if err := elasticsearchctl.CreateElasticIndex(es, indexName, createIndexBody); err != nil {
+				return fmt.Errorf("error while creating index: %v", err)
 			}
 
-			// Perform the request
-			res, err := req.Do(context.Background(), es)
-			if err != nil {
-				return fmt.Errorf("error creating the index: %s", err)
-			}
-
-			defer res.Body.Close()
-
-			// Print the response status and body
-			fmt.Println("Response status:", res.Status())
-			if res.IsError() {
-				var errorResponse map[string]interface{}
-				if err := json.NewDecoder(res.Body).Decode(&errorResponse); err != nil {
-					return fmt.Errorf("error parsing the error response body: %s", err)
-				}
-				log.Fatalf("Error creating the index: %s", errorResponse["error"].(map[string]interface{})["reason"])
-			} else {
-
-				fmt.Println("Index created successfully:")
-			}
 			return nil
 
 		},
@@ -213,77 +177,4 @@ func main() {
 		log.Println("Error:", err)
 		os.Exit(1)
 	}
-}
-
-func GetElasticsearch(filepath string) (*elasticsearch.Client, error) {
-
-	bytedata, err := os.ReadFile(filepath)
-	if err != nil {
-		return nil, err
-	}
-	var ESConfig config
-	err = json.Unmarshal(bytedata, &ESConfig)
-	if err != nil {
-		return nil, err
-	}
-
-	cfg := elasticsearch.Config{
-		Addresses:              ESConfig.Addresses,
-		Username:               ESConfig.Username,
-		Password:               ESConfig.Password,
-		CertificateFingerprint: ESConfig.CertificateFingerprint,
-	}
-
-	es, err := elasticsearch.NewClient(cfg)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println("es", es)
-	return es, nil
-
-}
-
-func InsertLog(es *elasticsearch.Client, logs []logharbour.LogEntry, indexName string) error {
-
-	for i, log := range logs {
-		dataJson, err := json.Marshal(log)
-		if err != nil {
-			return fmt.Errorf("error while unmarshaling log: %v", err)
-		}
-
-		js := string(dataJson)
-
-		req := esapi.IndexRequest{
-			Index:      indexName,
-			DocumentID: strconv.Itoa(i + 1),
-			Body:       strings.NewReader(js),
-			Refresh:    "true",
-		}
-
-		res, err := req.Do(context.Background(), es)
-		if err != nil {
-			return fmt.Errorf("error while adding data in es :%v", err)
-		}
-		defer res.Body.Close()
-		if res.IsError() {
-			return fmt.Errorf("error indexing document ID=%s", res)
-		}
-	}
-	return nil
-}
-
-func ReadLogFromFile(filepath string) ([]logharbour.LogEntry, error) {
-
-	byteValue, err := os.ReadFile(filepath)
-	if err != nil {
-		return nil, err
-	}
-
-	var LogEntries []logharbour.LogEntry
-
-	err = json.Unmarshal(byteValue, &LogEntries)
-	if err != nil {
-		return nil, err
-	}
-	return LogEntries, nil
 }

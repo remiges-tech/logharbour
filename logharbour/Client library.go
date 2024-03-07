@@ -47,9 +47,17 @@ type GetLogsParam struct {
 	ToTS             *time.Time
 	NDays            *int
 	RemoteIP         *string
-	Priority         *string
+	Priority         *LogPriority
 	SearchAfterTS    *string
 	SearchAfterDocID *string
+}
+
+type GetUnusualIPParam struct {
+	App       *string
+	Who       *string
+	Class     *string
+	Operation *string
+	NDays     *int
 }
 
 func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetLogsParam) ([]LogEntry, int, error) {
@@ -145,7 +153,8 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 	}
 
 	if logParam.Priority != nil {
-		priFrom := slices.Index(Priority, *logParam.Priority)
+		priStr := logParam.Priority.String()
+		priFrom := slices.Index(Priority, priStr)
 		if priFrom > 0 {
 			requiredPri = Priority[priFrom:]
 		}
@@ -248,4 +257,41 @@ func termQueryForField(field string, value *string, values ...string) (bool, typ
 		return true, matchQuery
 	}
 	return false, types.Query{}
+}
+
+func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, logParam GetUnusualIPParam, unusualPercent float64) ([]string, error) {
+
+	unusualIPs := []string{}
+
+	if unusualPercent < 0.5 || unusualPercent > 50 {
+		return nil, fmt.Errorf("unusualPercent is not between 0.5 to 50")
+	}
+
+	aggregatedIPs, err := GetSet(client, GetSetParam{
+		QueryToken: queryToken,
+		App:        logParam.App,
+		Who:        logParam.Who,
+		Class:      logParam.Class,
+		Op:         logParam.Operation,
+		Ndays:      logParam.NDays,
+		SetAttr:    remote_ip,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	percentThreshold := len(aggregatedIPs) * int(unusualPercent) / 100
+
+	if percentThreshold > 1 {
+		for ip, count := range aggregatedIPs {
+			fmt.Printf("IP: %s, Count: %d\n", ip, count)
+			if count <= int64(percentThreshold) {
+				if ip != "local" {
+					unusualIPs = append(unusualIPs, ip)
+				}
+			}
+		}
+	}
+	return unusualIPs, nil
+
 }

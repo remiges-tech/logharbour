@@ -17,13 +17,13 @@ var LogType = logharbour.Activity
 // var toTs = time.Date(2024, 03, 01, 00, 00, 00, 00, time.UTC)
 
 type LogRequest struct {
-	App        string  `json:"app" validate:"required"`
-	Who        *string `json:"who,omitempty"`
-	Class      *string `json:"class,omitempty"`
-	InstanceID *string `json:"instance_id,omitempty"`
-	Op         *string `json:"op,omitempty"`
-	Priority   *string `json:"priority,omitempty"`
-	Days       int     `json:"days"`
+	App        string                  `json:"app" validate:"required"`
+	Who        *string                 `json:"who,omitempty"`
+	Class      *string                 `json:"class,omitempty"`
+	InstanceID *string                 `json:"instance_id,omitempty"`
+	Op         *string                 `json:"op,omitempty"`
+	Priority   *logharbour.LogPriority `json:"priority,omitempty"`
+	Days       int                     `json:"days"`
 	// FromTS               *string `json:"fromTs,omitempty"`
 	// ToTS                 *string `json:"toTs,omitempty"`
 	SearchAfterTimestamp *string `json:"search_after_timestamp,omitempty"`
@@ -62,28 +62,68 @@ func ShowActivitylog(c *gin.Context, s *service.Service) {
 		wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(100, "ErrCode_DatabaseError"))
 		return
 	}
-	// index, ok := s.Dependencies["index"].(string)
-	// if !ok {
-	// 	wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(404, "ErrCode_IndexNotFound"))
-	// 	return
-	// }
-	// fromTs := req.FromTS.Format(layout)
-	// toTs := req.ToTS.Format(layout)
-	res.LogEntery, res.Nrec, err = logharbour.GetLogs("", es, logharbour.GetLogsParam{
-		App:       &req.App,
-		Type:      &LogType,
-		Who:       req.Who,
-		Class:     req.Class,
-		Instance:  req.InstanceID,
-		Operation: req.Op,
-		// FromTS:    &fromTs,
-		// ToTS:      &toTs,
-		NDays: &req.Days,
-		// RemoteIP:         req,
-		Priority:         req.Priority,
-		SearchAfterTS:    req.SearchAfterTimestamp,
-		SearchAfterDocID: req.SearchAfterDocID,
-	})
+
+	if req.SearchAfterTimestamp != nil && req.SearchAfterDocID != nil {
+		res.LogEntery, res.Nrec, err = logharbour.GetLogs("", es, logharbour.GetLogsParam{
+			App:       &req.App,
+			Type:      &LogType,
+			Who:       req.Who,
+			Class:     req.Class,
+			Instance:  req.InstanceID,
+			Operation: req.Op,
+			// FromTS:    &fromTs,
+			// ToTS:      &toTs,
+			NDays: &req.Days,
+			// RemoteIP:         req,
+			Priority:         req.Priority,
+			SearchAfterTS:    req.SearchAfterTimestamp,
+			SearchAfterDocID: req.SearchAfterDocID,
+		})
+	} else if req.SearchAfterTimestamp != nil && req.SearchAfterDocID == nil {
+		res.LogEntery, res.Nrec, err = logharbour.GetLogs("", es, logharbour.GetLogsParam{
+			App:       &req.App,
+			Type:      &LogType,
+			Who:       req.Who,
+			Class:     req.Class,
+			Instance:  req.InstanceID,
+			Operation: req.Op,
+			// FromTS:    &fromTs,
+			// ToTS:      &toTs,
+			NDays: &req.Days,
+			// RemoteIP:         req,
+			Priority:      req.Priority,
+			SearchAfterTS: req.SearchAfterTimestamp,
+		})
+	} else if req.SearchAfterTimestamp == nil && req.SearchAfterDocID != nil {
+		res.LogEntery, res.Nrec, err = logharbour.GetLogs("", es, logharbour.GetLogsParam{
+			App:       &req.App,
+			Type:      &LogType,
+			Who:       req.Who,
+			Class:     req.Class,
+			Instance:  req.InstanceID,
+			Operation: req.Op,
+			// FromTS:    &fromTs,
+			// ToTS:      &toTs,
+			NDays: &req.Days,
+			// RemoteIP:         req,
+			Priority:         req.Priority,
+			SearchAfterDocID: req.SearchAfterDocID,
+		})
+	} else {
+		res.LogEntery, res.Nrec, err = logharbour.GetLogs("", es, logharbour.GetLogsParam{
+			App:       &req.App,
+			Type:      &LogType,
+			Who:       req.Who,
+			Class:     req.Class,
+			Instance:  req.InstanceID,
+			Operation: req.Op,
+			// FromTS:    &fromTs,
+			// ToTS:      &toTs,
+			NDays: &req.Days,
+			// RemoteIP:         req,
+			Priority: req.Priority,
+		})
+	}
 	if err != nil {
 		wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(222, err.Error()))
 		return
