@@ -127,7 +127,7 @@ func main() {
 
 	apiV1Group := r.Group("/api/v1/")
 
-	s.RegisterRouteWithGroup(apiV1Group, http.MethodGet, "/highprilog", wsc.GetHighprilog)
+	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/highprilog", wsc.GetHighprilog)
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/showActivitylog", wsc.ShowActivitylog)
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/show_debuglog", wsc.GetDebugLog)
 
