@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/elastic/elastic-transport-go/v8/elastictransport"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/gin-gonic/gin"
 	"github.com/remiges-tech/alya/config"
@@ -106,6 +107,8 @@ func main() {
 		Username:               appConfig.DBUser,
 		Password:               appConfig.DBPassword,
 		CertificateFingerprint: appConfig.CertificateFingerprint,
+		// show request query logger
+		Logger: &elastictransport.TextLogger{Output: log.Writer(), EnableRequestBody: true},
 	}
 	client, err := elasticsearch.NewTypedClient(dbConfig)
 	if err != nil {
