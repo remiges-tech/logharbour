@@ -2,7 +2,6 @@ package wsc
 
 import (
 	"github.com/elastic/go-elasticsearch/v8"
-	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/remiges-tech/alya/service"
@@ -10,9 +9,9 @@ import (
 	"github.com/remiges-tech/logharbour/logharbour"
 )
 
-// var (
-// 	Priority = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
-// )
+var (
+	Priority = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
+)
 
 type HighPriReq struct {
 	App string                 `json:"app" validate:"required,alpha"`
@@ -28,9 +27,11 @@ func GetHighprilog(c *gin.Context, s *service.Service) {
 	lh := s.LogHarbour
 	lh.Debug0().Log("starting execution of GetHighprilog()")
 	var (
-		request  HighPriReq
-		srchAftr []types.FieldValue
+		request     HighPriReq
+		recordCount int
+		searchQuery []logharbour.LogEntry
 	)
+
 	// step 1: json request binding with a struct
 	err := wscutils.BindJSON(c, &request)
 	if err != nil {
@@ -52,20 +53,28 @@ func GetHighprilog(c *gin.Context, s *service.Service) {
 		wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(100, "ErrCode_DatabaseError"))
 		return
 	}
-
-	if request.SearchAfterDocId != "" || len(request.SearchAfterDocId) > 0 {
-		srchAftr = append(srchAftr, request.SearchAfterDocId)
+	if request.SearchAfterTimestamp == "" && request.SearchAfterDocId == "" {
+		searchQuery, recordCount, err = logharbour.GetLogs("", esClient, logharbour.GetLogsParam{
+			App:      &request.App,
+			Priority: &request.Pri,
+			NDays:    &request.Days,
+		})
+	} else if request.SearchAfterDocId == "" {
+		searchQuery, recordCount, err = logharbour.GetLogs("", esClient, logharbour.GetLogsParam{
+			App:           &request.App,
+			Priority:      &request.Pri,
+			NDays:         &request.Days,
+			SearchAfterTS: &request.SearchAfterTimestamp,
+		})
+	} else if request.SearchAfterTimestamp == "" {
+		searchQuery, recordCount, err = logharbour.GetLogs("", esClient, logharbour.GetLogsParam{
+			App:              &request.App,
+			Priority:         &request.Pri,
+			NDays:            &request.Days,
+			SearchAfterDocID: &request.SearchAfterDocId,
+		})
 	}
 
-	searchQuery, recordCount, err := logharbour.GetLogs("", esClient, logharbour.GetLogsParam{
-		App:      &request.App,
-		Priority: &request.Pri,
-		NDays:    &request.Days,
-		// FromTS:    &fromTs,
-		// ToTS:      &toTs,
-		// RemoteIP:         req,
-		// SearchAfterTS: &request.SearchAfterTimestamp,
-	})
 	if err != nil {
 		lh.Err().Error(err).Log("error while retriving data from db")
 		wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(222, err.Error()))
