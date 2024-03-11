@@ -9,7 +9,7 @@
       "who": "Tushar",
       "op": "",
       "class": "wfinstance",
-      "instance": "",
+      "instance": "2",
       "status": 0,
       "remote_ip": "192.168.1.100",
       "msg": "GetWFinstanceNew request received",

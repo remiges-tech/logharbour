@@ -12,7 +12,7 @@ import (
 )
 
 var LogType = logharbour.Activity
-var querytoken string
+var queryToken string
 
 // var fromTs = time.Date(2024, 02, 01, 00, 00, 00, 00, time.UTC)
 // var toTs = time.Date(2024, 03, 01, 00, 00, 00, 00, time.UTC)
@@ -36,9 +36,9 @@ type LogResponse struct {
 	Nrec      int
 }
 
-func ShowActivitylog(c *gin.Context, s *service.Service) {
+func ShowActivityLog(c *gin.Context, s *service.Service) {
 	l := s.LogHarbour
-	l.Debug0().Log("starting execution of ShowActivitylog()")
+	l.Debug0().Log("starting execution of ShowActivityLog()")
 
 	var req LogRequest
 	var res LogResponse
@@ -65,7 +65,7 @@ func ShowActivitylog(c *gin.Context, s *service.Service) {
 		return
 	}
 
-	abc,_, err := logharbour.GetLogs(querytoken, es, logharbour.GetLogsParam{
+	res.LogEntery, res.Nrec, err = logharbour.GetLogs(queryToken, es, logharbour.GetLogsParam{
 		App:       &req.App,
 		Type:      &LogType,
 		Who:       req.Who,
@@ -87,12 +87,14 @@ func ShowActivitylog(c *gin.Context, s *service.Service) {
 		return
 	}
 	fmt.Println("res.nrec", len(res.LogEntery))
-	wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(abc))
+	wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(res))
 }
 
 func errorHandler(err error) wscutils.ErrorMessage {
 	switch err.Error() {
 	case "tots must be after fromts":
+		return wscutils.BuildErrorMessage(MsgId_Invalid_Request, ErrCode_InvalidRequest, nil)
+	case "No Filter param":
 		return wscutils.BuildErrorMessage(MsgId_Invalid_Request, ErrCode_InvalidRequest, nil)
 	}
 	return wscutils.BuildErrorMessage(MsgId_InternalErr, ErrCode_DatabaseError, nil)

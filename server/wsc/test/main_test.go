@@ -1,15 +1,21 @@
-package logharbour_test
+package wsc_test
 
 import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"testing"
 	"time"
 
 	es "github.com/elastic/go-elasticsearch/v8"
+	"github.com/gin-gonic/gin"
+	"github.com/remiges-tech/alya/service"
+	"github.com/remiges-tech/alya/wscutils"
+	"github.com/remiges-tech/logharbour/logharbour"
 	elasticsearchctl "github.com/remiges-tech/logharbour/server/elasticSearchCtl/elasticSearch"
+	"github.com/remiges-tech/logharbour/server/wsc"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/elasticsearch"
 )
@@ -71,7 +77,8 @@ var (
 		}
 	  }`
 	typedClient *es.TypedClient
-	filepath    = "../test/testData/testData.json"
+	r           *gin.Engine
+	filepath    = "./testData.json"
 	indexName   = "logharbour_unit_test"
 	timeout     = 500 * time.Second
 )
@@ -123,6 +130,13 @@ func TestMain(m *testing.M) {
 		log.Fatalf("error while creating elastic search index: %v", err)
 	}
 
+	// Register routes.
+	r, err = registerRoutes(typedClient)
+	if err != nil {
+		log.Fatalf("Could not start resource: %v", err)
+	}
+	fmt.Println("Register routes")
+
 	exitVal := m.Run()
 	os.Exit(exitVal)
 }
@@ -143,5 +157,52 @@ func fillElasticWithData(esClient *es.Client, indexName, indexBody string) error
 	}
 
 	return nil
+
+}
+
+// registerRoutes register and runs.
+func registerRoutes(typedClient *es.TypedClient) (*gin.Engine, error) {
+	// router
+	gin.SetMode(gin.TestMode)
+	r := gin.Default()
+
+	// logger setup
+	fallbackWriter := logharbour.NewFallbackWriter(os.Stdout, os.Stdout)
+	lctx := logharbour.NewLoggerContext(logharbour.Info)
+	l := logharbour.NewLogger(lctx, "crux", fallbackWriter)
+
+	// Define a custom validation tag-to-message ID map
+	customValidationMap := map[string]int{
+		"required":  101,
+		"gt":        102,
+		"alpha":     103,
+		"lowercase": 104,
+	}
+	// Custom validation tag-to-error code map
+	customErrCodeMap := map[string]string{
+		"required":  "required",
+		"gt":        "greater",
+		"alpha":     "alphabet",
+		"lowercase": "lowercase",
+	}
+	// Register the custom map with wscutils
+	wscutils.SetValidationTagToMsgIDMap(customValidationMap)
+	wscutils.SetValidationTagToErrCodeMap(customErrCodeMap)
+
+	// Set default message ID and error code if needed
+	wscutils.SetDefaultMsgID(100)
+	wscutils.SetDefaultErrCode("validation_error")
+
+	// schema services
+	s := service.NewService(r).
+		WithLogHarbour(l).
+		WithDependency("client", typedClient)
+
+	s.RegisterRoute(http.MethodPost, "/highprilog", wsc.GetHighprilog)
+	s.RegisterRoute(http.MethodPost, "/showActivitylog", wsc.ShowActivityLog)
+	s.RegisterRoute(http.MethodPost, "/show_debuglog", wsc.GetDebugLog)
+	s.RegisterRoute(http.MethodPost, "/getUnusualIP", wsc.GetUnusualIP)
+
+	return r, nil
 
 }
