@@ -71,7 +71,7 @@ var (
 		}
 	  }`
 	typedClient *es.TypedClient
-	filepath    = "../test/testData/testData.json"
+	filepath    = "../test/testData/log.json"
 	indexName   = "logharbour_unit_test"
 	timeout     = 500 * time.Second
 )

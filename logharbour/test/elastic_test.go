@@ -22,6 +22,15 @@ type TestCasesStruct struct {
 	ExpectError        bool
 }
 
+type GetSetTestCasesStruct struct {
+	Name             string
+	SetAttribute     string
+	GetSetParam      logharbour.GetSetParam
+	ExpectedResponse map[string]int64
+	ActualResponse   map[string]int64
+	ExpectedError    bool
+}
+
 var err error
 
 func TestGetLogs(t *testing.T) {
@@ -74,7 +83,7 @@ func getLogsTestCase() []TestCasesStruct {
 	toTs := time.Date(2024, 03, 01, 00, 00, 00, 00, time.UTC)
 	searchAfterTS := "2024-02-25T07:28:00.110813597Z"
 	logsTestCase := []TestCasesStruct{{
-		Name: "1st_tc_GetLogs_with_all_filter_param",
+		Name: "1st test case ",
 		LogsParam: logharbour.GetLogsParam{
 			App:      &app,
 			Type:     &typeConst,
@@ -121,4 +130,91 @@ func getLogsTestCase() []TestCasesStruct {
 		},
 	}
 	return logsTestCase
+}
+
+func TestGetSet(t *testing.T) {
+	testCases := getSetTestCase()
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			logharbour.Index = "logharbour_unit_test"
+			tc.ActualResponse, err = logharbour.GetSet("", typedClient, tc.SetAttribute, tc.GetSetParam)
+
+			if tc.ExpectedError {
+				if err == nil {
+					t.Error("expected error but got nil")
+				}
+			} else {
+				require.NoError(t, err)
+
+			}
+			// Compare the set Values
+			if !reflect.DeepEqual(tc.ExpectedResponse, tc.ActualResponse) {
+				t.Errorf("logsets are not equal. Expected: %v, Actual: %v", tc.ExpectedResponse, tc.ActualResponse)
+			}
+
+		})
+	}
+
+}
+
+func getSetTestCase() []GetSetTestCasesStruct {
+	app := "crux"
+	setAttr := "type"
+	InvalidSetAttr := "when"
+	typeConst := logharbour.Activity
+	priority := logharbour.Info
+	who := "kanchan"
+	class := "wfinstance"
+	instance := "1"
+	remoteIP := "203.0.113.45"
+	days := 50
+	fromTs := time.Date(2023, 02, 01, 00, 00, 00, 00, time.UTC)
+	toTs := time.Date(2024, 04, 01, 00, 00, 00, 00, time.UTC)
+
+	expectedData := map[string]int64{"A": 3}
+
+	expectedDataForApp := map[string]int64{"crux": 56,
+		"idshield": 2}
+
+	getSetTestCase := []GetSetTestCasesStruct{{
+		Name: "SUCCESS : GetSet() with valid method parameters",
+		GetSetParam: logharbour.GetSetParam{
+			App:      &app,
+			Type:     &typeConst,
+			Who:      &who,
+			Class:    &class,
+			Instance: &instance,
+			Op:       new(string),
+			Fromts:   &fromTs,
+			Tots:     &toTs,
+			Ndays:    &days,
+			RemoteIP: &remoteIP,
+			Pri:      &priority,
+		},
+		SetAttribute:     setAttr,
+		ExpectedResponse: expectedData,
+	}, {
+		Name:             "SUCCESS : GetSet() with valid setAttribute",
+		SetAttribute:     "app",
+		GetSetParam:      logharbour.GetSetParam{},
+		ExpectedResponse: expectedDataForApp,
+	}, {
+		Name:          "ERROR : GetSet() with Invalid SetAttribute ",
+		SetAttribute:  InvalidSetAttr,
+		GetSetParam:   logharbour.GetSetParam{},
+		ExpectedError: true,
+	}, {
+		Name:         "ERROR : Getset() with Invalid Time",
+		SetAttribute: setAttr,
+		GetSetParam: logharbour.GetSetParam{
+			App:      &app,
+			Fromts:   &toTs,
+			Tots:     &fromTs,
+			Ndays:    new(int),
+			RemoteIP: new(string),
+		},
+		ExpectedError: true,
+	},
+	}
+	return getSetTestCase
 }
