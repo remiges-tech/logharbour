@@ -4,10 +4,11 @@ go 1.21.3
 
 require (
 	github.com/IBM/sarama v1.42.1
+	github.com/elastic/elastic-transport-go/v8 v8.4.0
 	github.com/elastic/go-elasticsearch/v8 v8.12.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-playground/validator/v10 v10.16.0
-	github.com/remiges-tech/alya v0.10.0
+	github.com/remiges-tech/alya v0.8.1-0.20240209053535-9ea01e8b9e09
 	github.com/remiges-tech/rigel v0.12.0
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.9.0
@@ -48,7 +49,6 @@ require (
 	github.com/eapache/go-resiliency v1.4.0 // indirect
 	github.com/eapache/go-xerial-snappy v0.0.0-20230731223053-c322873962e3 // indirect
 	github.com/eapache/queue v1.1.0 // indirect
-	github.com/elastic/elastic-transport-go/v8 v8.4.0 // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect

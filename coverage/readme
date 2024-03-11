@@ -1,0 +1,11 @@
+# for func
+go test -coverprofile=./coverage/coverage_logharbour.out -coverpkg=./... logharbour/test/elastic_test.go logharbour/test/main_test.go
+
+go tool cover -html=./coverage/coverage_logharbour.out -o ./coverage/coverage_logharbour.html
+
+
+# for wsc
+go test -coverprofile=./coverage/coverage_wsc.out -coverpkg=./... server/wsc/test/show_activitylog_test.go server/wsc/test/main_test.go
+
+go tool cover -html=./coverage/coverage_wsc.out -o ./coverage/coverage_wsc.html
+

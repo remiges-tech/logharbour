@@ -1,0 +1,2455 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>logharbour: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/remiges-tech/logharbour/logharbour/elastic.go (0.0%)</option>
+				
+				<option value="file1">github.com/remiges-tech/logharbour/logharbour/get_set.go (0.0%)</option>
+				
+				<option value="file2">github.com/remiges-tech/logharbour/logharbour/kafka.go (0.0%)</option>
+				
+				<option value="file3">github.com/remiges-tech/logharbour/logharbour/kafkaconsumer.go (0.0%)</option>
+				
+				<option value="file4">github.com/remiges-tech/logharbour/logharbour/logharbour.go (29.2%)</option>
+				
+				<option value="file5">github.com/remiges-tech/logharbour/logharbour/types.go (52.5%)</option>
+				
+				<option value="file6">github.com/remiges-tech/logharbour/logharbour/utils.go (10.7%)</option>
+				
+				<option value="file7">github.com/remiges-tech/logharbour/server/elasticSearchCtl/elasticSearch/elasticSearchCtl.go (70.6%)</option>
+				
+				<option value="file8">github.com/remiges-tech/logharbour/server/wsc/debuglog.go (0.0%)</option>
+				
+				<option value="file9">github.com/remiges-tech/logharbour/server/wsc/get_Unusual_IPs.go (0.0%)</option>
+				
+				<option value="file10">github.com/remiges-tech/logharbour/server/wsc/highprilog.go (0.0%)</option>
+				
+				<option value="file11">github.com/remiges-tech/logharbour/server/wsc/show_activitylog.go (46.9%)</option>
+				
+				<option value="file12">github.com/remiges-tech/logharbour/server/wsc/test/testUtils/testUtils.go (75.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package logharbour
+
+import (
+        "context"
+        "encoding/json"
+        "errors"
+        "fmt"
+        "log"
+        "slices"
+        "strings"
+        "time"
+
+        "github.com/elastic/go-elasticsearch/v8"
+        "github.com/elastic/go-elasticsearch/v8/esapi"
+        "github.com/elastic/go-elasticsearch/v8/typedapi/core/search"
+        "github.com/elastic/go-elasticsearch/v8/typedapi/types"
+        "github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/sortorder"
+)
+
+const (
+        when      = "when"
+        app       = "app"
+        typeConst = "type"
+        who       = "who"
+        class     = "class"
+        instance  = "instance"
+        op        = "op"
+        remote_ip = "remote_ip"
+        pri       = "pri"
+        id        = "id" // document id
+        layout    = "2006-01-02T15:04:05Z"
+)
+
+var (
+        Index                     = "logharbour"
+        LOGHARBOUR_GETLOGS_MAXREC = 5
+        res                       *search.Response
+        Priority                  = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
+        requiredPri               []string
+)
+
+type GetLogsParam struct {
+        App              *string
+        Type             *LogType
+        Module           *string
+        Who              *string
+        Class            *string
+        Instance         *string
+        Operation        *string
+        FromTS           *time.Time
+        ToTS             *time.Time
+        NDays            *int
+        RemoteIP         *string
+        Priority         *LogPriority
+        SearchAfterTS    *string
+        SearchAfterDocID *string
+}
+
+type GetUnusualIPParam struct {
+        App       *string
+        Who       *string
+        Class     *string
+        Operation *string
+        NDays     *int
+}
+
+// ElasticsearchWriter defines methods for Elasticsearch writer
+type ElasticsearchWriter interface {
+        Write(index string, documentID string, body string) error
+}
+
+type ElasticsearchClient struct {
+        client *elasticsearch.Client
+}
+
+// NewElasticsearchClient creates a new Elasticsearch client with the given configuration
+func NewElasticsearchClient(cfg elasticsearch.Config) (*ElasticsearchClient, error) <span class="cov0" title="0">{
+        esClient, err := elasticsearch.NewClient(cfg)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return &amp;ElasticsearchClient{client: esClient}, nil</span>
+}
+
+// Write sends a document to Elasticsearch. It implements ElasticsearchWriter.
+func (ec *ElasticsearchClient) Write(index string, documentID string, body string) error <span class="cov0" title="0">{
+        req := esapi.IndexRequest{
+                Index:      index,
+                DocumentID: documentID,
+                Body:       strings.NewReader(body),
+        }
+
+        res, err := req.Do(context.Background(), ec.client)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">defer res.Body.Close()
+
+        if res.IsError() </span><span class="cov0" title="0">{
+                log.Printf("Error response from Elasticsearch: %s", res.String())
+                return errors.New(res.String())
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+// Write sends a document to Elasticsearch with retry logic.
+// func (ec *ElasticsearchClient) Write(index string, documentID string, body string) error {
+//         var maxAttempts = 5
+//         var initialBackoff = 1 * time.Second
+
+//         operation := func() error {
+//                 req := esapi.IndexRequest{
+//                         Index:      index,
+//                         DocumentID: documentID,
+//                         Body:       strings.NewReader(body),
+//                 }
+
+//                 res, err := req.Do(context.Background(), ec.client)
+//                 if err != nil {
+//                         return err
+//                 }
+//                 defer res.Body.Close()
+
+//                 if res.IsError() {
+//                         log.Printf("Error response from Elasticsearch: %s", res.String())
+//                         return errors.New(res.String())
+//                 }
+
+//                 return nil
+//         }
+
+//         for attempt := 1; attempt &lt;= maxAttempts; attempt++ {
+//                 err := operation()
+//                 if err == nil {
+//                         return nil // Success
+//                 }
+
+//                 if attempt == maxAttempts {
+//                         return fmt.Errorf("after %d attempts, last error: %s", attempt, err)
+//                 }
+
+//                 wait := initialBackoff * time.Duration(1&lt;&lt;(attempt-1)) // Exponential backoff
+//                 log.Printf("Attempt %d failed, retrying in %v: %v", attempt, wait, err)
+//                 time.Sleep(wait)
+//         }
+
+//         return fmt.Errorf("reached max attempts without success")
+// }
+
+// GetLogs retrieves an slice of logEntry from Elasticsearch based on the fields provided in logParam.
+func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetLogsParam) ([]LogEntry, int, error) <span class="cov0" title="0">{
+
+        var queries []types.Query
+        var logEntries []LogEntry
+
+        ok, ranges, err := rangeQueryForTimestamp(logParam.FromTS, logParam.ToTS, logParam.NDays)
+        if ok </span><span class="cov0" title="0">{
+                queries = append(queries, ranges)
+        }</span>
+        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                return nil, 0, err
+        }</span>
+
+        <span class="cov0" title="0">if ok, app := termQueryForField(app, logParam.App); ok </span><span class="cov0" title="0">{
+                queries = append(queries, app)
+        }</span>
+
+        <span class="cov0" title="0">if logParam.Type != nil </span><span class="cov0" title="0">{
+                logTypeStr := logParam.Type.String()
+                if ok, logType := termQueryForField(typeConst, &amp;logTypeStr); ok </span><span class="cov0" title="0">{
+                        queries = append(queries, logType)
+                }</span>
+        }
+
+        <span class="cov0" title="0">if ok, who := termQueryForField(WHO, logParam.Who); ok </span><span class="cov0" title="0">{
+
+                queries = append(queries, who)
+        }</span>
+        <span class="cov0" title="0">if ok, class := termQueryForField(class, logParam.Class); ok </span><span class="cov0" title="0">{
+
+                queries = append(queries, class)
+        }</span>
+        <span class="cov0" title="0">if ok, instance := termQueryForField(instance, logParam.Instance); ok </span><span class="cov0" title="0">{
+
+                queries = append(queries, instance)
+        }</span>
+        <span class="cov0" title="0">if ok, op := termQueryForField(op, logParam.Operation); ok </span><span class="cov0" title="0">{
+
+                queries = append(queries, op)
+        }</span>
+        <span class="cov0" title="0">if ok, remoteIp := termQueryForField(remote_ip, logParam.RemoteIP); ok </span><span class="cov0" title="0">{
+
+                queries = append(queries, remoteIp)
+        }</span>
+
+        <span class="cov0" title="0">if logParam.Priority != nil </span><span class="cov0" title="0">{
+                priStr := logParam.Priority.String()
+                priFrom := slices.Index(Priority, priStr)
+                if priFrom &gt; 0 </span><span class="cov0" title="0">{
+                        requiredPri = Priority[priFrom:]
+                }</span>
+                <span class="cov0" title="0">if ok, pri := termQueryForField(pri, nil, requiredPri...); ok </span><span class="cov0" title="0">{
+                        queries = append(queries, pri)
+                }</span>
+        }
+
+        // creating elastic search bool query
+        <span class="cov0" title="0">query := &amp;types.Query{
+                Bool: &amp;types.BoolQuery{
+                        Filter: queries,
+                },
+        }
+
+        if len(queries) == 0 </span><span class="cov0" title="0">{
+                return nil, 0, fmt.Errorf("No Filter param")
+        }</span>
+
+        // sorting record on base of when
+        <span class="cov0" title="0">sortByWhen := types.SortOptions{
+                SortOptions: map[string]types.FieldSort{
+                        when: {Order: &amp;sortorder.Desc},
+                },
+        }
+
+        // sortById := types.SortOptions{
+        //         SortOptions: map[string]types.FieldSort{
+        //                 id : {Order: &amp;sortorder.Desc},
+        //         },
+        // }
+
+        //  calling search query when SearchAfterTS and SearchAfterDocID given
+        if logParam.SearchAfterTS != nil &amp;&amp; logParam.SearchAfterDocID != nil </span><span class="cov0" title="0">{
+                res, err = client.Search().Index(Index).Request(&amp;search.Request{
+                        Size:        &amp;LOGHARBOUR_GETLOGS_MAXREC,
+                        Query:       query,
+                        SearchAfter: []types.FieldValue{logParam.SearchAfterTS, logParam.SearchAfterDocID},
+                        Sort:        []types.SortCombinations{sortByWhen},
+                }).Do(context.Background())
+                //  calling search query when SearchAfterTS is given
+        }</span> else<span class="cov0" title="0"> if logParam.SearchAfterTS != nil &amp;&amp; logParam.SearchAfterDocID == nil </span><span class="cov0" title="0">{
+                res, err = client.Search().Index(Index).Request(&amp;search.Request{
+                        Size:        &amp;LOGHARBOUR_GETLOGS_MAXREC,
+                        Query:       query,
+                        SearchAfter: []types.FieldValue{logParam.SearchAfterTS},
+                        Sort:        []types.SortCombinations{sortByWhen},
+                }).Do(context.Background())
+                //  calling search query when is SearchAfterDocID
+        }</span> else<span class="cov0" title="0"> if logParam.SearchAfterTS == nil &amp;&amp; logParam.SearchAfterDocID != nil </span><span class="cov0" title="0">{
+                res, err = client.Search().Index(Index).Request(&amp;search.Request{
+                        Size:        &amp;LOGHARBOUR_GETLOGS_MAXREC,
+                        Query:       query,
+                        SearchAfter: []types.FieldValue{logParam.SearchAfterDocID},
+                        Sort:        []types.SortCombinations{sortByWhen},
+                }).Do(context.Background())
+        }</span> else<span class="cov0" title="0"> {
+                //  calling search query when SearchAfterTS and SearchAfterDocID not given
+                res, err = client.Search().Index(Index).Request(&amp;search.Request{
+                        Size:  &amp;LOGHARBOUR_GETLOGS_MAXREC,
+                        Query: query,
+                        Sort:  []types.SortCombinations{sortByWhen},
+                }).Do(context.Background())
+        }</span>
+        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                return nil, 0, fmt.Errorf("Error while searching document in es:%v", err)
+        }</span>
+        <span class="cov0" title="0">var logEnter LogEntry
+
+        // Unmarshalling hit.source into LogEntry
+        if res != nil </span><span class="cov0" title="0">{
+                for _, hit := range res.Hits.Hits </span><span class="cov0" title="0">{
+                        if err := json.Unmarshal([]byte(hit.Source_), &amp;logEnter); err != nil </span><span class="cov0" title="0">{
+                                return nil, 0, fmt.Errorf("error while unmarshalling response:%v", err)
+                        }</span>
+                        <span class="cov0" title="0">logEntries = append(logEntries, logEnter)</span>
+                }
+        }
+        <span class="cov0" title="0">return logEntries, int(res.Hits.Total.Value), nil</span>
+}
+
+// termQueryForField constructs and returns a term query for a specified field and its corresponding value.
+func termQueryForField(field string, value *string, values ...string) (bool, types.Query) <span class="cov0" title="0">{
+        if value != nil </span><span class="cov0" title="0">{
+                query := types.Query{
+                        Term: map[string]types.TermQuery{
+                                field: {Value: value},
+                        },
+                }
+                return true, query
+        }</span>
+        <span class="cov0" title="0">if values != nil </span><span class="cov0" title="0">{
+                var vals []types.FieldValue
+                for _, val := range values </span><span class="cov0" title="0">{
+                        vals = append(vals, val)
+                }</span>
+                <span class="cov0" title="0">query := types.Query{
+                        Terms: &amp;types.TermsQuery{
+                                TermsQuery: map[string]types.TermsQueryField{
+                                        field: vals,
+                                },
+                        },
+                }
+                return true, query</span>
+        }
+        <span class="cov0" title="0">return false, types.Query{}</span>
+}
+
+// rangeQueryForTimestamp generates a range query for Elasticsearch based on the provided timestamps and number of days.
+func rangeQueryForTimestamp(fromTS, toTS *time.Time, nDays *int) (bool, types.Query, error) <span class="cov0" title="0">{
+
+        // return query if both present fromTs and toTs
+        if fromTS != nil &amp;&amp; toTS != nil </span><span class="cov0" title="0">{
+                fromTs := fromTS.Format(layout)
+                toTs := toTS.Format(layout)
+                if fromTS.Before(*toTS) </span><span class="cov0" title="0">{
+                        query := types.Query{
+                                Range: map[string]types.RangeQuery{
+                                        when: types.DateRangeQuery{
+                                                Gte: &amp;fromTs,
+                                                Lte: &amp;toTs,
+                                        },
+                                },
+                        }
+                        return true, query, nil
+                }</span> else<span class="cov0" title="0"> {
+                        return false, types.Query{}, fmt.Errorf("tots must be after fromts")
+                }</span>
+
+                // appending query if FromTs is present
+        } else<span class="cov0" title="0"> if fromTS != nil &amp;&amp; toTS == nil </span><span class="cov0" title="0">{
+                fromTs := fromTS.Format(layout)
+                query := types.Query{
+                        Range: map[string]types.RangeQuery{
+                                when: types.DateRangeQuery{
+                                        Gte: &amp;fromTs,
+                                },
+                        },
+                }
+                return true, query, nil
+
+                // appending query if ToTS is present
+        }</span> else<span class="cov0" title="0"> if fromTS == nil &amp;&amp; toTS != nil </span><span class="cov0" title="0">{
+                toTs := toTS.Format(layout)
+                query := types.Query{
+                        Range: map[string]types.RangeQuery{
+                                when: types.DateRangeQuery{
+                                        Lte: &amp;toTs,
+                                },
+                        },
+                }
+                return true, query, nil
+
+                // appending query for get log for n number of day
+        }</span> else<span class="cov0" title="0"> if nDays != nil &amp;&amp; fromTS == nil &amp;&amp; toTS == nil </span><span class="cov0" title="0">{
+                if *nDays &gt; 0 </span><span class="cov0" title="0">{
+                        day := fmt.Sprintf("now-%dd/d", *nDays) // now-5d
+                        query := types.Query{
+                                Range: map[string]types.RangeQuery{
+                                        when: types.DateRangeQuery{
+                                                Gte: &amp;day,
+                                        },
+                                },
+                        }
+                        return true, query, nil
+                }</span>
+        }
+        <span class="cov0" title="0">return false, types.Query{}, nil</span>
+}
+
+// GetUnusualIP will go through the logs of the last ndays days which match the search criteria, and pull out all the
+// remote IP addresses which account for a low enough percentage of the total to be treated as unusual or suspicious.
+func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, logParam GetUnusualIPParam, unusualPercent float64) ([]string, error) <span class="cov0" title="0">{
+        unusualIPs := []string{}
+
+        if unusualPercent &lt; 0.5 || unusualPercent &gt; 50 </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("unusualPercent is not between 0.5 to 50")
+        }</span>
+
+        <span class="cov0" title="0">aggregatedIPs, err := GetSet(queryToken, client, remote_ip, GetSetParam{
+                App:   logParam.App,
+                Who:   logParam.Who,
+                Class: logParam.Class,
+                Op:    logParam.Operation,
+                Ndays: logParam.NDays,
+        })
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        //   Calculate total number of logs to find what 1% represents
+        <span class="cov0" title="0">var count int64 = 0
+        for _, v := range aggregatedIPs </span><span class="cov0" title="0">{
+                count += v
+        }</span>
+        <span class="cov0" title="0">percentThreshold := float64(count) * unusualPercent / 100
+
+        if percentThreshold &gt; 1 </span><span class="cov0" title="0">{
+                for ip, count := range aggregatedIPs </span><span class="cov0" title="0">{
+                        fmt.Printf("IP: %s, Count: %d\n", ip, count)
+                        if count &lt;= int64(percentThreshold) </span><span class="cov0" title="0">{
+                                if ip != "local" </span><span class="cov0" title="0">{
+                                        unusualIPs = append(unusualIPs, ip)
+                                }</span>
+                        }
+                }
+        }
+        <span class="cov0" title="0">return unusualIPs, nil</span>
+
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package logharbour
+
+import (
+        "context"
+        "fmt"
+        "reflect"
+        "regexp"
+        "slices"
+        "time"
+
+        "github.com/elastic/go-elasticsearch/v8"
+        "github.com/elastic/go-elasticsearch/v8/typedapi/core/search"
+        "github.com/elastic/go-elasticsearch/v8/typedapi/some"
+        "github.com/elastic/go-elasticsearch/v8/typedapi/types"
+)
+
+type GetSetParam struct {
+        App      *string      `json:"app" validate:"omitempty,alpha,lt=30"`
+        Type     *LogType     `json:"type" validate:"omitempty,oneof=1 2 3 4"`
+        Who      *string      `json:"who" validate:"omitempty,alpha,lt=20"`
+        Class    *string      `json:"class" validate:"omitempty,alpha,lt=30"`
+        Instance *string      `json:"instance" validate:"omitempty,alpha,lt=30"`
+        Op       *string      `json:"op" validate:"omitempty,alpha,lt=25"`
+        Fromts   *time.Time   `json:"fromts" validate:"omitempty"`
+        Tots     *time.Time   `json:"tots" validate:"omitempty"`
+        Ndays    *int         `json:"ndays" validate:"omitempty,number,lt=100"`
+        RemoteIP *string      `json:"remoteIP" validate:"omitempty"`
+        Pri      *LogPriority `json:"pri" validate:"omitempty,oneof=1 2 3 4 5 6 7 8"`
+}
+
+const (
+        INDEX       = "logharbour"
+        APP         = "app"
+        TYPE        = "type"
+        WHO         = "who"
+        CLASS       = "class"
+        INSTANCE    = "instance"
+        OP          = "op"
+        REMOTE_IP   = "remote_ip"
+        PRI         = "pri"
+        WHEN        = "when"
+        MODULE      = "module"
+        STATUS      = "status"
+        SYSTEM      = "system"
+        LAYOUT      = "2006-01-02T15:04:05Z"
+        DIALTIMEOUT = 10 * time.Second
+        SERVICES    = "services"
+        ACTIVITY    = "A"
+        DEBUG       = "D"
+)
+
+// GetSet gets a set of values for an attribute from the log entries specified.
+// This is a faceted search for one attribute.
+func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string, setParam GetSetParam) (map[string]int64, error) <span class="cov0" title="0">{
+
+        var (
+                query   *types.Query
+                zero    = 0
+                dataMap = make(map[string]int64)
+        )
+
+        // Validate setAttr
+        _, err := isValidSetAttribute(setAttr)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        // Call getQuery fuction which will return a query for valid method parameters
+        <span class="cov0" title="0">query, err = getQuery(setParam)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("error while calling getQuery : %v ", err)
+
+        }</span>
+
+        // Create a context with a timeout
+        <span class="cov0" title="0">ctx, cancel := context.WithTimeout(context.Background(), DIALTIMEOUT)
+        defer cancel()
+
+        // To Serach data
+        // This will return a set of unique values for an attribute based on method parameters
+        res, err := client.Search().Index(INDEX).Request(&amp;search.Request{
+                Query: query,
+                Size:  &amp;zero,
+                Aggregations: map[string]types.Aggregations{
+                        SERVICES: {
+                                Terms: &amp;types.TermsAggregation{
+                                        Field: some.String(setAttr),
+                                },
+                        },
+                },
+        }).Do(ctx)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("error runnning search query: %s", err)
+        }</span>
+
+        // To assert if response contains aggregation response and it must be type of *types.StringTermsAggregate
+        <span class="cov0" title="0">servicesAgg, ok := res.Aggregations[SERVICES].(*types.StringTermsAggregate)
+        if !ok || servicesAgg == nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("services aggregation is not present or not of type *types.StringTermsAggregate")
+        }</span>
+        // To extract bucket_key and bucket_count from Buckets which must be type of types.BucketsStringTermsBucket and append it to dataMap
+        <span class="cov0" title="0">bucketsSlice, ok := servicesAgg.Buckets.([]types.StringTermsBucket)
+        if ok </span><span class="cov0" title="0">{
+                for _, bucket := range bucketsSlice </span><span class="cov0" title="0">{
+                        // Ensuring bucket key is a string.
+                        // It proceeds to extract the key as a string and assign it to bucketKeyString.
+                        if bucketKeyString, ok := bucket.Key.(string); ok </span><span class="cov0" title="0">{
+                                dataMap[bucketKeyString] = bucket.DocCount
+                        }</span> else<span class="cov0" title="0"> {
+                                return nil, fmt.Errorf("The bucket key is not a string")
+                        }</span>
+                }
+        } else<span class="cov0" title="0"> {
+                return nil, fmt.Errorf("services aggregation Buckets field has Unknown type: %v , valid type is :%v", reflect.TypeOf(servicesAgg.Buckets), "[]types.StringTermsBucket")
+        }</span>
+
+        <span class="cov0" title="0">return dataMap, nil</span>
+}
+
+// To form a query based on valid method parameters
+func getQuery(param GetSetParam) (*types.Query, error) <span class="cov0" title="0">{
+        var (
+                termQueries = make([]types.Query, 0)
+                typeQueries = make([]types.Query, 0)
+                query       *types.Query
+                Priority    = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
+        )
+
+        // Case 1:If fromts and tots are specified, then tots must be after fromts.
+        if param.Fromts != nil &amp;&amp; param.Tots != nil </span><span class="cov0" title="0">{
+                fromTs := param.Fromts.Format(LAYOUT)
+                toTs := param.Tots.Format(LAYOUT)
+                if param.Fromts.Before(*param.Tots) </span><span class="cov0" title="0">{
+                        days := types.Query{
+                                Range: map[string]types.RangeQuery{
+                                        WHEN: types.DateRangeQuery{
+                                                Gte: &amp;fromTs,
+                                                Lte: &amp;toTs,
+                                        },
+                                },
+                        }
+                        termQueries = append(termQueries, days)
+                }</span> else<span class="cov0" title="0"> {
+                        return nil, fmt.Errorf("tots must be after fromts")
+                }</span>
+                // Case 2:If only Fromts present
+        } else<span class="cov0" title="0"> if param.Fromts != nil &amp;&amp; param.Tots == nil </span><span class="cov0" title="0">{
+                fromTs := param.Fromts.Format(LAYOUT)
+                days := types.Query{
+                        Range: map[string]types.RangeQuery{
+                                WHEN: types.DateRangeQuery{
+                                        Gte: &amp;fromTs,
+                                },
+                        },
+                }
+                termQueries = append(termQueries, days)
+                // case 3: If only Tots present
+        }</span> else<span class="cov0" title="0"> if param.Fromts == nil &amp;&amp; param.Tots != nil </span><span class="cov0" title="0">{
+                toTs := param.Tots.Format(LAYOUT)
+                days := types.Query{
+                        Range: map[string]types.RangeQuery{
+                                WHEN: types.DateRangeQuery{
+                                        Lte: &amp;toTs,
+                                },
+                        },
+                }
+                termQueries = append(termQueries, days)
+                // Case 4:If both fromts and tots are not specified only days are present
+        }</span> else<span class="cov0" title="0"> if param.Ndays != nil &amp;&amp; param.Fromts == nil &amp;&amp; param.Tots == nil </span><span class="cov0" title="0">{
+                if *param.Ndays &gt; 0 </span><span class="cov0" title="0">{
+                        day := fmt.Sprintf("now-%dd/d", *param.Ndays)
+                        days := types.Query{
+                                Range: map[string]types.RangeQuery{
+                                        WHEN: types.DateRangeQuery{
+                                                Gte: &amp;day,
+                                        },
+                                },
+                        }
+                        termQueries = append(termQueries, days)
+                }</span>
+        }
+
+        <span class="cov0" title="0">if param.App != nil </span><span class="cov0" title="0">{
+                termQueries = append(termQueries, types.Query{
+                        Term: map[string]types.TermQuery{
+                                APP: {Value: param.App},
+                        },
+                })
+        }</span>
+
+        <span class="cov0" title="0">if param.Type != nil </span><span class="cov0" title="0">{
+                termQueries = append(termQueries, types.Query{
+                        Term: map[string]types.TermQuery{
+                                TYPE: {Value: param.Type.String()},
+                        },
+                })
+        }</span>
+
+        // typequeris contains only debug and activity logs
+        <span class="cov0" title="0">typeQueries = append(typeQueries, types.Query{
+                Term: map[string]types.TermQuery{
+                        TYPE: {Value: ACTIVITY},
+                },
+        })
+
+        typeQueries = append(typeQueries, types.Query{
+                Term: map[string]types.TermQuery{
+                        TYPE: {Value: DEBUG},
+                },
+        })
+
+        // whenever type parameter is nil it considers all three types i.e Activity,Debug and Data change
+        // If pri parameter is present then we cannot consider Data change type logs because it has no priority
+        // so, In this case filter is applied for getting only Activity and Debug type i.e. tyqueries
+        if param.Type == nil &amp;&amp; param.Pri != nil </span><span class="cov0" title="0">{
+                termQueries = append(termQueries, types.Query{
+                        Bool: &amp;types.BoolQuery{
+                                Filter: typeQueries,
+                        },
+                })
+
+        }</span>
+        <span class="cov0" title="0">if param.Who != nil </span><span class="cov0" title="0">{
+                termQueries = append(termQueries, types.Query{
+                        Term: map[string]types.TermQuery{
+                                WHO: {Value: *param.Who},
+                        },
+                })
+        }</span>
+
+        <span class="cov0" title="0">if param.Class != nil </span><span class="cov0" title="0">{
+                termQueries = append(termQueries, types.Query{
+                        Term: map[string]types.TermQuery{
+                                CLASS: {Value: *param.Class},
+                        },
+                })
+
+                // Instance must be considered only if class is specified
+                if param.Instance != nil &amp;&amp; param.Class != nil </span><span class="cov0" title="0">{
+                        termQueries = append(termQueries, types.Query{
+                                Term: map[string]types.TermQuery{
+                                        INSTANCE: {Value: *param.Instance},
+                                },
+                        })
+                }</span>
+        }
+
+        <span class="cov0" title="0">if param.Op != nil </span><span class="cov0" title="0">{
+                termQueries = append(termQueries, types.Query{
+                        Term: map[string]types.TermQuery{
+                                OP: {Value: *param.Op},
+                        },
+                })
+        }</span>
+
+        <span class="cov0" title="0">if param.RemoteIP != nil </span><span class="cov0" title="0">{
+                termQueries = append(termQueries, types.Query{
+                        Term: map[string]types.TermQuery{
+                                REMOTE_IP: {Value: *param.RemoteIP},
+                        },
+                })
+        }</span>
+
+        // pri specifies that only logs of priority equal to or higher than the value given here will be returned.
+        <span class="cov0" title="0">if param.Pri != nil &amp;&amp; param.Type != nil &amp;&amp; LogType(*param.Type) != Change </span><span class="cov0" title="0">{
+                pri := param.Pri.String()
+                priFrom := slices.Index(Priority, pri)
+                if priFrom &gt;= 0 </span><span class="cov0" title="0">{
+                        priParams := Priority[priFrom:]
+                        if len(priParams) &gt; 0 </span><span class="cov0" title="0">{
+                                var vals []types.FieldValue
+                                for _, val := range priParams </span><span class="cov0" title="0">{
+                                        vals = append(vals, val)
+                                }</span>
+                                <span class="cov0" title="0">termQueries = append(termQueries, types.Query{
+                                        // add filter
+                                        Terms: &amp;types.TermsQuery{
+
+                                                TermsQuery: map[string]types.TermsQueryField{
+                                                        PRI: vals,
+                                                },
+                                        },
+                                })</span>
+                        }
+                }
+        }
+
+        <span class="cov0" title="0">query = &amp;types.Query{
+                Bool: &amp;types.BoolQuery{
+                        Filter: termQueries,
+                },
+        }
+        return query, nil</span>
+}
+
+func isValidSetAttribute(setAttr string) (bool, error) <span class="cov0" title="0">{
+
+        var (
+                empty   = struct{}{}
+                pattern = "^[a-z]{1,9}$"
+        )
+        // Validate setAttr
+        regex := regexp.MustCompile(pattern)
+        if setAttr == "" &amp;&amp; !regex.MatchString(setAttr) </span><span class="cov0" title="0">{
+                return false, fmt.Errorf("attribute %s must not contain numbers or special characters, and must not be empty, with length not exceeding 9", setAttr)
+        }</span>
+
+        // The attribute named can only be one of those which have finite discrete values, i.e. they are
+        // conceptually enumerated types.
+        <span class="cov0" title="0">allowedAttributes := map[string]struct{}{
+                APP:       empty,
+                TYPE:      empty,
+                OP:        empty,
+                INSTANCE:  empty,
+                MODULE:    empty,
+                PRI:       empty,
+                STATUS:    empty,
+                REMOTE_IP: empty,
+                SYSTEM:    empty,
+                WHO:       empty,
+        }
+
+        // To validate  setAttr only one of allowedAttributes has been named, and if not, will return an error.
+        if _, ok := allowedAttributes[setAttr]; !ok </span><span class="cov0" title="0">{
+                return false, fmt.Errorf("attribute '%s' is not allowed for set retrieval", setAttr)
+        }</span>
+        <span class="cov0" title="0">return true, nil</span>
+}
+
+// GetApps is used  to retrieve the list of apps
+func GetApps(querytoken string, client *elasticsearch.TypedClient) (apps []string, err error) <span class="cov0" title="0">{
+
+        // Calling GetSet() for getting  all unique values for apps
+        setvalues, err := GetSet(querytoken, client, APP, GetSetParam{})
+
+        if err != nil </span><span class="cov0" title="0">{
+                return apps, fmt.Errorf("error at calling getset() : %w", err)
+        }</span>
+
+        // Extracting keys from setValues
+        <span class="cov0" title="0">for app := range setvalues </span><span class="cov0" title="0">{
+                apps = append(apps, app)
+        }</span>
+        <span class="cov0" title="0">return apps, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package logharbour
+
+import (
+        "time"
+
+        "github.com/IBM/sarama"
+)
+
+const defaultPoolSize = 10 // Set your default pool size
+
+// KafkaConfig is a struct that holds the configuration for a Kafka producer.
+// All fields are pointers, which allows us to distinguish between a field that is not set and a field set with its zero value.
+type KafkaConfig struct {
+        Brokers []string // List of broker addresses
+        Topic   string   // Kafka topic to write messages to
+
+        // Producer configurations
+        Retries          *int                 // Maximum number of times to retry sending a message
+        RequiredAcks     *sarama.RequiredAcks // Number of acknowledgments required before considering a message as sent
+        Timeout          *time.Duration       // Maximum duration to wait for the broker to acknowledge the receipt of a message
+        ReturnErrors     *bool                // Whether to return errors that occurred while producing the message
+        ReturnSuccesses  *bool                // Whether to return successes of produced messages
+        CompressionLevel *int                 // Compression level to use for messages
+
+        // Network configurations
+        DialTimeout     *time.Duration // Timeout for establishing network connections
+        ReadTimeout     *time.Duration // Timeout for network reads
+        WriteTimeout    *time.Duration // Timeout for network writes
+        MaxOpenRequests *int           // Maximum number of unacknowledged requests to send before blocking
+
+        // Client configurations
+        ClientID *string // User-provided string sent with every request for logging, debugging, and auditing purposes
+}
+
+// KafkaWriter defines methods for Kafka writer
+type KafkaWriter interface {
+        Write(p []byte) (n int, err error)
+        Close() error
+}
+
+type KafkaWriterOption func(*kafkaWriter)
+
+func WithPoolSize(size int) KafkaWriterOption <span class="cov0" title="0">{
+        return func(kw *kafkaWriter) </span><span class="cov0" title="0">{
+                kw.pool.poolSize = size
+        }</span>
+}
+
+func NewKafkaWriter(kafkaConfig KafkaConfig, opts ...KafkaWriterOption) (KafkaWriter, error) <span class="cov0" title="0">{
+        pool, err := newKafkaConnectionPool(defaultPoolSize, kafkaConfig)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">kw := &amp;kafkaWriter{
+                pool:  pool,
+                topic: kafkaConfig.Topic,
+        }
+        for _, opt := range opts </span><span class="cov0" title="0">{
+                opt(kw)
+        }</span>
+        <span class="cov0" title="0">return kw, nil</span>
+}
+
+type kafkaWriter struct {
+        pool  *kafkaConnectionPool
+        topic string
+}
+
+// Write sends a message to a Kafka topic. It implements io.Writer.
+// It works with kafkaConnectionPool.
+// It retrieves a connection from the pool and releases it back to the pool after use.
+func (kw *kafkaWriter) Write(p []byte) (n int, err error) <span class="cov0" title="0">{
+        producer := kw.pool.getConnection()
+        defer kw.pool.releaseConnection(producer)
+
+        msg := &amp;sarama.ProducerMessage{
+                Topic: kw.topic,
+                Value: sarama.ByteEncoder(p),
+        }
+
+        _, _, err = producer.SendMessage(msg)
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, err
+        }</span>
+
+        <span class="cov0" title="0">return len(p), nil</span>
+}
+
+// Close is used to close the writer and conforms to the io.Closer.
+// It iterates over all connections in the pool and closes them.
+// If there is an error in closing a connection, it returns the error immediately without closing the remaining connections.
+// If all connections are successfully closed, it returns nil.
+func (kw *kafkaWriter) Close() error <span class="cov0" title="0">{
+        for _, producer := range kw.pool.all </span><span class="cov0" title="0">{
+                if err := producer.Close(); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+
+///// pool
+
+// kafkaConnectionPool represents a pool of connections to a Kafka cluster.
+// It maintains a channel of sarama.SyncProducer instances, which are used to send messages to Kafka.
+// The maxConnections field specifies the maximum number of connections that can be open at the same time.
+// The all field keeps track of all connections created, regardless of whether they are currently in use or in the pool.
+// This is necessary because when closing the Kafka writer, we need to ensure that all connections are closed.
+// If we only had the connections channel, we could only close the connections currently in the pool, not the ones in use.
+type kafkaConnectionPool struct {
+        connections chan sarama.SyncProducer
+        all         []sarama.SyncProducer
+        poolSize    int
+}
+
+func newKafkaConnectionPool(poolSize int, kafkaConfig KafkaConfig) (*kafkaConnectionPool, error) <span class="cov0" title="0">{
+        pool := &amp;kafkaConnectionPool{
+                connections: make(chan sarama.SyncProducer, poolSize),
+                all:         make([]sarama.SyncProducer, 0, poolSize),
+                poolSize:    poolSize,
+        }
+
+        saramaConfig := applyKafkaConfig(kafkaConfig)
+
+        for i := 0; i &lt; poolSize; i++ </span><span class="cov0" title="0">{
+                producer, err := sarama.NewSyncProducer(kafkaConfig.Brokers, saramaConfig)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                // Add the newly created producer to the pool (connections channel)
+                <span class="cov0" title="0">pool.connections &lt;- producer
+                // And also add it to the all slice
+                pool.all = append(pool.all, producer)</span>
+        }
+
+        <span class="cov0" title="0">return pool, nil</span>
+}
+
+// getConnection retrieves a connection from the pool.
+// If all connections are currently in use, this method will block until a connection is released back into the pool.
+func (pool *kafkaConnectionPool) getConnection() sarama.SyncProducer <span class="cov0" title="0">{
+        return &lt;-pool.connections
+}</span>
+
+// releaseConnection releases a connection back into the pool, making it available for reuse.
+// This method should be called after a connection is no longer needed, to allow other goroutines to use it.
+func (pool *kafkaConnectionPool) releaseConnection(producer sarama.SyncProducer) <span class="cov0" title="0">{
+        pool.connections &lt;- producer
+}</span>
+
+// ApplyKafkaConfig takes a KafkaConfig struct as input and returns a sarama.Config instance.
+// It applies the settings from the KafkaConfig to the sarama.Config instance, including producer, network, and client configurations.
+func applyKafkaConfig(kafkaConfig KafkaConfig) *sarama.Config <span class="cov0" title="0">{
+        saramaConfig := sarama.NewConfig()
+
+        // Set defaults as per our requirements
+
+        // Set Producer.Return.Successes to true by default as it is required for sync producer
+        saramaConfig.Producer.Return.Successes = true
+
+        if kafkaConfig.Retries != nil </span><span class="cov0" title="0">{
+                saramaConfig.Producer.Retry.Max = *kafkaConfig.Retries
+        }</span>
+
+        <span class="cov0" title="0">if kafkaConfig.RequiredAcks != nil </span><span class="cov0" title="0">{
+                saramaConfig.Producer.RequiredAcks = *kafkaConfig.RequiredAcks
+        }</span>
+
+        <span class="cov0" title="0">if kafkaConfig.Timeout != nil </span><span class="cov0" title="0">{
+                saramaConfig.Producer.Timeout = *kafkaConfig.Timeout
+        }</span>
+
+        <span class="cov0" title="0">if kafkaConfig.ReturnErrors != nil </span><span class="cov0" title="0">{
+                saramaConfig.Producer.Return.Errors = *kafkaConfig.ReturnErrors
+        }</span>
+
+        <span class="cov0" title="0">if kafkaConfig.ReturnSuccesses != nil </span><span class="cov0" title="0">{
+                saramaConfig.Producer.Return.Successes = *kafkaConfig.ReturnSuccesses
+        }</span>
+
+        <span class="cov0" title="0">if kafkaConfig.CompressionLevel != nil </span><span class="cov0" title="0">{
+                saramaConfig.Producer.CompressionLevel = *kafkaConfig.CompressionLevel
+        }</span>
+
+        <span class="cov0" title="0">if kafkaConfig.DialTimeout != nil </span><span class="cov0" title="0">{
+                saramaConfig.Net.DialTimeout = *kafkaConfig.DialTimeout
+        }</span>
+
+        <span class="cov0" title="0">if kafkaConfig.ReadTimeout != nil </span><span class="cov0" title="0">{
+                saramaConfig.Net.ReadTimeout = *kafkaConfig.ReadTimeout
+        }</span>
+
+        <span class="cov0" title="0">if kafkaConfig.WriteTimeout != nil </span><span class="cov0" title="0">{
+                saramaConfig.Net.WriteTimeout = *kafkaConfig.WriteTimeout
+        }</span>
+
+        <span class="cov0" title="0">if kafkaConfig.MaxOpenRequests != nil </span><span class="cov0" title="0">{
+                saramaConfig.Net.MaxOpenRequests = *kafkaConfig.MaxOpenRequests
+        }</span>
+
+        <span class="cov0" title="0">if kafkaConfig.ClientID != nil </span><span class="cov0" title="0">{
+                saramaConfig.ClientID = *kafkaConfig.ClientID
+        }</span>
+
+        <span class="cov0" title="0">return saramaConfig</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package logharbour
+
+import (
+        "github.com/IBM/sarama"
+)
+
+// MessageHandler is a function type that processes messages from Kafka.
+type MessageHandler func(messages []*sarama.ConsumerMessage) error
+
+// Consumer defines the interface for a Kafka consumer.
+type Consumer interface {
+        Start(batchSize int) (&lt;-chan error, error)
+        Stop() error
+}
+
+type kafkaConsumer struct {
+        consumer sarama.Consumer
+        topic    string
+        handler  MessageHandler
+}
+
+func NewConsumer(brokers []string, topic string, handler MessageHandler) (Consumer, error) <span class="cov0" title="0">{
+        // Initialize Kafka consumer configuration
+        kafkaConfig := sarama.NewConfig()
+        kafkaConfig.Consumer.Return.Errors = true
+
+        // Create a new consumer
+        consumer, err := sarama.NewConsumer(brokers, kafkaConfig)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;kafkaConsumer{
+                consumer: consumer,
+                topic:    topic,
+                handler:  handler,
+        }, nil</span>
+}
+
+// Start begins consuming messages from all partitions of the Kafka topic concurrently.
+// It creates a separate goroutine for each partition to allow for simultaneous processing of messages.
+// This can significantly improve throughput, especially for topics with multiple partitions.
+// The method takes a batchSize parameter, which specifies the number of messages to accumulate
+// before processing them as a batch. Once the batch size is reached, the handler function is
+// called to process the batch of messages.
+// The method returns a channel that emits errors encountered during message consumption. This allows
+// the caller to handle these errors asynchronously. The channel should be continuously read from
+// to prevent blocking the consumer.
+func (kc *kafkaConsumer) Start(batchSize int) (&lt;-chan error, error) <span class="cov0" title="0">{
+        errs := make(chan error)
+
+        partitionList, err := kc.getPartitions()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">for _, partition := range partitionList </span><span class="cov0" title="0">{
+                err := kc.consumePartition(partition, batchSize, errs)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+        }
+
+        <span class="cov0" title="0">return errs, nil</span>
+}
+
+// getPartitions retrieves the list of partitions for the Kafka topic.
+// This is necessary to start consuming messages from all partitions.
+func (kc *kafkaConsumer) getPartitions() ([]int32, error) <span class="cov0" title="0">{
+        return kc.consumer.Partitions(kc.topic)
+}</span>
+
+// consumePartition starts consuming messages from a specific partition.
+// It also starts a goroutine to process the messages from the partition.
+// This allows for messages from multiple partitions to be processed simultaneously.
+func (kc *kafkaConsumer) consumePartition(partition int32, batchSize int, errs chan error) error <span class="cov0" title="0">{
+        pc, err := kc.consumer.ConsumePartition(kc.topic, partition, sarama.OffsetNewest)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">go kc.processMessages(pc, batchSize, errs)
+
+        return nil</span>
+}
+
+// processMessages processes messages from a partition.
+// It creates batches of messages and calls handleBatch to process each batch.
+// This allows for efficient processing of messages, especially when the handler function
+// is designed to process batches of messages.
+func (kc *kafkaConsumer) processMessages(pc sarama.PartitionConsumer, batchSize int, errs chan error) <span class="cov0" title="0">{
+        batch := make([]*sarama.ConsumerMessage, 0, batchSize)
+        for message := range pc.Messages() </span><span class="cov0" title="0">{
+                batch = append(batch, message)
+                if len(batch) &gt;= batchSize </span><span class="cov0" title="0">{
+                        kc.handleBatch(batch, errs)
+                        batch = batch[:0]
+                }</span>
+        }
+        <span class="cov0" title="0">if len(batch) &gt; 0 </span><span class="cov0" title="0">{
+                kc.handleBatch(batch, errs)
+        }</span>
+}
+
+// handleBatch calls the handler function with a batch of messages and sends any errors to the error channel.
+// This allows the caller to handle errors asynchronously and continue processing other batches.
+func (kc *kafkaConsumer) handleBatch(batch []*sarama.ConsumerMessage, errs chan error) <span class="cov0" title="0">{
+        if err := kc.handler(batch); err != nil </span><span class="cov0" title="0">{
+                errs &lt;- err
+        }</span>
+}
+
+func (kc *kafkaConsumer) Stop() error <span class="cov0" title="0">{
+        if err := kc.consumer.Close(); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package logharbour
+
+import (
+        "encoding/json"
+        "fmt"
+        "io"
+        "os"
+        "runtime"
+        "sync"
+        "sync/atomic"
+        "time"
+
+        "github.com/go-playground/validator/v10"
+)
+
+const DefaultPriority = Info
+
+// LoggerContext provides a shared context (state) for instances of Logger.
+// It contains a minLogPriority field that determines the minimum log priority level
+// that should be logged by any Logger using this context.
+// The mu Mutex ensures that all operations on the minLogPriority field are mutually exclusive,
+// regardless of which goroutine they are performed in.
+type LoggerContext struct {
+        minLogPriority LogPriority
+        debugMode      int32 // int32 to represent the boolean flag atomically
+        mu             sync.Mutex
+}
+
+// NewLoggerContext creates a new LoggerContext with the specified minimum log priority.
+// The returned LoggerContext can be used to create Logger instances with a shared context for all the
+// Logger instances.
+func NewLoggerContext(minLogPriority LogPriority) *LoggerContext <span class="cov8" title="1">{
+        return &amp;LoggerContext{
+                minLogPriority: minLogPriority,
+        }
+}</span>
+
+// Logger provides a structured interface for logging.
+// It's designed for each goroutine to have its own instance.
+// Logger is safe for concurrent use. However, it's not recommended
+// to share a Logger instance across multiple goroutines.
+//
+// If the writer is a FallbackWriter and validation of a log entry fails,
+// the Logger will automatically write the invalid entry to the FallbackWriter's fallback writer.
+// If writing to fallback writer also fails then it writes to STDERR.
+//
+// The 'With' prefixed methods in the Logger are used to create a new Logger instance
+// with a specific field set to a new value. These methods  create a copy of the current Logger,
+// then set the desired field to the new value, and finally return the new Logger.
+// This approach provides a flexible way to create a new Logger with specific settings,
+// without having to provide all settings at once or change the settings of an existing Logger.
+type Logger struct {
+        context    *LoggerContext      // Context for the logger. It is shared by all clones of the logger.
+        app        string              // Name of the application.
+        system     string              // System where the application is running.
+        module     string              // Module or subsystem within the application.
+        pri        LogPriority         // Priority level of the log messages.
+        who        string              // User or service performing the operation.
+        op         string              // Operation being performed.
+        class      string              // Class of the object instance involved.
+        instanceId string              // Unique ID of the object instance.
+        status     Status              // Status of the operation.
+        err        string              // Error associated with the operation.
+        remoteIP   string              // IP address of the remote endpoint.
+        writer     io.Writer           // Writer interface for log entries.
+        validator  *validator.Validate // Validator for log entries.
+        mu         sync.Mutex          // Mutex for thread-safe operations.
+}
+
+// clone creates and returns a new Logger with the same values as the original.
+func (l *Logger) clone() *Logger <span class="cov8" title="1">{
+        return &amp;Logger{
+                context:    l.context,
+                app:        l.app,
+                system:     l.system,
+                module:     l.module,
+                pri:        l.pri,
+                who:        l.who,
+                op:         l.op,
+                class:      l.class,
+                instanceId: l.instanceId,
+                status:     l.status,
+                err:        l.err,
+                remoteIP:   l.remoteIP,
+                writer:     l.writer,
+                validator:  l.validator,
+        }
+}</span>
+
+// NewLogger creates a new Logger with the specified application name and writer.
+// We recommend using NewLoggerWithFallback instead of this method.
+func NewLogger(context *LoggerContext, appName string, writer io.Writer) *Logger <span class="cov8" title="1">{
+        return &amp;Logger{
+                context:   context,
+                app:       appName,
+                system:    getSystemName(),
+                writer:    writer,
+                validator: validator.New(),
+                pri:       DefaultPriority,
+        }
+}</span>
+
+// NewLoggerWithFallback creates a new Logger with a fallback writer.
+// The fallback writer is used if the primary writer fails or if validation of a log entry fails.
+func NewLoggerWithFallback(context *LoggerContext, appName string, fallbackWriter *FallbackWriter) *Logger <span class="cov0" title="0">{
+        return &amp;Logger{
+                context:   context,
+                app:       appName,
+                system:    getSystemName(),
+                writer:    fallbackWriter,
+                validator: validator.New(),
+                pri:       DefaultPriority,
+        }
+}</span>
+
+// WithWho returns a new Logger with the 'who' field set to the specified value.
+func (l *Logger) WithWho(who string) *Logger <span class="cov0" title="0">{
+        newLogger := l.clone() // Create a copy of the logger
+        newLogger.who = who    // Change the 'who' field
+        return newLogger       // Return the new logger
+}</span>
+
+// WithModule returns a new Logger with the 'module' field set to the specified value.
+func (l *Logger) WithModule(module string) *Logger <span class="cov0" title="0">{
+        newLogger := l.clone()
+        newLogger.module = module
+        return newLogger
+}</span>
+
+// WithOp returns a new Logger with the 'op' field set to the specified value.
+func (l *Logger) WithOp(op string) *Logger <span class="cov0" title="0">{
+        newLogger := l.clone()
+        newLogger.op = op
+        return newLogger
+}</span>
+
+// WithClass returns a new Logger with the 'whatClass' field set to the specified value.
+func (l *Logger) WithClass(whatClass string) *Logger <span class="cov0" title="0">{
+        newLogger := l.clone()
+        newLogger.class = whatClass
+        return newLogger
+}</span>
+
+// WithInstanceId returns a new Logger with the 'whatInstanceId' field set to the specified value.
+func (l *Logger) WithInstanceId(whatInstanceId string) *Logger <span class="cov0" title="0">{
+        newLogger := l.clone()
+        newLogger.instanceId = whatInstanceId
+        return newLogger
+}</span>
+
+// WithStatus returns a new Logger with the 'status' field set to the specified value.
+func (l *Logger) WithStatus(status Status) *Logger <span class="cov0" title="0">{
+        newLogger := l.clone()
+        newLogger.status = status
+        return newLogger
+}</span>
+
+// Err sets the "error" field for the logger.
+func (l *Logger) Error(err error) *Logger <span class="cov8" title="1">{
+        newLogger := l.clone()
+        newLogger.err = err.Error()
+        return newLogger
+}</span>
+
+// WithPriority returns a new Logger with the 'priority' field set to the specified value.
+//
+// There are shortcut functions like Info(), Warn(), etc. provided as a convenient way to
+// set the priority level for a single call.
+// Each of these function creates a new Logger instance with the specified priority and returns it.
+// The original Logger instance remains unchanged.
+// For example, instead of writing
+//
+//        logger.WithPriority(logharbour.Info).LogChange(...),
+//
+// you can simply write
+//
+//        logger.Info().LogChange(...)
+func (l *Logger) WithPriority(priority LogPriority) *Logger <span class="cov8" title="1">{
+        newLogger := l.clone()
+        newLogger.pri = priority
+        return newLogger
+}</span>
+
+// WithRemoteIP returns a new Logger with the 'remoteIP' field set to the specified value.
+func (l *Logger) WithRemoteIP(remoteIP string) *Logger <span class="cov0" title="0">{
+        newLogger := l.clone()
+        newLogger.remoteIP = remoteIP
+        return newLogger
+}</span>
+
+// log writes a log entry. It locks the Logger's mutex to prevent concurrent write operations.
+// If there's a problem with writing the log entry or if the log entry is invalid,
+// it attempts to write the error and the log entry to the fallback writer (if available).
+// If writing to the fallback writer fails or if the fallback writer is not available,
+// it writes the error and the log entry to stderr.
+func (l *Logger) log(entry LogEntry) <span class="cov8" title="1">{
+        l.mu.Lock()
+        defer l.mu.Unlock()
+
+        entry.App = l.app
+        if !l.shouldLog(entry.Pri) </span><span class="cov8" title="1">{
+                return
+        }</span>
+        <span class="cov0" title="0">if err := l.validator.Struct(entry); err != nil </span><span class="cov0" title="0">{
+                // Check if the writer is a FallbackWriter
+                if fw, ok := l.writer.(*FallbackWriter); ok </span><span class="cov0" title="0">{
+                        // Write to the fallback writer if validation fails
+                        if err := formatAndWriteEntry(fw.fallback, entry); err != nil </span><span class="cov0" title="0">{
+                                // If writing to the fallback writer fails, write to stderr
+                                fmt.Fprintf(os.Stderr, "Error: %v, LogEntry: %+v\n", err, entry)
+                        }</span>
+                } else<span class="cov0" title="0"> {
+                        fmt.Fprintf(os.Stderr, "Error: %v, LogEntry: %+v\n", err, entry)
+                }</span>
+                <span class="cov0" title="0">return</span>
+        }
+        <span class="cov0" title="0">if err := formatAndWriteEntry(l.writer, entry); err != nil </span><span class="cov0" title="0">{
+                fmt.Fprintf(os.Stderr, "Error: %v, LogEntry: %+v\n", err, entry)
+        }</span>
+}
+
+// shouldLog determines whether a log entry should be written based on its priority.
+func (l *Logger) shouldLog(p LogPriority) bool <span class="cov8" title="1">{
+        l.context.mu.Lock()
+        defer l.context.mu.Unlock()
+        return p &gt;= l.context.minLogPriority
+}</span>
+
+// formatAndWriteEntry formats a log entry as JSON and writes it to the Logger's writer.
+func formatAndWriteEntry(writer io.Writer, entry LogEntry) error <span class="cov0" title="0">{
+        formattedEntry, err := json.Marshal(entry)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">formattedEntry = append(formattedEntry, '\n')
+        _, writeErr := writer.Write(formattedEntry)
+        return writeErr</span>
+}
+
+// newLogEntry creates a new log entry with the specified message and data.
+func (l *Logger) newLogEntry(message string, data any) LogEntry <span class="cov8" title="1">{
+        return LogEntry{
+                App:        l.app,
+                System:     l.system,
+                Module:     l.module,
+                Pri:        l.pri,
+                Who:        l.who,
+                Op:         l.op,
+                When:       time.Now().UTC(),
+                Class:      l.class,
+                InstanceId: l.instanceId,
+                Status:     l.status,
+                Error:      l.err,
+                RemoteIP:   l.remoteIP,
+                Msg:        message,
+                Data:       data,
+        }
+}</span>
+
+// LogDataChange logs a data change event.
+func (l *Logger) LogDataChange(message string, data ChangeInfo) <span class="cov0" title="0">{
+        entry := l.newLogEntry(message, data)
+        entry.Type = Change
+        l.log(entry)
+}</span>
+
+// LogActivity logs an activity event.
+func (l *Logger) LogActivity(message string, data ActivityInfo) <span class="cov8" title="1">{
+        entry := l.newLogEntry(message, data)
+        entry.Type = Activity
+        l.log(entry)
+}</span>
+
+// LogDebug logs a debug event.
+func (l *Logger) LogDebug(message string, data any) <span class="cov8" title="1">{
+        if !l.context.IsDebugMode() </span><span class="cov8" title="1">{
+                return // Skip logging if debugMode is not enabled
+        }</span>
+        <span class="cov0" title="0">debugInfo := DebugInfo{
+                Pid:     os.Getpid(),
+                Runtime: runtime.Version(),
+                Data:    map[string]any{"context": data},
+        }
+
+        debugInfo.FileName, debugInfo.LineNumber, debugInfo.FunctionName, debugInfo.StackTrace = GetDebugInfo(2)
+
+        entry := l.newLogEntry(message, debugInfo)
+        entry.Type = Debug
+        l.log(entry)</span>
+}
+
+// Log logs a generic message as an activity event.
+func (l *Logger) Log(message string) <span class="cov8" title="1">{
+        l.LogActivity("", message)
+}</span>
+
+// SetDebugMode sets the debug mode for all loggers sharing this context.
+// Passing true enables debug logging, while false disables it.
+func (lc *LoggerContext) SetDebugMode(enable bool) <span class="cov0" title="0">{
+        var val int32
+        if enable </span><span class="cov0" title="0">{
+                val = 1
+        }</span>
+        <span class="cov0" title="0">atomic.StoreInt32(&amp;lc.debugMode, val)</span> // Atomically update debugMode
+}
+
+// IsDebugMode checks if debug mode is enabled atomically.
+func (lc *LoggerContext) IsDebugMode() bool <span class="cov8" title="1">{
+        return atomic.LoadInt32(&amp;lc.debugMode) == 1 // Atomically read debugMode
+}</span>
+
+// ChangePriority changes the priority level of the Logger.
+func (lc *LoggerContext) ChangeMinLogPriority(minLogPriority LogPriority) <span class="cov0" title="0">{
+        lc.mu.Lock()
+        defer lc.mu.Unlock()
+        lc.minLogPriority = minLogPriority
+}</span>
+
+// Debug2 returns a new Logger with the 'priority' field set to Debug2.
+func (l *Logger) Debug2() *Logger <span class="cov0" title="0">{
+        return l.WithPriority(Debug2)
+}</span>
+
+// Debug1 returns a new Logger with the 'priority' field set to Debug1.
+func (l *Logger) Debug1() *Logger <span class="cov0" title="0">{
+        return l.WithPriority(Debug1)
+}</span>
+
+// Debug0 returns a new Logger with the 'priority' field set to Debug0.
+func (l *Logger) Debug0() *Logger <span class="cov8" title="1">{
+        return l.WithPriority(Debug0)
+}</span>
+
+// Info returns a new Logger with the 'priority' field set to Info.
+func (l *Logger) Info() *Logger <span class="cov0" title="0">{
+        return l.WithPriority(Info)
+}</span>
+
+// Warn returns a new Logger with the 'priority' field set to Warn.
+func (l *Logger) Warn() *Logger <span class="cov0" title="0">{
+        return l.WithPriority(Warn)
+}</span>
+
+// Err returns a new Logger with the 'priority' field set to Err.
+func (l *Logger) Err() *Logger <span class="cov0" title="0">{
+        return l.WithPriority(Err)
+}</span>
+
+// Crit returns a new Logger with the 'priority' field set to Crit.
+func (l *Logger) Crit() *Logger <span class="cov0" title="0">{
+        return l.WithPriority(Crit)
+}</span>
+
+// Sec returns a new Logger with the 'priority' field set to Sec.
+func (l *Logger) Sec() *Logger <span class="cov0" title="0">{
+        return l.WithPriority(Sec)
+}</span>
+
+// NewChangeDetail creates a new ChangeDetail instance.
+func NewChangeDetail(field string, oldValue, newValue any) ChangeDetail <span class="cov0" title="0">{
+        return ChangeDetail{
+                Field:  field,
+                OldVal: oldValue,
+                NewVal: newValue,
+        }
+}</span>
+
+// AddChange adds a new ChangeDetail to a ChangeInfo instance and returns the ChangeInfo.
+func (ci *ChangeInfo) AddChange(field string, oldValue, newValue any) *ChangeInfo <span class="cov0" title="0">{
+        change := NewChangeDetail(field, oldValue, newValue)
+        ci.Changes = append(ci.Changes, change)
+        return ci
+}</span>
+
+// NewChangeInfo creates a new ChangeInfo instance.
+func NewChangeInfo(entity, operation string) *ChangeInfo <span class="cov0" title="0">{
+        return &amp;ChangeInfo{
+                Entity:  entity,
+                Op:      operation,
+                Changes: []ChangeDetail{},
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">// Package logharbour is a comprehensive logging system.
+// It supports different log levels, log types, and can encode log entries in JSON.
+// It also provides a fallback mechanism in case the primary log writer fails.
+package logharbour
+
+import (
+        "encoding/json"
+        "fmt"
+        "io"
+        "sync"
+        "time"
+)
+
+// logPriority defines the severity level of a log message.
+type LogPriority int
+
+const (
+        Debug2 LogPriority = iota + 1 // Debug2 represents extremely verbose debugging information.
+        Debug1                        // Debug1 represents detailed debugging information.
+        Debug0                        // Debug0 represents high-level debugging information.
+        Info                          // Info represents informational messages.
+        Warn                          // Warn represents warning messages.
+        Err                           // Err represents error messages where operations failed to complete.
+        Crit                          // Crit represents critical failure messages.
+        Sec                           // Sec represents security alert messages.
+)
+
+const (
+        LogPriorityDebug2  = "Debug2"
+        LogPriorityDebug1  = "Debug1"
+        LogPriorityDebug0  = "Debug0"
+        LogPriorityInfo    = "Info"
+        LogPriorityWarn    = "Warn"
+        LogPriorityErr     = "Err"
+        LogPriorityCrit    = "Crit"
+        LogPrioritySec     = "Sec"
+        LogPriorityUnknown = "Unknown"
+)
+
+// String returns the string representation of the logPriority.
+func (lp LogPriority) String() string <span class="cov8" title="1">{
+        switch lp </span>{
+        case Debug2:<span class="cov0" title="0">
+                return LogPriorityDebug2</span>
+        case Debug1:<span class="cov0" title="0">
+                return LogPriorityDebug1</span>
+        case Debug0:<span class="cov8" title="1">
+                return LogPriorityDebug0</span>
+        case Info:<span class="cov8" title="1">
+                return LogPriorityInfo</span>
+        case Warn:<span class="cov0" title="0">
+                return LogPriorityWarn</span>
+        case Err:<span class="cov0" title="0">
+                return LogPriorityErr</span>
+        case Crit:<span class="cov0" title="0">
+                return LogPriorityCrit</span>
+        case Sec:<span class="cov0" title="0">
+                return LogPrioritySec</span>
+        default:<span class="cov0" title="0">
+                return LogPriorityUnknown</span>
+        }
+}
+
+// MarshalJSON is required by the encoding/json package.
+// It converts the logPriority to its string representation and returns it as a JSON-encoded value.
+func (lp LogPriority) MarshalJSON() ([]byte, error) <span class="cov8" title="1">{
+        return json.Marshal(lp.String())
+}</span>
+
+func (lp *LogPriority) UnmarshalJSON(data []byte) error <span class="cov8" title="1">{
+        var s string
+        if err := json.Unmarshal(data, &amp;s); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">value, ok := map[string]LogPriority{
+                "Debug2": Debug2,
+                "Debug1": Debug1,
+                "Debug0": Debug0,
+                "Info":   Info,
+                "Warn":   Warn,
+                "Err":    Err,
+                "Crit":   Crit,
+                // Add other LogPriority values here
+        }[s]
+
+        if !ok </span><span class="cov0" title="0">{
+                return fmt.Errorf("invalid LogPriority %q", s)
+        }</span>
+
+        <span class="cov8" title="1">*lp = value
+        return nil</span>
+}
+
+// LogType defines the category of a log message.
+type LogType int
+
+const (
+        // Change represents a log entry for data changes.
+        Change LogType = iota + 1
+        // Activity represents a log entry for activities such as web service calls.
+        Activity
+        // Debug represents a log entry for debug information.
+        Debug
+        // Unknown represents an unknown log type.
+        Unknown
+)
+
+const (
+        LogTypeChange   = "C"
+        LogTypeActivity = "A"
+        LogTypeDebug    = "D"
+        LogTypeUnknown  = "U"
+)
+
+// String returns the string representation of the LogType.
+func (lt LogType) String() string <span class="cov8" title="1">{
+        switch lt </span>{
+        case Change:<span class="cov8" title="1">
+                return LogTypeChange</span>
+        case Activity:<span class="cov8" title="1">
+                return LogTypeActivity</span>
+        case Debug:<span class="cov0" title="0">
+                return LogTypeDebug</span>
+        default:<span class="cov0" title="0">
+                return LogTypeUnknown</span>
+        }
+}
+
+// MarshalJSON is required by the encoding/json package.
+// It converts the LogType to its string representation and returns it as a JSON-encoded value.
+func (lt LogType) MarshalJSON() ([]byte, error) <span class="cov8" title="1">{
+        return json.Marshal(lt.String())
+}</span>
+
+func (lt *LogType) UnmarshalJSON(data []byte) error <span class="cov8" title="1">{
+        var s string
+        if err := json.Unmarshal(data, &amp;s); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">value, ok := map[string]LogType{
+                "U": Unknown,
+                "A": Activity,
+                "C": Change,
+                "D": Debug,
+                // Add other LogType values here
+        }[s]
+
+        if !ok </span><span class="cov0" title="0">{
+                return fmt.Errorf("invalid LogType %q", s)
+        }</span>
+
+        <span class="cov8" title="1">*lt = value
+        return nil</span>
+}
+
+type Status int
+
+const (
+        Success Status = iota
+        Failure
+)
+
+// LogEntry encapsulates all the relevant information for a log message.
+type LogEntry struct {
+        App        string      `json:"app"`             // Name of the application.
+        System     string      `json:"system"`          // System where the application is running.
+        Module     string      `json:"module"`          // The module or subsystem within the application
+        Type       LogType     `json:"type"`            // Type of the log entry.
+        Pri        LogPriority `json:"pri"`             // Severity level of the log entry.
+        When       time.Time   `json:"when"`            // Time at which the log entry was created.
+        Who        string      `json:"who"`             // User or service performing the operation.
+        Op         string      `json:"op"`              // Operation being performed
+        Class      string      `json:"class"`           // Unique ID, name of the object instance on which the operation was being attempted
+        InstanceId string      `json:"instance"`        // Unique ID, name, or other "primary key" information of the object instance on which the operation was being attempted
+        Status     Status      `json:"status"`          // 0 or 1, indicating success (1) or failure (0), or some other binary representation
+        Error      string      `json:"error,omitempty"` // Error message or error chain related to the log entry, if any.
+        RemoteIP   string      `json:"remote_ip"`       // IP address of the caller from where the operation is being performed.
+        Msg        string      `json:"msg"`             // A descriptive message for the log entry.
+        Data       any         `json:"data"`            // The payload of the log entry, can be any type.
+}
+
+type ChangeDetail struct {
+        Field  string `json:"field"`
+        OldVal any    `json:"old_value"`
+        NewVal any    `json:"new_value"`
+}
+
+// ChangeInfo holds information about data changes such as creations, updates, or deletions.
+//
+// Example usage of ChangeInfo and ChangeDetail to log changes to an entity.
+//
+//        func LogEntityChange() {
+//                 // Create a new ChangeInfo for the "User" entity undergoing an "Update" operation and add changes.
+//                 changeInfo := NewChangeInfo("User", "Update").
+//                         AddChange("email", "oldEmail@example.com", "newEmail@example.com").
+//                         AddChange("username", "oldUsername", "newUsername")
+//                 logger.LogDataChange("User details updated", *changeInfo)
+//        }
+type ChangeInfo struct {
+        Entity  string         `json:"entity"`
+        Op      string         `json:"op"`
+        Changes []ChangeDetail `json:"changes"`
+}
+
+// ActivityInfo holds information about system activities like web service calls or function executions.
+type ActivityInfo any
+
+// DebugInfo holds debugging information that can help in software diagnostics.
+type DebugInfo struct {
+        Pid          int            `json:"pid"`
+        Runtime      string         `json:"runtime"`
+        FileName     string         `json:"file"`
+        LineNumber   int            `json:"line"`
+        FunctionName string         `json:"func"`
+        StackTrace   string         `json:"stackTrace"`
+        Data         map[string]any `json:"data"`
+}
+
+// FallbackWriter provides an io.Writer that automatically falls back to a secondary writer if the primary writer fails.
+// It is also used if logentry is not valid so that we can still log erroneous entries without writing them to the primary writer.
+type FallbackWriter struct {
+        primary  io.Writer // The main writer to which log entries will be written.
+        fallback io.Writer // The fallback writer used if the primary writer fails.
+        mu       sync.Mutex
+}
+
+// NewFallbackWriter creates a new FallbackWriter with a specified primary and fallback writer.
+func NewFallbackWriter(primary, fallback io.Writer) *FallbackWriter <span class="cov8" title="1">{
+        return &amp;FallbackWriter{
+                primary:  primary,
+                fallback: fallback,
+        }
+}</span>
+
+// Write attempts to write the byte slice to the primary writer, falling back to the secondary writer on error.
+// It returns the number of bytes written and any error encountered that caused the write to stop early.
+func (fw *FallbackWriter) Write(p []byte) (n int, err error) <span class="cov0" title="0">{
+        fw.mu.Lock()
+        defer fw.mu.Unlock()
+        n, err = fw.primary.Write(p)
+        if err != nil </span><span class="cov0" title="0">{
+                // Primary writer failed; attempt to write to the fallback writer.
+                n, err = fw.fallback.Write(p)
+        }</span>
+        <span class="cov0" title="0">return n, err</span> // Return the result of the write operation.
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package logharbour
+
+import (
+        "fmt"
+        "os"
+        "runtime"
+        "strings"
+)
+
+// GetSystemName returns the host name of the system.
+func getSystemName() string <span class="cov8" title="1">{
+        host, err := os.Hostname()
+        if err != nil </span><span class="cov0" title="0">{
+                return "unknown"
+        }</span>
+        <span class="cov8" title="1">return host</span>
+}
+
+// GetDebugInfo returns debug information including file name, line number, function name and stack trace.
+// The 'skip' parameter determines how many stack frames to ascend, with 0 identifying the caller of GetDebugInfo.
+func GetDebugInfo(skip int) (fileName string, lineNumber int, functionName string, stackTrace string) <span class="cov0" title="0">{
+        pc, file, line, ok := runtime.Caller(skip)
+        if ok </span><span class="cov0" title="0">{
+                fileName = file
+                lineNumber = line
+
+                // Get the function name
+                funcName := runtime.FuncForPC(pc).Name()
+                // Trim the package name
+                funcName = funcName[strings.LastIndex(funcName, ".")+1:]
+                functionName = funcName
+
+                // Get the stack trace
+                buf := make([]byte, 1024)
+                runtime.Stack(buf, false)
+                stackTrace = formatStackTrace(string(buf))
+        }</span>
+        <span class="cov0" title="0">return</span>
+}
+
+// formatStackTrace simplifies the stack trace by removing unnecessary details and formatting the remaining information.
+func formatStackTrace(stackTraceRaw string) string <span class="cov0" title="0">{
+        stackTraceLines := strings.Split(stackTraceRaw, "\n")
+        for i, line := range stackTraceLines </span><span class="cov0" title="0">{
+                if strings.Contains(line, "runtime.") </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov0" title="0">parts := strings.Split(line, " ")
+                if len(parts) &gt; 1 </span><span class="cov0" title="0">{
+                        funcName := parts[1]
+                        funcName = funcName[strings.LastIndex(funcName, "/")+1:]
+                        funcNameParts := strings.Split(funcName, ".")
+                        if len(funcNameParts) &gt; 1 </span><span class="cov0" title="0">{
+                                funcName = funcNameParts[1]
+                        }</span>
+                        <span class="cov0" title="0">stackTraceLines[i] = fmt.Sprintf("%s %s", funcName, parts[0])</span>
+                }
+        }
+        <span class="cov0" title="0">return strings.Join(stackTraceLines, "\n")</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package elasticsearchctl
+
+import (
+        "context"
+        "encoding/json"
+        "fmt"
+        "log"
+        "os"
+        "strconv"
+        "strings"
+
+        "github.com/elastic/go-elasticsearch/v8"
+        "github.com/elastic/go-elasticsearch/v8/esapi"
+        "github.com/remiges-tech/logharbour/logharbour"
+)
+
+// Function CreateElasticIndex create an Elasticsearch index with the provided index name and index body.
+func CreateElasticIndex(es *elasticsearch.Client, indexName string, indexBody string) error <span class="cov8" title="1">{
+
+        // Create the index request
+        req := esapi.IndicesCreateRequest{
+                Index: indexName,
+                Body:  strings.NewReader(indexBody),
+        }
+
+        // Perform the request
+        res, err := req.Do(context.Background(), es)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("error creating the index: %s", err)
+        }</span>
+
+        <span class="cov8" title="1">defer res.Body.Close()
+
+        // Print the response status and body
+        fmt.Println("Response status:", res.Status())
+        if res.IsError() </span><span class="cov0" title="0">{
+                var errorResponse map[string]interface{}
+                if err := json.NewDecoder(res.Body).Decode(&amp;errorResponse); err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("error parsing the error response body: %s", err)
+                }</span>
+                <span class="cov0" title="0">log.Fatalf("Error creating the index: %s", errorResponse["error"].(map[string]interface{})["reason"])</span>
+        } else<span class="cov8" title="1"> {
+
+                fmt.Println("Index created successfully:")
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+
+}
+
+// Function InsertLog bulk insert an array of log entries into an Elasticsearch index using the provided Elasticsearch client.
+func InsertLog(es *elasticsearch.Client, logs []logharbour.LogEntry, indexName string) error <span class="cov8" title="1">{
+
+        for i, log := range logs </span><span class="cov8" title="1">{
+                dataJson, err := json.Marshal(log)
+                if err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("error while unmarshaling log: %v", err)
+                }</span>
+
+                <span class="cov8" title="1">js := string(dataJson)
+
+                req := esapi.IndexRequest{
+                        Index:      indexName,
+                        DocumentID: strconv.Itoa(i + 1),
+                        Body:       strings.NewReader(js),
+                        Refresh:    "true",
+                }
+
+                res, err := req.Do(context.Background(), es)
+                if err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("error while adding data in es :%v", err)
+                }</span>
+                <span class="cov8" title="1">defer res.Body.Close()
+                if res.IsError() </span><span class="cov0" title="0">{
+                        return fmt.Errorf("error indexing document ID=%s", res)
+                }</span>
+        }
+        <span class="cov8" title="1">return nil</span>
+}
+
+// Function ReadLogFromFile read log entries from a file, unmarshal the file data, and return slice of LogEntry
+func ReadLogFromFile(filepath string) ([]logharbour.LogEntry, error) <span class="cov8" title="1">{
+
+        byteValue, err := os.ReadFile(filepath)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">var LogEntries []logharbour.LogEntry
+
+        err = json.Unmarshal(byteValue, &amp;LogEntries)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return LogEntries, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package wsc
+
+import (
+        "context"
+        "fmt"
+        "slices"
+
+        "github.com/elastic/go-elasticsearch/v8"
+        "github.com/elastic/go-elasticsearch/v8/typedapi/core/search"
+        "github.com/elastic/go-elasticsearch/v8/typedapi/types"
+        "github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/sortorder"
+        "github.com/gin-gonic/gin"
+        "github.com/go-playground/validator/v10"
+        "github.com/remiges-tech/alya/service"
+        "github.com/remiges-tech/alya/wscutils"
+)
+
+var (
+        DebugPriority = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
+)
+
+// request format
+type DebugLogRequest struct {
+        App                  string `json:"app" validate:"required,alpha"`
+        Module               string `json:"module" validate:"required,alpha"`
+        Priority             string `json:"pri" validate:"required,alpha"`
+        Days                 int    `json:"days" validate:"required,number"`
+        TraceID              string `json:"trace_id" validate:"omitempty"`
+        SearchAfterTimestamp string `json:"search_after_timestamp,omitempty" validate:"omitempty"`
+        SearchAfterDocId     string `json:"search_after_doc_id,omitempty"`
+}
+
+func GetDebugLog(c *gin.Context, s *service.Service) <span class="cov0" title="0">{
+        lh := s.LogHarbour.WithClass("logharbour")
+
+        var (
+                pageSize       = 10
+                request        DebugLogRequest
+                searchAfter    []types.FieldValue
+                shouldFieldQry []types.Query
+        )
+
+        // bind request
+        err := wscutils.BindJSON(c, &amp;request)
+        if err != nil </span><span class="cov0" title="0">{
+                lh.Err().Error(err).Log("GetDebugLog||error while binding json request")
+                wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(404, err.Error()))
+                return
+        }</span>
+
+        <span class="cov0" title="0">lh.Debug2().LogDebug("GetDebugLog ||request parameters:", request)
+
+        afDay := fmt.Sprintf("now-%dd/d", request.Days)
+
+        // Validate request
+        validationErrors := wscutils.WscValidate(request, func(err validator.FieldError) []string </span><span class="cov0" title="0">{ return []string{} }</span>)
+        <span class="cov0" title="0">if len(validationErrors) &gt; 0 </span><span class="cov0" title="0">{
+                lh.Debug0().LogDebug("standard validation errors", validationErrors)
+                wscutils.SendErrorResponse(c, wscutils.NewResponse(wscutils.ErrorStatus, nil, validationErrors))
+                return
+        }</span>
+        // assert dependencies
+        <span class="cov0" title="0">client, ok := s.Dependencies["client"].(*elasticsearch.TypedClient)
+        if !ok </span><span class="cov0" title="0">{
+                wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(100, "ErrCode_DatabaseError"))
+                return
+        }</span>
+        <span class="cov0" title="0">index, ok := s.Dependencies["index"].(string)
+        if !ok </span><span class="cov0" title="0">{
+                wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(404, "ErrCode_IndexNotFound"))
+                return
+        }</span>
+
+        <span class="cov0" title="0">priFrom := slices.Index(Priority, request.Priority)
+
+        requiredPri := Priority[priFrom:]
+        if request.SearchAfterDocId != "" || len(request.SearchAfterDocId) &gt; 0 </span><span class="cov0" title="0">{
+                searchAfter = append(searchAfter, request.SearchAfterDocId)
+        }</span>
+
+        // app := types.Query{
+        //         Match: map[string]types.MatchQuery{
+        //                 "app": {Query: request.App},
+        //         },
+        // }
+        // shouldFieldQry = append(shouldFieldQry, app)
+
+        <span class="cov0" title="0">module := types.Query{
+                Match: map[string]types.MatchQuery{
+                        "module": {Query: request.Module},
+                },
+        }
+        shouldFieldQry = append(shouldFieldQry, module)
+
+        for _, v := range requiredPri </span><span class="cov0" title="0">{
+                pri := types.Query{
+                        Match: map[string]types.MatchQuery{
+                                "pri": {Query: v},
+                        },
+                }
+                shouldFieldQry = append(shouldFieldQry, pri)
+        }</span>
+
+        // shouldFieldQry = append(shouldFieldQry, logType)
+
+        <span class="cov0" title="0">sortOrder := types.SortOptions{
+                SortOptions: map[string]types.FieldSort{
+                        "when": {Order: &amp;sortorder.Desc},
+                }}
+
+        searchQuery, err := client.Search().
+                Index(index).
+                Request(&amp;search.Request{
+                        Size: &amp;pageSize,
+                        Query: &amp;types.Query{
+                                Bool: &amp;types.BoolQuery{
+                                        Filter: []types.Query{
+                                                types.Query{
+                                                        Range: map[string]types.RangeQuery{
+                                                                "when": types.DateRangeQuery{
+                                                                        Gte: &amp;afDay,
+                                                                },
+                                                        },
+                                                },
+                                                types.Query{
+                                                        Match: map[string]types.MatchQuery{
+                                                                "app": types.MatchQuery{
+                                                                        Query: request.App,
+                                                                },
+                                                                "module": types.MatchQuery{
+                                                                        Query: request.Module,
+                                                                },
+                                                                "type": types.MatchQuery{
+                                                                        Query: D,
+                                                                },
+                                                        },
+                                                },
+                                        },
+                                        Should: shouldFieldQry,
+                                },
+                        },
+                        Sort:        []types.SortCombinations{sortOrder},
+                        SearchAfter: []types.FieldValue{searchAfter},
+                }).Do(context.Background())
+
+        if err != nil </span><span class="cov0" title="0">{
+                lh.Err().Error(err).Log("error while retriving data from db")
+                wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(222, err.Error()))
+                return
+        }</span>
+
+        <span class="cov0" title="0">wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(searchQuery.Hits.Hits))</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package wsc
+
+import (
+        "github.com/elastic/go-elasticsearch/v8"
+        "github.com/gin-gonic/gin"
+        "github.com/go-playground/validator/v10"
+        "github.com/remiges-tech/alya/service"
+        "github.com/remiges-tech/alya/wscutils"
+        "github.com/remiges-tech/logharbour/logharbour"
+)
+
+var unusualPercent = 10.0
+
+type GetUnusualIpParam struct {
+        App  string `json:"app" validate:"required,alpha,lt=15"`
+        Days int    `json:"days" validate:"required,number,lt=500"`
+}
+
+func GetUnusualIP(c *gin.Context, s *service.Service) <span class="cov0" title="0">{
+        l := s.LogHarbour
+        l.Debug0().Log("starting execution of GetUnusualIP()")
+
+        var req GetUnusualIpParam
+        err := wscutils.BindJSON(c, &amp;req)
+        if err != nil </span><span class="cov0" title="0">{
+                l.Debug0().Error(err).Log("error unmarshalling request payload to struct")
+                return
+        }</span>
+
+        // Validate request
+        <span class="cov0" title="0">validationErrors := wscutils.WscValidate(req, func(err validator.FieldError) []string </span><span class="cov0" title="0">{ return []string{} }</span>)
+        <span class="cov0" title="0">if len(validationErrors) &gt; 0 </span><span class="cov0" title="0">{
+                l.Debug0().LogDebug("standard validation errors", validationErrors)
+                wscutils.SendErrorResponse(c, wscutils.NewResponse(wscutils.ErrorStatus, nil, validationErrors))
+                return
+        }</span>
+
+        <span class="cov0" title="0">es, ok := s.Dependencies["client"].(*elasticsearch.TypedClient)
+        if !ok </span><span class="cov0" title="0">{
+                wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(100, "ErrCode_DatabaseError"))
+                return
+        }</span>
+
+        <span class="cov0" title="0">unusualIP, err := logharbour.GetUnusualIP("", es, logharbour.GetUnusualIPParam{
+                App:   &amp;req.App,
+                NDays: &amp;req.Days,
+        }, unusualPercent)
+        if err != nil </span><span class="cov0" title="0">{
+                l.Debug0().Error(err).Log("error in GetUnusualIP")
+                wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(222, err.Error()))
+                return
+        }</span>
+        <span class="cov0" title="0">if len(unusualIP) != 0 </span><span class="cov0" title="0">{
+                wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(unusualIP))
+                return
+        }</span>
+        <span class="cov0" title="0">wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse("No unusual IP"))</span>
+
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package wsc
+
+import (
+        "github.com/elastic/go-elasticsearch/v8"
+        "github.com/gin-gonic/gin"
+        "github.com/go-playground/validator/v10"
+        "github.com/remiges-tech/alya/service"
+        "github.com/remiges-tech/alya/wscutils"
+        "github.com/remiges-tech/logharbour/logharbour"
+)
+
+var (
+        Priority = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
+)
+
+type HighPriReq struct {
+        App string                 `json:"app" validate:"required,alpha"`
+        Pri logharbour.LogPriority `json:"pri" validate:"required"`
+        // Pri  logharbour.LogPriority `json:"pri" validate:"required, oneof=Info Debug2 Debug1 Debug0 Warn Err Crit Sec"`
+        Days                 int    `json:"days" validate:"number,required"`
+        SearchAfterTimestamp string `json:"search_after_timestamp" validate:"omitempty,datetime=2006-01-02T15:04:05Z"`
+        SearchAfterDocId     string `json:"search_after_doc_id,omitempty"`
+}
+
+// GetHighprilog : handler for POST: "/highprilog" API
+func GetHighprilog(c *gin.Context, s *service.Service) <span class="cov0" title="0">{
+        lh := s.LogHarbour
+        lh.Debug0().Log("starting execution of GetHighprilog()")
+        var (
+                request     HighPriReq
+                recordCount int
+                searchQuery []logharbour.LogEntry
+        )
+
+        // step 1: json request binding with a struct
+        err := wscutils.BindJSON(c, &amp;request)
+        if err != nil </span><span class="cov0" title="0">{
+                lh.Err().Error(err).Log("error while binding json request error")
+                return
+        }</span>
+
+        // Validate request
+        <span class="cov0" title="0">validationErrors := wscutils.WscValidate(request, func(err validator.FieldError) []string </span><span class="cov0" title="0">{ return []string{} }</span>)
+        <span class="cov0" title="0">if len(validationErrors) &gt; 0 </span><span class="cov0" title="0">{
+                lh.Debug0().LogDebug("standard validation errors", validationErrors)
+                wscutils.SendErrorResponse(c, wscutils.NewResponse(wscutils.ErrorStatus, nil, validationErrors))
+                return
+        }</span>
+
+        <span class="cov0" title="0">esClient, ok := s.Dependencies["client"].(*elasticsearch.TypedClient)
+        if !ok </span><span class="cov0" title="0">{
+                lh.Debug0().Log("client dependency not found")
+                wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(100, "ErrCode_DatabaseError"))
+                return
+        }</span>
+        <span class="cov0" title="0">if request.SearchAfterTimestamp == "" &amp;&amp; request.SearchAfterDocId == "" </span><span class="cov0" title="0">{
+                searchQuery, recordCount, err = logharbour.GetLogs("", esClient, logharbour.GetLogsParam{
+                        App:      &amp;request.App,
+                        Priority: &amp;request.Pri,
+                        NDays:    &amp;request.Days,
+                })
+        }</span> else<span class="cov0" title="0"> if request.SearchAfterDocId == "" </span><span class="cov0" title="0">{
+                searchQuery, recordCount, err = logharbour.GetLogs("", esClient, logharbour.GetLogsParam{
+                        App:           &amp;request.App,
+                        Priority:      &amp;request.Pri,
+                        NDays:         &amp;request.Days,
+                        SearchAfterTS: &amp;request.SearchAfterTimestamp,
+                })
+        }</span> else<span class="cov0" title="0"> if request.SearchAfterTimestamp == "" </span><span class="cov0" title="0">{
+                searchQuery, recordCount, err = logharbour.GetLogs("", esClient, logharbour.GetLogsParam{
+                        App:              &amp;request.App,
+                        Priority:         &amp;request.Pri,
+                        NDays:            &amp;request.Days,
+                        SearchAfterDocID: &amp;request.SearchAfterDocId,
+                })
+        }</span>
+
+        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                lh.Err().Error(err).Log("error while retriving data from db")
+                wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(222, err.Error()))
+                return
+        }</span>
+
+        <span class="cov0" title="0">lh.Info().Log("exit from GetHighprilog")
+        wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(map[string]any{"logs": searchQuery, "count": recordCount}))</span>
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package wsc
+
+import (
+        "fmt"
+
+        "github.com/elastic/go-elasticsearch/v8"
+        "github.com/gin-gonic/gin"
+        "github.com/go-playground/validator/v10"
+        "github.com/remiges-tech/alya/service"
+        "github.com/remiges-tech/alya/wscutils"
+        "github.com/remiges-tech/logharbour/logharbour"
+)
+
+var LogType = logharbour.Activity
+var queryToken string
+
+// var fromTs = time.Date(2024, 02, 01, 00, 00, 00, 00, time.UTC)
+// var toTs = time.Date(2024, 03, 01, 00, 00, 00, 00, time.UTC)
+
+type LogRequest struct {
+        App        string                  `json:"app" validate:"required,alpha,lt=15"`
+        Who        *string                 `json:"who" validate:"omitempty,alpha,lt=15"`
+        Class      *string                 `json:"class" validate:"omitempty,alpha,lt=15"`
+        InstanceID *string                 `json:"instance_id" validate:"omitempty,alphanum,lt=15"`
+        Op         *string                 `json:"op" validate:"omitempty,alpha,lt=15"`
+        Priority   *logharbour.LogPriority `json:"priority" validate:"omitempty,lt=15"`
+        Days       int                     `json:"days" validate:"required,number,lt=500"`
+        // FromTS               *string                 `json:"fromTs" validate:"omitempty,alpha,lt=15"`
+        // ToTS                 *string                 `json:"toTs" validate:"omitempty,alpha,lt=15"`
+        SearchAfterTimestamp *string `json:"search_after_timestamp" validate:"omitempty"`
+        SearchAfterDocID     *string `json:"search_after_doc_id" validate:"omitempty"`
+}
+
+type LogResponse struct {
+        LogEntery []logharbour.LogEntry
+        Nrec      int
+}
+
+func ShowActivityLog(c *gin.Context, s *service.Service) <span class="cov8" title="1">{
+        l := s.LogHarbour
+        l.Debug0().Log("starting execution of ShowActivityLog()")
+
+        var req LogRequest
+        var res LogResponse
+        var pri logharbour.LogPriority
+
+        err := wscutils.BindJSON(c, &amp;req)
+        if err != nil </span><span class="cov8" title="1">{
+                l.Debug0().Error(err).Log("error unmarshalling request payload to struct")
+                return
+        }</span>
+
+        // Validate request
+        <span class="cov8" title="1">validationErrors := wscutils.WscValidate(req, func(err validator.FieldError) []string </span><span class="cov8" title="1">{ return []string{} }</span>)
+        <span class="cov8" title="1">if len(validationErrors) &gt; 0 </span><span class="cov8" title="1">{
+                l.Debug0().LogDebug("standard validation errors", validationErrors)
+                wscutils.SendErrorResponse(c, wscutils.NewResponse(wscutils.ErrorStatus, nil, validationErrors))
+                return
+        }</span>
+
+        <span class="cov0" title="0">es, ok := s.Dependencies["client"].(*elasticsearch.TypedClient)
+        if !ok </span><span class="cov0" title="0">{
+                l.Debug0().Log("Error while getting elasticsearch instance from service Dependencies")
+                wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(MsgId_InternalErr, ErrCode_DatabaseError))
+                return
+        }</span>
+
+        <span class="cov0" title="0">res.LogEntery, res.Nrec, err = logharbour.GetLogs(queryToken, es, logharbour.GetLogsParam{
+                App:       &amp;req.App,
+                Type:      &amp;LogType,
+                Who:       req.Who,
+                Class:     req.Class,
+                Instance:  req.InstanceID,
+                Operation: req.Op,
+                // FromTS:    &amp;fromTs,
+                // ToTS:      &amp;toTs,
+                NDays: &amp;req.Days,
+                // RemoteIP:         req,
+                Priority:         &amp;pri,
+                SearchAfterTS:    req.SearchAfterTimestamp,
+                SearchAfterDocID: req.SearchAfterDocID,
+        })
+        if err != nil </span><span class="cov0" title="0">{
+                errmsg := errorHandler(err)
+                l.Debug0().Error(err).Log("error in GetLogs")
+                wscutils.SendErrorResponse(c, wscutils.NewResponse(wscutils.ErrorStatus, nil, []wscutils.ErrorMessage{errmsg}))
+                return
+        }</span>
+        <span class="cov0" title="0">fmt.Println("res.nrec", len(res.LogEntery))
+        wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(res))</span>
+}
+
+func errorHandler(err error) wscutils.ErrorMessage <span class="cov0" title="0">{
+        switch err.Error() </span>{
+        case "tots must be after fromts":<span class="cov0" title="0">
+                return wscutils.BuildErrorMessage(MsgId_Invalid_Request, ErrCode_InvalidRequest, nil)</span>
+        case "No Filter param":<span class="cov0" title="0">
+                return wscutils.BuildErrorMessage(MsgId_Invalid_Request, ErrCode_InvalidRequest, nil)</span>
+        }
+        <span class="cov0" title="0">return wscutils.BuildErrorMessage(MsgId_InternalErr, ErrCode_DatabaseError, nil)</span>
+
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package testUtils
+
+import (
+        "encoding/json"
+        "fmt"
+        "io"
+        "log"
+        "os"
+
+        "github.com/remiges-tech/alya/wscutils"
+)
+
+func MarshalJson(data any) []byte <span class="cov8" title="1">{
+        jsonData, err := json.Marshal(&amp;data)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal("error marshaling")
+        }</span>
+        <span class="cov8" title="1">return jsonData</span>
+}
+
+func ReadJsonFromFile(filepath string) ([]byte, error) <span class="cov8" title="1">{
+        // var err error
+        file, err := os.Open(filepath)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("testFile path is not exist")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+        jsonData, err := io.ReadAll(file)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return jsonData, nil</span>
+}
+
+type TestCasesStruct struct {
+        Name             string
+        RequestPayload   wscutils.Request
+        ExpectedHttpCode int
+        TestJsonFile     string
+        ExpectedResult   *wscutils.Response
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

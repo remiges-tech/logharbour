@@ -212,6 +212,10 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 		},
 	}
 
+	if len(queries) == 0 {
+		return nil, 0, fmt.Errorf("No Filter param")
+	}
+
 	// sorting record on base of when
 	sortByWhen := types.SortOptions{
 		SortOptions: map[string]types.FieldSort{
