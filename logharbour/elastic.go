@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"reflect"
+	"regexp"
 	"slices"
 	"strings"
 	"time"
@@ -13,22 +15,30 @@ import (
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/core/search"
+	"github.com/elastic/go-elasticsearch/v8/typedapi/some"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/sortorder"
 )
 
 const (
-	when      = "when"
-	app       = "app"
-	typeConst = "type"
-	who       = "who"
-	class     = "class"
-	instance  = "instance"
-	op        = "op"
-	remote_ip = "remote_ip"
-	pri       = "pri"
-	id        = "id" // document id
-	layout    = "2006-01-02T15:04:05Z"
+	when        = "when"
+	app         = "app"
+	module      = "module"
+	typeConst   = "type"
+	who         = "who"
+	status      = "status"
+	system      = "system"
+	class       = "class"
+	instance    = "instance"
+	op          = "op"
+	remote_ip   = "remote_ip"
+	pri         = "pri"
+	id          = "id" // document id
+	layout      = "2006-01-02T15:04:05Z"
+	logSet      = "logset"
+	DIALTIMEOUT = 500 * time.Second
+	ACTIVITY    = "A"
+	DEBUG       = "D"
 )
 
 var (
@@ -62,6 +72,19 @@ type GetUnusualIPParam struct {
 	Class     *string
 	Operation *string
 	NDays     *int
+}
+type GetSetParam struct {
+	App      *string      `json:"app" validate:"omitempty,alpha,lt=30"`
+	Type     *LogType     `json:"type" validate:"omitempty,oneof=1 2 3 4"`
+	Who      *string      `json:"who" validate:"omitempty,alpha,lt=20"`
+	Class    *string      `json:"class" validate:"omitempty,alpha,lt=30"`
+	Instance *string      `json:"instance" validate:"omitempty,alpha,lt=30"`
+	Op       *string      `json:"op" validate:"omitempty,alpha,lt=25"`
+	Fromts   *time.Time   `json:"fromts" validate:"omitempty"`
+	Tots     *time.Time   `json:"tots" validate:"omitempty"`
+	Ndays    *int         `json:"ndays" validate:"omitempty,number,lt=100"`
+	RemoteIP *string      `json:"remoteIP" validate:"omitempty"`
+	Pri      *LogPriority `json:"pri" validate:"omitempty,oneof=1 2 3 4 5 6 7 8"`
 }
 
 // ElasticsearchWriter defines methods for Elasticsearch writer
@@ -173,7 +196,7 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 		}
 	}
 
-	if ok, who := termQueryForField(WHO, logParam.Who); ok {
+	if ok, who := termQueryForField(who, logParam.Who); ok {
 
 		queries = append(queries, who)
 	}
@@ -278,6 +301,270 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 	return logEntries, int(res.Hits.Total.Value), nil
 }
 
+// GetUnusualIP will go through the logs of the last ndays days which match the search criteria, and pull out all the
+// remote IP addresses which account for a low enough percentage of the total to be treated as unusual or suspicious.
+func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, logParam GetUnusualIPParam, unusualPercent float64) ([]string, error) {
+	unusualIPs := []string{}
+
+	if unusualPercent < 0.5 || unusualPercent > 50 {
+		return nil, fmt.Errorf("unusualPercent is not between 0.5 to 50")
+	}
+
+	aggregatedIPs, err := GetSet(queryToken, client, remote_ip, GetSetParam{
+		App:   logParam.App,
+		Who:   logParam.Who,
+		Class: logParam.Class,
+		Op:    logParam.Operation,
+		Ndays: logParam.NDays,
+	})
+	if err != nil {
+		return nil, err
+	}
+	//   Calculate total number of logs to find what 1% represents
+	var count int64 = 0
+	for _, v := range aggregatedIPs {
+		count += v
+	}
+	percentThreshold := float64(count) * unusualPercent / 100
+
+	if percentThreshold > 1 {
+		for ip, count := range aggregatedIPs {
+			fmt.Printf("IP: %s, Count: %d\n", ip, count)
+			if count <= int64(percentThreshold) {
+				if ip != "local" {
+					unusualIPs = append(unusualIPs, ip)
+				}
+			}
+		}
+	}
+	return unusualIPs, nil
+
+}
+
+// GetSet gets a set of values for an attribute from the log entries specified.
+// This is a faceted search for one attribute.
+func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string, setParam GetSetParam) (map[string]int64, error) {
+
+	var (
+		query   *types.Query
+		zero    = 0
+		dataMap = make(map[string]int64)
+	)
+
+	// Validate setAttr
+	_, err := isValidSetAttribute(setAttr)
+	if err != nil {
+		return nil, err
+	}
+
+	// Call getQuery fuction which will return a query for valid method parameters
+	query, err = getQuery(setParam)
+	if err != nil {
+		return nil, fmt.Errorf("error while calling getQuery : %v ", err)
+
+	}
+
+	// Create a context with a timeout
+	ctx, cancel := context.WithTimeout(context.Background(), DIALTIMEOUT)
+	defer cancel()
+
+	// To Serach data
+	// This will return a set of unique values for an attribute based on method parameters
+	res, err := client.Search().Index(Index).Request(&search.Request{
+		Query: query,
+		Size:  &zero,
+		Aggregations: map[string]types.Aggregations{
+			logSet: {
+				Terms: &types.TermsAggregation{
+					Field: some.String(setAttr),
+				},
+			},
+		},
+	}).Do(ctx)
+
+	if err != nil {
+		return nil, fmt.Errorf("error runnning search query: %s", err)
+	}
+
+	// To assert if response contains aggregation response and it must be type of *types.StringTermsAggregate
+	logSetAgg, ok := res.Aggregations[logSet].(*types.StringTermsAggregate)
+	if !ok || logSetAgg == nil {
+		return nil, fmt.Errorf("services aggregation is not present or not of type *types.StringTermsAggregate")
+	}
+	// To extract bucket_key and bucket_count from Buckets which must be type of types.BucketsStringTermsBucket and append it to dataMap
+	bucketsSlice, ok := logSetAgg.Buckets.([]types.StringTermsBucket)
+	if ok {
+		for _, bucket := range bucketsSlice {
+			// Ensuring bucket key is a string.
+			// It proceeds to extract the key as a string and assign it to bucketKeyString.
+			if bucketKeyString, ok := bucket.Key.(string); ok {
+				dataMap[bucketKeyString] = bucket.DocCount
+			} else {
+				return nil, fmt.Errorf("The bucket key is not a string")
+			}
+		}
+	} else {
+		return nil, fmt.Errorf("services aggregation Buckets field has Unknown type: %v , valid type is :%v", reflect.TypeOf(logSetAgg.Buckets), "[]types.StringTermsBucket")
+	}
+
+	return dataMap, nil
+}
+
+// To form a query based on valid method parameters
+func getQuery(param GetSetParam) (*types.Query, error) {
+
+	var (
+		termQueries = make([]types.Query, 0)
+		typeQueries = make([]types.Query, 0)
+		activity    = "A"
+		debug       = "D"
+		query       *types.Query
+		Priority    = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
+	)
+
+	ok, ranges, err := rangeQueryForTimestamp(param.Fromts, param.Tots, param.Ndays)
+	if ok {
+		termQueries = append(termQueries, ranges)
+	}
+	if err != nil {
+		return nil, err
+	}
+	if ok, app := termQueryForField(app, param.App); ok {
+		termQueries = append(termQueries, app)
+	}
+
+	// typequeris contains only debug and activity logs
+	if ok, typeConst := termQueryForField(typeConst, &activity); ok {
+		typeQueries = append(typeQueries, typeConst)
+	}
+
+	if ok, typeConst := termQueryForField(typeConst, &debug); ok {
+		typeQueries = append(typeQueries, typeConst)
+	}
+
+	// whenever type parameter is nil it considers all three types i.e Activity,Debug and Data change
+	// If pri parameter is present then we cannot consider Data change type logs because it has no priority
+	// so, In this case filter is applied for getting only Activity and Debug type i.e. tyqueries
+	if param.Type == nil {
+		if param.Pri != nil {
+			termQueries = append(termQueries, types.Query{
+				Bool: &types.BoolQuery{
+					Filter: typeQueries,
+				},
+			})
+		}
+	} else {
+		if *param.Type == Change {
+			termQueries = append(termQueries, types.Query{
+				Bool: &types.BoolQuery{
+					Filter: typeQueries,
+				},
+			})
+		} else {
+			logTypeStr := param.Type.String()
+			if ok, logType := termQueryForField(typeConst, &logTypeStr); ok {
+				termQueries = append(termQueries, logType)
+			}
+
+		}
+
+	}
+
+	if ok, who := termQueryForField(who, param.Who); ok {
+
+		termQueries = append(termQueries, who)
+	}
+	if ok, class := termQueryForField(class, param.Class); ok {
+
+		termQueries = append(termQueries, class)
+	}
+	// Instance must be considered only if the class is specified
+	if param.Class != nil {
+		if ok, instance := termQueryForField(instance, param.Instance); ok {
+
+			termQueries = append(termQueries, instance)
+		}
+	}
+	if ok, op := termQueryForField(op, param.Op); ok {
+
+		termQueries = append(termQueries, op)
+	}
+	if ok, remote_ip := termQueryForField(remote_ip, param.RemoteIP); ok {
+
+		termQueries = append(termQueries, remote_ip)
+	}
+
+	// pri specifies that only logs of priority equal to or higher than the value given here will be returned.
+	if param.Pri != nil {
+		priStr := param.Pri.String()
+		priFrom := slices.Index(Priority, priStr)
+		if priFrom > 0 {
+			requiredPri = Priority[priFrom:]
+		}
+		if ok, pri := termQueryForField(pri, nil, requiredPri...); ok {
+			termQueries = append(termQueries, pri)
+		}
+	}
+
+	query = &types.Query{
+		Bool: &types.BoolQuery{
+			Filter: termQueries,
+		},
+	}
+	return query, nil
+}
+
+func isValidSetAttribute(setAttr string) (bool, error) {
+
+	var (
+		empty   = struct{}{}
+		pattern = "^[a-z]{1,9}$"
+	)
+	// Validate setAttr
+	regex := regexp.MustCompile(pattern)
+	if setAttr == "" && !regex.MatchString(setAttr) {
+		return false, fmt.Errorf("attribute %s must not contain numbers or special characters, and must not be empty, with length not exceeding 9", setAttr)
+	}
+
+	// The attribute named can only be one of those which have finite discrete values, i.e. they are
+	// conceptually enumerated types.
+	allowedAttributes := map[string]struct{}{
+		app:       empty,
+		typeConst: empty,
+		op:        empty,
+		instance:  empty,
+		module:    empty,
+		pri:       empty,
+		status:    empty,
+		remote_ip: empty,
+		system:    empty,
+		who:       empty,
+	}
+
+	// To validate  setAttr only one of allowedAttributes has been named, and if not, will return an error.
+	if _, ok := allowedAttributes[setAttr]; !ok {
+		return false, fmt.Errorf("attribute '%s' is not allowed for set retrieval", setAttr)
+	}
+	return true, nil
+}
+
+// GetApps is used  to retrieve the list of apps
+func GetApps(querytoken string, client *elasticsearch.TypedClient) (apps []string, err error) {
+
+	// Calling GetSet() for getting  all unique values for apps
+	setvalues, err := GetSet(querytoken, client, app, GetSetParam{})
+
+	if err != nil {
+		return apps, fmt.Errorf("error at calling GetSet() : %w", err)
+	}
+
+	// Extracting keys from setValues
+	for app := range setvalues {
+		apps = append(apps, app)
+	}
+	return apps, nil
+}
+
 // termQueryForField constructs and returns a term query for a specified field and its corresponding value.
 func termQueryForField(field string, value *string, values ...string) (bool, types.Query) {
 	if value != nil {
@@ -365,44 +652,4 @@ func rangeQueryForTimestamp(fromTS, toTS *time.Time, nDays *int) (bool, types.Qu
 		}
 	}
 	return false, types.Query{}, nil
-}
-
-// GetUnusualIP will go through the logs of the last ndays days which match the search criteria, and pull out all the
-// remote IP addresses which account for a low enough percentage of the total to be treated as unusual or suspicious.
-func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, logParam GetUnusualIPParam, unusualPercent float64) ([]string, error) {
-	unusualIPs := []string{}
-
-	if unusualPercent < 0.5 || unusualPercent > 50 {
-		return nil, fmt.Errorf("unusualPercent is not between 0.5 to 50")
-	}
-
-	aggregatedIPs, err := GetSet(queryToken, client, remote_ip, GetSetParam{
-		App:   logParam.App,
-		Who:   logParam.Who,
-		Class: logParam.Class,
-		Op:    logParam.Operation,
-		Ndays: logParam.NDays,
-	})
-	if err != nil {
-		return nil, err
-	}
-	//   Calculate total number of logs to find what 1% represents
-	var count int64 = 0
-	for _, v := range aggregatedIPs {
-		count += v
-	}
-	percentThreshold := float64(count) * unusualPercent / 100
-
-	if percentThreshold > 1 {
-		for ip, count := range aggregatedIPs {
-			fmt.Printf("IP: %s, Count: %d\n", ip, count)
-			if count <= int64(percentThreshold) {
-				if ip != "local" {
-					unusualIPs = append(unusualIPs, ip)
-				}
-			}
-		}
-	}
-	return unusualIPs, nil
-
 }
