@@ -6,3 +6,15 @@ const (
 	C                = "C"
 	A                = "A"
 )
+
+const (
+	MsgId_InternalErr     = 1001
+	MsgId_Invalid_Request = 1006
+)
+
+const (
+	ErrCode_Internal       = "internal_err"
+	ErrCode_InvalidRequest = "invalid_request"
+	ErrCode_InvalidJson    = "invalid_json"
+	ErrCode_DatabaseError  = "database_error"
+)
