@@ -14,6 +14,7 @@ import (
 	"github.com/remiges-tech/logharbour/logharbour"
 )
 
+// Function CreateElasticIndex create an Elasticsearch index with the provided index name and index body.
 func CreateElasticIndex(es *elasticsearch.Client, indexName string, indexBody string) error {
 
 	// Create the index request
@@ -46,6 +47,7 @@ func CreateElasticIndex(es *elasticsearch.Client, indexName string, indexBody st
 
 }
 
+// Function InsertLog bulk insert an array of log entries into an Elasticsearch index using the provided Elasticsearch client.
 func InsertLog(es *elasticsearch.Client, logs []logharbour.LogEntry, indexName string) error {
 
 	for i, log := range logs {
@@ -75,6 +77,7 @@ func InsertLog(es *elasticsearch.Client, logs []logharbour.LogEntry, indexName s
 	return nil
 }
 
+// Function ReadLogFromFile read log entries from a file, unmarshal the file data, and return slice of LogEntry
 func ReadLogFromFile(filepath string) ([]logharbour.LogEntry, error) {
 
 	byteValue, err := os.ReadFile(filepath)
@@ -90,31 +93,3 @@ func ReadLogFromFile(filepath string) ([]logharbour.LogEntry, error) {
 	}
 	return LogEntries, nil
 }
-
-// func GetElasticsearch(filepath string) (*elasticsearch.Client, error) {
-
-// 	bytedata, err := os.ReadFile(filepath)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	var ESConfig config
-// 	err = json.Unmarshal(bytedata, &ESConfig)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	cfg := elasticsearch.Config{
-// 		Addresses:              ESConfig.Addresses,
-// 		Username:               ESConfig.Username,
-// 		Password:               ESConfig.Password,
-// 		CertificateFingerprint: ESConfig.CertificateFingerprint,
-// 	}
-
-// 	es, err := elasticsearch.NewClient(cfg)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	fmt.Println("es", es)
-// 	return es, nil
-
-// }

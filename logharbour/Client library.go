@@ -1,297 +1,317 @@
 package logharbour
 
-import (
-	"context"
-	"encoding/json"
-	"fmt"
-	"slices"
-	"time"
+// import (
+// 	"context"
+// 	"encoding/json"
+// 	"fmt"
+// 	"slices"
+// 	"time"
 
-	"github.com/elastic/go-elasticsearch/v8"
-	"github.com/elastic/go-elasticsearch/v8/typedapi/core/search"
-	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
-	"github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/sortorder"
-)
+// 	"github.com/elastic/go-elasticsearch/v8"
+// 	"github.com/elastic/go-elasticsearch/v8/typedapi/core/search"
+// 	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
+// 	"github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/sortorder"
+// )
 
-const (
-	when      = "when"
-	app       = "app"
-	typeConst = "type"
-	who       = "who"
-	class     = "class"
-	instance  = "instance"
-	op        = "op"
-	remote_ip = "remote_ip"
-	pri       = "pri"
-	id        = "id" // document id
-	layout    = "2006-01-02T15:04:05Z"
-)
+// const (
+// 	when      = "when"
+// 	app       = "app"
+// 	typeConst = "type"
+// 	who       = "who"
+// 	class     = "class"
+// 	instance  = "instance"
+// 	op        = "op"
+// 	remote_ip = "remote_ip"
+// 	pri       = "pri"
+// 	id        = "id" // document id
+// 	layout    = "2006-01-02T15:04:05Z"
+// )
 
-var (
-	index                     = "logharbour"
-	LOGHARBOUR_GETLOGS_MAXREC = 15
-	res                       *search.Response
-	err                       error
-	Priority                  = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
-	requiredPri               []string
-)
+// var (
+// 	Index                     = "logharbour"
+// 	LOGHARBOUR_GETLOGS_MAXREC = 5
+// 	res                       *search.Response
+// 	Priority                  = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
+// 	requiredPri               []string
+// )
 
-type GetLogsParam struct {
-	App              *string
-	Type             *LogType
-	Who              *string
-	Class            *string
-	Instance         *string
-	Operation        *string
-	FromTS           *time.Time
-	ToTS             *time.Time
-	NDays            *int
-	RemoteIP         *string
-	Priority         *LogPriority
-	SearchAfterTS    *string
-	SearchAfterDocID *string
-}
+// type GetLogsParam struct {
+// 	App              *string
+// 	Type             *LogType
+// 	Who              *string
+// 	Class            *string
+// 	Instance         *string
+// 	Operation        *string
+// 	FromTS           *time.Time
+// 	ToTS             *time.Time
+// 	NDays            *int
+// 	RemoteIP         *string
+// 	Priority         *LogPriority
+// 	SearchAfterTS    *string
+// 	SearchAfterDocID *string
+// }
 
-type GetUnusualIPParam struct {
-	App       *string
-	Who       *string
-	Class     *string
-	Operation *string
-	NDays     *int
-}
+// type GetUnusualIPParam struct {
+// 	App       *string
+// 	Who       *string
+// 	Class     *string
+// 	Operation *string
+// 	NDays     *int
+// }
 
-func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetLogsParam) ([]LogEntry, int, error) {
+// // GetLogs retrieves an slice of logEntry from Elasticsearch based on the fields provided in logParam.
+// func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetLogsParam) ([]LogEntry, int, error) {
 
-	var queries []types.Query
-	var logEntries []LogEntry
+// 	var queries []types.Query
+// 	var logEntries []LogEntry
 
-	// appending query if both present fromTs and toTs
-	if logParam.FromTS != nil && logParam.ToTS != nil {
-		fromTs := logParam.FromTS.Format(layout)
-		toTs := logParam.ToTS.Format(layout)
-		if logParam.FromTS.Before(*logParam.ToTS) {
-			days := types.Query{
-				Range: map[string]types.RangeQuery{
-					when: types.DateRangeQuery{
-						Gte: &fromTs,
-						Lte: &toTs,
-					},
-				},
-			}
-			queries = append(queries, days)
-		} else {
-			return nil, 0, fmt.Errorf("tots must be after fromts")
-		}
+// 	ok, ranges, err := rangeQueryForTimestamp(logParam.FromTS, logParam.ToTS, logParam.NDays)
+// 	if ok {
+// 		queries = append(queries, ranges)
+// 	}
+// 	if err != nil {
+// 		return nil, 0, err
+// 	}
 
-		// appending query if FromTs is present
-	} else if logParam.FromTS != nil && logParam.ToTS == nil {
-		fromTs := logParam.FromTS.Format(layout)
-		days := types.Query{
-			Range: map[string]types.RangeQuery{
-				when: types.DateRangeQuery{
-					Gte: &fromTs,
-				},
-			},
-		}
-		queries = append(queries, days)
+// 	if ok, app := termQueryForField(app, logParam.App); ok {
+// 		queries = append(queries, app)
+// 	}
 
-		// appending query if ToTS is present
-	} else if logParam.FromTS == nil && logParam.ToTS != nil {
-		toTs := logParam.ToTS.Format(layout)
-		days := types.Query{
-			Range: map[string]types.RangeQuery{
-				when: types.DateRangeQuery{
-					Lte: &toTs,
-				},
-			},
-		}
-		queries = append(queries, days)
+// 	if logParam.Type != nil {
+// 		logTypeStr := logParam.Type.String()
+// 		if ok, logType := termQueryForField(typeConst, &logTypeStr); ok {
+// 			queries = append(queries, logType)
+// 		}
+// 	}
 
-		// appending query for get log for n number of day
-	} else if logParam.NDays != nil && logParam.FromTS == nil && logParam.ToTS == nil {
-		if *logParam.NDays > 0 {
-			day := fmt.Sprintf("now-%dd/d", *logParam.NDays) // now-5d
-			days := types.Query{
-				Range: map[string]types.RangeQuery{
-					when: types.DateRangeQuery{
-						Gte: &day,
-					},
-				},
-			}
-			queries = append(queries, days)
-		}
-	}
+// 	if ok, who := termQueryForField(WHO, logParam.Who); ok {
 
-	if ok, app := termQueryForField(app, logParam.App); ok {
-		queries = append(queries, app)
-	}
-	logTypeStr := logParam.Type.String()
-	if ok, logType := termQueryForField(typeConst, &logTypeStr); ok {
+// 		queries = append(queries, who)
+// 	}
+// 	if ok, class := termQueryForField(class, logParam.Class); ok {
 
-		queries = append(queries, logType)
-	}
+// 		queries = append(queries, class)
+// 	}
+// 	if ok, instance := termQueryForField(instance, logParam.Instance); ok {
 
-	if ok, who := termQueryForField(WHO, logParam.Who); ok {
+// 		queries = append(queries, instance)
+// 	}
+// 	if ok, op := termQueryForField(op, logParam.Operation); ok {
 
-		queries = append(queries, who)
-	}
-	if ok, class := termQueryForField(class, logParam.Class); ok {
+// 		queries = append(queries, op)
+// 	}
+// 	if ok, remoteIp := termQueryForField(remote_ip, logParam.RemoteIP); ok {
 
-		queries = append(queries, class)
-	}
-	if ok, instance := termQueryForField(instance, logParam.Instance); ok {
+// 		queries = append(queries, remoteIp)
+// 	}
 
-		queries = append(queries, instance)
-	}
-	if ok, op := termQueryForField(op, logParam.Operation); ok {
+// 	if logParam.Priority != nil {
+// 		priStr := logParam.Priority.String()
+// 		priFrom := slices.Index(Priority, priStr)
+// 		if priFrom > 0 {
+// 			requiredPri = Priority[priFrom:]
+// 		}
+// 		if ok, pri := termQueryForField(pri, nil, requiredPri...); ok {
+// 			queries = append(queries, pri)
+// 		}
+// 	}
 
-		queries = append(queries, op)
-	}
-	if ok, remoteIp := termQueryForField(remote_ip, logParam.RemoteIP); ok {
+// 	// creating elastic search bool query
+// 	query := &types.Query{
+// 		Bool: &types.BoolQuery{
+// 			Filter: queries,
+// 		},
+// 	}
 
-		queries = append(queries, remoteIp)
-	}
+// 	// sorting record on base of when
+// 	sortByWhen := types.SortOptions{
+// 		SortOptions: map[string]types.FieldSort{
+// 			when: {Order: &sortorder.Desc},
+// 		},
+// 	}
 
-	if logParam.Priority != nil {
-		priStr := logParam.Priority.String()
-		priFrom := slices.Index(Priority, priStr)
-		if priFrom > 0 {
-			requiredPri = Priority[priFrom:]
-		}
-		if ok, pri := termQueryForField(pri, nil, requiredPri...); ok {
-			queries = append(queries, pri)
-		}
-	}
+// 	// sortById := types.SortOptions{
+// 	// 	SortOptions: map[string]types.FieldSort{
+// 	// 		id : {Order: &sortorder.Desc},
+// 	// 	},
+// 	// }
 
-	// creating elastic search bool query
-	query := &types.Query{
-		Bool: &types.BoolQuery{
-			Filter: queries,
-		},
-	}
+// 	//  calling search query when SearchAfterTS and SearchAfterDocID given
+// 	if logParam.SearchAfterTS != nil && logParam.SearchAfterDocID != nil {
+// 		res, err = client.Search().Index(Index).Request(&search.Request{
+// 			Size:        &LOGHARBOUR_GETLOGS_MAXREC,
+// 			Query:       query,
+// 			SearchAfter: []types.FieldValue{logParam.SearchAfterTS, logParam.SearchAfterDocID},
+// 			Sort:        []types.SortCombinations{sortByWhen},
+// 		}).Do(context.Background())
+// 		//  calling search query when SearchAfterTS is given
+// 	} else if logParam.SearchAfterTS != nil && logParam.SearchAfterDocID == nil {
+// 		res, err = client.Search().Index(Index).Request(&search.Request{
+// 			Size:        &LOGHARBOUR_GETLOGS_MAXREC,
+// 			Query:       query,
+// 			SearchAfter: []types.FieldValue{logParam.SearchAfterTS},
+// 			Sort:        []types.SortCombinations{sortByWhen},
+// 		}).Do(context.Background())
+// 		//  calling search query when is SearchAfterDocID
+// 	} else if logParam.SearchAfterTS == nil && logParam.SearchAfterDocID != nil {
+// 		res, err = client.Search().Index(Index).Request(&search.Request{
+// 			Size:        &LOGHARBOUR_GETLOGS_MAXREC,
+// 			Query:       query,
+// 			SearchAfter: []types.FieldValue{logParam.SearchAfterDocID},
+// 			Sort:        []types.SortCombinations{sortByWhen},
+// 		}).Do(context.Background())
+// 	} else {
+// 		//  calling search query when SearchAfterTS and SearchAfterDocID not given
+// 		res, err = client.Search().Index(Index).Request(&search.Request{
+// 			Size:  &LOGHARBOUR_GETLOGS_MAXREC,
+// 			Query: query,
+// 			Sort:  []types.SortCombinations{sortByWhen},
+// 		}).Do(context.Background())
+// 	}
+// 	if err != nil {
+// 		return nil, 0, fmt.Errorf("Error while searching document in es:%v", err)
+// 	}
+// 	var logEnter LogEntry
 
-	// sorting record on base of when
-	sortByWhen := types.SortOptions{
-		SortOptions: map[string]types.FieldSort{
-			when: {Order: &sortorder.Desc},
-		},
-	}
+// 	// Unmarshalling hit.source into LogEntry
+// 	if res != nil {
+// 		for _, hit := range res.Hits.Hits {
+// 			if err := json.Unmarshal([]byte(hit.Source_), &logEnter); err != nil {
+// 				return nil, 0, fmt.Errorf("error while unmarshalling response:%v", err)
+// 			}
+// 			logEntries = append(logEntries, logEnter)
+// 		}
+// 	}
+// 	return logEntries, int(res.Hits.Total.Value), nil
+// }
 
-	// sortById := types.SortOptions{
-	// 	SortOptions: map[string]types.FieldSort{
-	// 		id : {Order: &sortorder.Desc},
-	// 	},
-	// }
+// // termQueryForField constructs and returns a term query for a specified field and its corresponding value.
+// func termQueryForField(field string, value *string, values ...string) (bool, types.Query) {
+// 	if value != nil {
+// 		query := types.Query{
+// 			Term: map[string]types.TermQuery{
+// 				field: {Value: value},
+// 			},
+// 		}
+// 		return true, query
+// 	}
+// 	if values != nil {
+// 		var vals []types.FieldValue
+// 		for _, val := range values {
+// 			vals = append(vals, val)
+// 		}
+// 		query := types.Query{
+// 			Terms: &types.TermsQuery{
+// 				TermsQuery: map[string]types.TermsQueryField{
+// 					field: vals,
+// 				},
+// 			},
+// 		}
+// 		return true, query
+// 	}
+// 	return false, types.Query{}
+// }
 
-	//  calling search query when SearchAfterTS and SearchAfterDocID given
-	if logParam.SearchAfterTS != nil && logParam.SearchAfterDocID != nil {
-		res, err = client.Search().Index(index).Request(&search.Request{
-			Size:        &LOGHARBOUR_GETLOGS_MAXREC,
-			Query:       query,
-			SearchAfter: []types.FieldValue{logParam.SearchAfterTS, logParam.SearchAfterDocID},
-			Sort:        []types.SortCombinations{sortByWhen},
-		}).Do(context.Background())
-		//  calling search query when SearchAfterTS is given
-	} else if logParam.SearchAfterTS != nil && logParam.SearchAfterDocID == nil {
-		res, err = client.Search().Index(index).Request(&search.Request{
-			Size:        &LOGHARBOUR_GETLOGS_MAXREC,
-			Query:       query,
-			SearchAfter: []types.FieldValue{logParam.SearchAfterTS},
-			Sort:        []types.SortCombinations{sortByWhen},
-		}).Do(context.Background())
-		//  calling search query when is SearchAfterDocID
-	} else if logParam.SearchAfterTS == nil && logParam.SearchAfterDocID != nil {
-		res, err = client.Search().Index(index).Request(&search.Request{
-			Size:        &LOGHARBOUR_GETLOGS_MAXREC,
-			Query:       query,
-			SearchAfter: []types.FieldValue{logParam.SearchAfterDocID},
-			Sort:        []types.SortCombinations{sortByWhen},
-		}).Do(context.Background())
-	} else {
-		//  calling search query when SearchAfterTS and SearchAfterDocID not given
-		res, err = client.Search().Index(index).Request(&search.Request{
-			Size:  &LOGHARBOUR_GETLOGS_MAXREC,
-			Query: query,
-			Sort:  []types.SortCombinations{sortByWhen},
-		}).Do(context.Background())
-	}
-	if err != nil {
-		return nil, 0, fmt.Errorf("Error while searching document in es:%v", err)
-	}
-	var logEnter LogEntry
+// // rangeQueryForTimestamp generates a range query for Elasticsearch based on the provided timestamps and number of days.
+// func rangeQueryForTimestamp(fromTS, toTS *time.Time, nDays *int) (bool, types.Query, error) {
 
-	// Unmarshalling hit.source into LogEntry
-	if res != nil {
-		for _, hit := range res.Hits.Hits {
-			if err := json.Unmarshal([]byte(hit.Source_), &logEnter); err != nil {
-				return nil, 0, fmt.Errorf("error while unmarshalling response:%v", err)
-			}
-			logEntries = append(logEntries, logEnter)
-		}
-	}
-	return logEntries, int(res.Hits.Total.Value), nil
-}
+// 	// return query if both present fromTs and toTs
+// 	if fromTS != nil && toTS != nil {
+// 		fromTs := fromTS.Format(layout)
+// 		toTs := toTS.Format(layout)
+// 		if fromTS.Before(*toTS) {
+// 			query := types.Query{
+// 				Range: map[string]types.RangeQuery{
+// 					when: types.DateRangeQuery{
+// 						Gte: &fromTs,
+// 						Lte: &toTs,
+// 					},
+// 				},
+// 			}
+// 			return true, query, nil
+// 		} else {
+// 			return false, types.Query{}, fmt.Errorf("tots must be after fromts")
+// 		}
 
-// termQueryForField constructs and returns a term query for a specified field and its corresponding value.
-func termQueryForField(field string, value *string, values ...string) (bool, types.Query) {
-	if value != nil {
-		matchQuery := types.Query{
-			Term: map[string]types.TermQuery{
-				field: {Value: value},
-			},
-		}
-		return true, matchQuery
-	}
-	if values != nil {
-		var vals []types.FieldValue
-		for _, val := range values {
-			vals = append(vals, val)
-		}
-		matchQuery := types.Query{
-			Terms: &types.TermsQuery{
-				TermsQuery: map[string]types.TermsQueryField{
-					field: vals,
-				},
-			},
-		}
-		return true, matchQuery
-	}
-	return false, types.Query{}
-}
+// 		// appending query if FromTs is present
+// 	} else if fromTS != nil && toTS == nil {
+// 		fromTs := fromTS.Format(layout)
+// 		query := types.Query{
+// 			Range: map[string]types.RangeQuery{
+// 				when: types.DateRangeQuery{
+// 					Gte: &fromTs,
+// 				},
+// 			},
+// 		}
+// 		return true, query, nil
 
-func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, logParam GetUnusualIPParam, unusualPercent float64) ([]string, error) {
+// 		// appending query if ToTS is present
+// 	} else if fromTS == nil && toTS != nil {
+// 		toTs := toTS.Format(layout)
+// 		query := types.Query{
+// 			Range: map[string]types.RangeQuery{
+// 				when: types.DateRangeQuery{
+// 					Lte: &toTs,
+// 				},
+// 			},
+// 		}
+// 		return true, query, nil
 
-	unusualIPs := []string{}
+// 		// appending query for get log for n number of day
+// 	} else if nDays != nil && fromTS == nil && toTS == nil {
+// 		if *nDays > 0 {
+// 			day := fmt.Sprintf("now-%dd/d", *nDays) // now-5d
+// 			query := types.Query{
+// 				Range: map[string]types.RangeQuery{
+// 					when: types.DateRangeQuery{
+// 						Gte: &day,
+// 					},
+// 				},
+// 			}
+// 			return true, query, nil
+// 		}
+// 	}
+// 	return false, types.Query{}, nil
+// }
 
-	if unusualPercent < 0.5 || unusualPercent > 50 {
-		return nil, fmt.Errorf("unusualPercent is not between 0.5 to 50")
-	}
+// // GetUnusualIP will go through the logs of the last ndays days which match the search criteria, and pull out all the
+// // remote IP addresses which account for a low enough percentage of the total to be treated as unusual or suspicious.
+// func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, logParam GetUnusualIPParam, unusualPercent float64) ([]string, error) {
+// 	unusualIPs := []string{}
 
-	aggregatedIPs, err := GetSet(client, GetSetParam{
-		QueryToken: queryToken,
-		App:        logParam.App,
-		Who:        logParam.Who,
-		Class:      logParam.Class,
-		Op:         logParam.Operation,
-		Ndays:      logParam.NDays,
-		SetAttr:    remote_ip,
-	})
-	if err != nil {
-		return nil, err
-	}
+// 	if unusualPercent < 0.5 || unusualPercent > 50 {
+// 		return nil, fmt.Errorf("unusualPercent is not between 0.5 to 50")
+// 	}
 
-	percentThreshold := len(aggregatedIPs) * int(unusualPercent) / 100
+// 	aggregatedIPs, err := GetSet(client, GetSetParam{
+// 		QueryToken: queryToken,
+// 		App:        logParam.App,
+// 		Who:        logParam.Who,
+// 		Class:      logParam.Class,
+// 		Op:         logParam.Operation,
+// 		Ndays:      logParam.NDays,
+// 		SetAttr:    remote_ip,
+// 	})
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	//   Calculate total number of logs to find what 1% represents
+// 	var count int64 = 0
+// 	for _, v := range aggregatedIPs {
+// 		count += v
+// 	}
+// 	percentThreshold := float64(count) * unusualPercent / 100
 
-	if percentThreshold > 1 {
-		for ip, count := range aggregatedIPs {
-			fmt.Printf("IP: %s, Count: %d\n", ip, count)
-			if count <= int64(percentThreshold) {
-				if ip != "local" {
-					unusualIPs = append(unusualIPs, ip)
-				}
-			}
-		}
-	}
-	return unusualIPs, nil
+// 	if percentThreshold > 1 {
+// 		for ip, count := range aggregatedIPs {
+// 			fmt.Printf("IP: %s, Count: %d\n", ip, count)
+// 			if count <= int64(percentThreshold) {
+// 				if ip != "local" {
+// 					unusualIPs = append(unusualIPs, ip)
+// 				}
+// 			}
+// 		}
+// 	}
+// 	return unusualIPs, nil
 
-}
+// }

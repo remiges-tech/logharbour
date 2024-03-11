@@ -1,172 +1,135 @@
 package logharbour_test
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
 	"testing"
 	"time"
 
-	"github.com/elastic/go-elasticsearch/v8"
-	"github.com/ory/dockertest"
-	"github.com/ory/dockertest/docker"
+	es "github.com/elastic/go-elasticsearch/v8"
 	elasticsearchctl "github.com/remiges-tech/logharbour/server/elasticSearchCtl/elasticSearch"
+	"github.com/testcontainers/testcontainers-go"
+	"github.com/testcontainers/testcontainers-go/modules/elasticsearch"
 )
 
-var filepath = "../test/testData/log.json"
-var createIndexBody = `{
-	"mappings": {
-	  "properties": {
-		"app": {
-		  "type": "keyword"
+var (
+	indexBody = `{
+		"settings": {
+		  "number_of_shards": 1,
+		  "number_of_replicas": 0
 		},
-		"system": {
-		  "type": "keyword"
-		},
-		"module": {
-		  "type": "keyword"
-		},
-		"type": {
-		  "type": "keyword"
-		},
-		"pri": {
-		  "type": "keyword"
-		},
-		"when": {
-		  "type": "date"
-		},
-		"who": {
-		  "type": "keyword"
-		},
-		"op": {
-		  "type": "keyword"
-		},
-		"class": {
-		  "type": "keyword"
-		},
-		"instance": {
-		  "type": "keyword"
-		},
-		"status": {
-		  "type": "integer"
-		},
-		"error": {
-		  "type": "keyword"
-		},
-		"remote_ip": {
-		  "type": "ip"
-		},
-		"msg": {
-		  "type": "keyword"
-		},
-		"data": {
-		  "type": "text"
+		"mappings": {
+		  "properties": {
+			"app": {
+			  "type": "keyword"
+			},
+			"system": {
+			  "type": "keyword"
+			},
+			"module": {
+			  "type": "keyword"
+			},
+			"type": {
+			  "type": "keyword"
+			},
+			"pri": {
+			  "type": "keyword"
+			},
+			"when": {
+			  "type": "date"
+			},
+			"who": {
+			  "type": "keyword"
+			},
+			"op": {
+			  "type": "keyword"
+			},
+			"class": {
+			  "type": "keyword"
+			},
+			"instance": {
+			  "type": "keyword"
+			},
+			"status": {
+			  "type": "integer"
+			},
+			"error": {
+			  "type": "keyword"
+			},
+			"remote_ip": {
+			  "type": "ip"
+			},
+			"msg": {
+			  "type": "keyword"
+			},
+			"data": {
+			  "type": "text"
+			}
+		  }
 		}
-	  }
-	}
-  }`
-
-var indexName = "logharbour_unit_test"
-var typedClient *elasticsearch.TypedClient
+	  }`
+	typedClient *es.TypedClient
+	filepath    = "../test/testData/log.json"
+	indexName   = "logharbour_unit_test"
+	timeout     = 500 * time.Second
+)
 
 func TestMain(m *testing.M) {
-	// Initialize Docker pool to insure it close at the end
-	pool, err := dockertest.NewPool("")
+
+	// Create a context with a timeout
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	// creates an instance of the Elasticsearch container
+	elasticsearchContainer, err := elasticsearch.RunContainer(
+		ctx,
+		testcontainers.WithImage("docker.elastic.co/elasticsearch/elasticsearch:8.9.0"),
+		elasticsearch.WithPassword("elastic"),
+	)
 	if err != nil {
-		fmt.Printf("Could not connect to Docker: %v\n", err)
+		log.Fatalf("failed to start container: %s", err)
 	}
-	fmt.Println("Initialize Docker pool")
+	defer func() {
+		err := elasticsearchContainer.Terminate(ctx)
+		if err != nil {
+			log.Fatalf("failed to terminate container: %s", err)
+		}
+	}()
 
-	// Deploy the ElasticSearch container.
-	resource, elasticAddress, err := deployElasticSearch(pool)
+	cfg := es.Config{
+		Addresses: []string{
+			elasticsearchContainer.Settings.Address,
+		},
+		Username: "elastic",
+		Password: elasticsearchContainer.Settings.Password,
+		CACert:   elasticsearchContainer.Settings.CACert,
+	}
+
+	// NewTypedClient create a new elasticsearch client with the configuration from cfg
+	typedClient, err = es.NewTypedClient(cfg)
 	if err != nil {
-		fmt.Printf("Could not start resource: %v\n", err)
-	}
-	fmt.Println("Deploy the ElasticSearch container")
-
-	// fillElasticWithData
-	if err := fillElasticWithData(elasticAddress, indexName, createIndexBody); err != nil {
-		fmt.Printf("Error while inserting data in elastic search: %v\n", err)
+		log.Fatalf("error while elastic search client config: %v", err)
 	}
 
-	// Run the tests.
-	exitCode := m.Run()
-
-	// Exit with the appropriate code.
-	if err := pool.Purge(resource); err != nil {
-		log.Fatalf("Could not purge resource: %s", err)
+	// NewClient creates a new elasticsearch client with configuration from cfg.
+	esClient, err := es.NewClient(cfg)
+	if err != nil {
+		log.Fatalf("error creating the client: %s", err)
 	}
-	fmt.Println("Exit with the appropriate code")
 
-	os.Exit(exitCode)
+	if err := fillElasticWithData(esClient, indexName, indexBody); err != nil {
+		log.Fatalf("error while creating elastic search index: %v", err)
+	}
 
+	exitVal := m.Run()
+	os.Exit(exitVal)
 }
 
-func deployElasticSearch(pool *dockertest.Pool) (*dockertest.Resource, string, error) {
-	resource, err := pool.RunWithOptions(&dockertest.RunOptions{
-		Repository: "elasticsearch",
-		Tag:        "8.12.2",
-		Env:        []string{"discovery.type=single-node"},
-	}, func(config *docker.HostConfig) {
-		// set AutoRemove to true so that stopped container goes away by itself
-		config.AutoRemove = true
-		config.RestartPolicy = docker.RestartPolicy{Name: "no"}
-	})
-	if err != nil {
-		log.Fatalf("Could not start elasticsearch: %s", err)
-		return resource, "", err
-	}
+func fillElasticWithData(esClient *es.Client, indexName, indexBody string) error {
 
-	elasticAddress := fmt.Sprintf("http://localhost:%s", resource.GetPort("9200/tcp"))
-
-	log.Println("Connecting to elasticAddress on url: ", elasticAddress)
-
-	resource.Expire(20) // Tell docker to hard kill the container in 120 seconds
-	pool.MaxWait = 20 * time.Second
-
-	// Ensure the elastic search container is ready to accept connections.
-	// if err = pool.Retry(func() error {
-	// Ping the Elasticsearch cluster
-	// _, err = typedClient.Ping().Do(context.Background())
-	// if err != nil {
-	// 	log.Fatalf("Error pinging the Elasticsearch cluster: %s", err)
-	// }
-
-	// Check the response status
-	// if res.IsError() {
-	// 	log.Fatalf("Elasticsearch cluster returned an error: %s", res.String())
-	// }
-
-	// Print the response status
-	// fmt.Println("Elasticsearch cluster is up and running!")
-	// }); err != nil {
-	// 	log.Fatalf("Could not connect to docker: %s", err)
-	// }
-
-	return resource, elasticAddress, nil
-}
-
-func fillElasticWithData(elasticAddress, indexName, indexBody string) error {
-
-	cfg := elasticsearch.Config{
-		Addresses: []string{elasticAddress},
-		// Username:               username,
-		// Password:               password,
-		// CertificateFingerprint: esCer,
-	}
-
-	typedClient, err := elasticsearch.NewTypedClient(cfg)
-	if err != nil {
-		return fmt.Errorf("error while elastic search client config: %v", err)
-	}
-	fmt.Println("typedClient", typedClient)
-
-	client, err := elasticsearch.NewClient(cfg)
-	if err != nil {
-		return fmt.Errorf("error while elastic search client config: %v", err)
-	}
-
-	if err := elasticsearchctl.CreateElasticIndex(client, indexName, indexBody); err != nil {
+	if err := elasticsearchctl.CreateElasticIndex(esClient, indexName, indexBody); err != nil {
 		return fmt.Errorf("error while creating elastic search index: %v", err)
 	}
 
@@ -175,7 +138,7 @@ func fillElasticWithData(elasticAddress, indexName, indexBody string) error {
 		return fmt.Errorf("error converting data from log file:%v", err)
 	}
 
-	if err := elasticsearchctl.InsertLog(client, logEntries, indexName); err != nil {
+	if err := elasticsearchctl.InsertLog(esClient, logEntries, indexName); err != nil {
 		return fmt.Errorf("error while inserting data in elastic search: %v", err.Error())
 	}
 

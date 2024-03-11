@@ -60,7 +60,7 @@ func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string
 	)
 
 	// Validate setAttr
-	_, err = isValidSetAttribute(setAttr)
+	_, err := isValidSetAttribute(setAttr)
 	if err != nil {
 		return nil, err
 	}
