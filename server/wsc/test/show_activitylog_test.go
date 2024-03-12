@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/remiges-tech/alya/wscutils"
+	"github.com/remiges-tech/logharbour/logharbour"
 	"github.com/remiges-tech/logharbour/server/wsc"
 	"github.com/remiges-tech/logharbour/server/wsc/test/testUtils"
 	"github.com/stretchr/testify/require"
@@ -20,6 +21,7 @@ func TestShowActivityLog(t *testing.T) {
 			payload := bytes.NewBuffer(testUtils.MarshalJson(tc.RequestPayload))
 
 			res := httptest.NewRecorder()
+			logharbour.Index = "logharbour_unit_test1"
 			req, err := http.NewRequest(http.MethodPost, "/showActivitylog", payload)
 			require.NoError(t, err)
 
@@ -41,6 +43,12 @@ func TestShowActivityLog(t *testing.T) {
 func showActivityLogTestcase() []testUtils.TestCasesStruct {
 	whoStndErr := "tusharrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
 	classStndErr := "wfinsta1nce"
+	app := "crux"
+	who := "Tushar"
+	class := "wfinstance"
+	instance := "2"
+	pri := logharbour.Info
+	nDay := 100
 	schemaNewTestCase := []testUtils.TestCasesStruct{
 		{
 			Name: "err- binding_json_error",
@@ -72,6 +80,21 @@ func showActivityLogTestcase() []testUtils.TestCasesStruct {
 
 			ExpectedHttpCode: http.StatusBadRequest,
 			TestJsonFile:     "./show_activitylog_test/standerd_validation.json",
+		},
+		{
+			Name: "successful",
+			RequestPayload: wscutils.Request{
+				Data: wsc.LogRequest{
+					App:        app,
+					Who:        &who,
+					Class:      &class,
+					InstanceID: &instance,
+					Days:       nDay,
+					Priority:   &pri,
+				},
+			},
+			ExpectedHttpCode: http.StatusOK,
+			TestJsonFile:     "./show_activitylog_test/successful_test_case.json",
 		},
 	}
 	return schemaNewTestCase

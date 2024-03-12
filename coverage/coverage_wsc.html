@@ -55,31 +55,29 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/remiges-tech/logharbour/logharbour/elastic.go (0.0%)</option>
+				<option value="file0">github.com/remiges-tech/logharbour/logharbour/elastic.go (25.9%)</option>
 				
-				<option value="file1">github.com/remiges-tech/logharbour/logharbour/get_set.go (0.0%)</option>
+				<option value="file1">github.com/remiges-tech/logharbour/logharbour/kafka.go (0.0%)</option>
 				
-				<option value="file2">github.com/remiges-tech/logharbour/logharbour/kafka.go (0.0%)</option>
+				<option value="file2">github.com/remiges-tech/logharbour/logharbour/kafkaconsumer.go (0.0%)</option>
 				
-				<option value="file3">github.com/remiges-tech/logharbour/logharbour/kafkaconsumer.go (0.0%)</option>
+				<option value="file3">github.com/remiges-tech/logharbour/logharbour/logharbour.go (29.2%)</option>
 				
-				<option value="file4">github.com/remiges-tech/logharbour/logharbour/logharbour.go (29.2%)</option>
+				<option value="file4">github.com/remiges-tech/logharbour/logharbour/types.go (55.0%)</option>
 				
-				<option value="file5">github.com/remiges-tech/logharbour/logharbour/types.go (52.5%)</option>
+				<option value="file5">github.com/remiges-tech/logharbour/logharbour/utils.go (10.7%)</option>
 				
-				<option value="file6">github.com/remiges-tech/logharbour/logharbour/utils.go (10.7%)</option>
+				<option value="file6">github.com/remiges-tech/logharbour/server/elasticSearchCtl/elasticSearch/elasticSearchCtl.go (70.6%)</option>
 				
-				<option value="file7">github.com/remiges-tech/logharbour/server/elasticSearchCtl/elasticSearch/elasticSearchCtl.go (70.6%)</option>
+				<option value="file7">github.com/remiges-tech/logharbour/server/wsc/debuglog.go (0.0%)</option>
 				
-				<option value="file8">github.com/remiges-tech/logharbour/server/wsc/debuglog.go (0.0%)</option>
+				<option value="file8">github.com/remiges-tech/logharbour/server/wsc/get_Unusual_IPs.go (0.0%)</option>
 				
-				<option value="file9">github.com/remiges-tech/logharbour/server/wsc/get_Unusual_IPs.go (0.0%)</option>
+				<option value="file9">github.com/remiges-tech/logharbour/server/wsc/highprilog.go (0.0%)</option>
 				
-				<option value="file10">github.com/remiges-tech/logharbour/server/wsc/highprilog.go (0.0%)</option>
+				<option value="file10">github.com/remiges-tech/logharbour/server/wsc/show_activitylog.go (65.6%)</option>
 				
-				<option value="file11">github.com/remiges-tech/logharbour/server/wsc/show_activitylog.go (46.9%)</option>
-				
-				<option value="file12">github.com/remiges-tech/logharbour/server/wsc/test/testUtils/testUtils.go (75.0%)</option>
+				<option value="file11">github.com/remiges-tech/logharbour/server/wsc/test/testUtils/testUtils.go (75.0%)</option>
 				
 				</select>
 			</div>
@@ -101,6 +99,9 @@ import (
         "errors"
         "fmt"
         "log"
+        "net"
+        "reflect"
+        "regexp"
         "slices"
         "strings"
         "time"
@@ -108,22 +109,30 @@ import (
         "github.com/elastic/go-elasticsearch/v8"
         "github.com/elastic/go-elasticsearch/v8/esapi"
         "github.com/elastic/go-elasticsearch/v8/typedapi/core/search"
+        "github.com/elastic/go-elasticsearch/v8/typedapi/some"
         "github.com/elastic/go-elasticsearch/v8/typedapi/types"
         "github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/sortorder"
 )
 
 const (
-        when      = "when"
-        app       = "app"
-        typeConst = "type"
-        who       = "who"
-        class     = "class"
-        instance  = "instance"
-        op        = "op"
-        remote_ip = "remote_ip"
-        pri       = "pri"
-        id        = "id" // document id
-        layout    = "2006-01-02T15:04:05Z"
+        when        = "when"
+        app         = "app"
+        module      = "module"
+        typeConst   = "type"
+        who         = "who"
+        status      = "status"
+        system      = "system"
+        class       = "class"
+        instance    = "instance"
+        op          = "op"
+        remote_ip   = "remote_ip"
+        pri         = "pri"
+        id          = "id" // document id
+        layout      = "2006-01-02T15:04:05Z"
+        logSet      = "logset"
+        DIALTIMEOUT = 500 * time.Second
+        ACTIVITY    = "A"
+        DEBUG       = "D"
 )
 
 var (
@@ -157,6 +166,19 @@ type GetUnusualIPParam struct {
         Class     *string
         Operation *string
         NDays     *int
+}
+type GetSetParam struct {
+        App      *string      `json:"app" validate:"omitempty,alpha,lt=30"`
+        Type     *LogType     `json:"type" validate:"omitempty,oneof=1 2 3 4"`
+        Who      *string      `json:"who" validate:"omitempty,alpha,lt=20"`
+        Class    *string      `json:"class" validate:"omitempty,alpha,lt=30"`
+        Instance *string      `json:"instance" validate:"omitempty,alpha,lt=30"`
+        Op       *string      `json:"op" validate:"omitempty,alpha,lt=25"`
+        Fromts   *time.Time   `json:"fromts" validate:"omitempty"`
+        Tots     *time.Time   `json:"tots" validate:"omitempty"`
+        Ndays    *int         `json:"ndays" validate:"omitempty,number,lt=100"`
+        RemoteIP *string      `json:"remoteIP" validate:"omitempty"`
+        Pri      *LogPriority `json:"pri" validate:"omitempty,oneof=1 2 3 4 5 6 7 8"`
 }
 
 // ElasticsearchWriter defines methods for Elasticsearch writer
@@ -244,64 +266,64 @@ func (ec *ElasticsearchClient) Write(index string, documentID string, body strin
 // }
 
 // GetLogs retrieves an slice of logEntry from Elasticsearch based on the fields provided in logParam.
-func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetLogsParam) ([]LogEntry, int, error) <span class="cov0" title="0">{
+func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetLogsParam) ([]LogEntry, int, error) <span class="cov8" title="1">{
 
         var queries []types.Query
         var logEntries []LogEntry
 
         ok, ranges, err := rangeQueryForTimestamp(logParam.FromTS, logParam.ToTS, logParam.NDays)
-        if ok </span><span class="cov0" title="0">{
+        if ok </span><span class="cov8" title="1">{
                 queries = append(queries, ranges)
         }</span>
-        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if err != nil </span><span class="cov0" title="0">{
                 return nil, 0, err
         }</span>
 
-        <span class="cov0" title="0">if ok, app := termQueryForField(app, logParam.App); ok </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if ok, app := termQueryForField(app, logParam.App); ok </span><span class="cov8" title="1">{
                 queries = append(queries, app)
         }</span>
 
-        <span class="cov0" title="0">if logParam.Type != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if logParam.Type != nil </span><span class="cov8" title="1">{
                 logTypeStr := logParam.Type.String()
-                if ok, logType := termQueryForField(typeConst, &amp;logTypeStr); ok </span><span class="cov0" title="0">{
+                if ok, logType := termQueryForField(typeConst, &amp;logTypeStr); ok </span><span class="cov8" title="1">{
                         queries = append(queries, logType)
                 }</span>
         }
 
-        <span class="cov0" title="0">if ok, who := termQueryForField(WHO, logParam.Who); ok </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if ok, who := termQueryForField(who, logParam.Who); ok </span><span class="cov8" title="1">{
 
                 queries = append(queries, who)
         }</span>
-        <span class="cov0" title="0">if ok, class := termQueryForField(class, logParam.Class); ok </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if ok, class := termQueryForField(class, logParam.Class); ok </span><span class="cov8" title="1">{
 
                 queries = append(queries, class)
         }</span>
-        <span class="cov0" title="0">if ok, instance := termQueryForField(instance, logParam.Instance); ok </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if ok, instance := termQueryForField(instance, logParam.Instance); ok </span><span class="cov8" title="1">{
 
                 queries = append(queries, instance)
         }</span>
-        <span class="cov0" title="0">if ok, op := termQueryForField(op, logParam.Operation); ok </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if ok, op := termQueryForField(op, logParam.Operation); ok </span><span class="cov0" title="0">{
 
                 queries = append(queries, op)
         }</span>
-        <span class="cov0" title="0">if ok, remoteIp := termQueryForField(remote_ip, logParam.RemoteIP); ok </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if ok, remoteIp := termQueryForField(remote_ip, logParam.RemoteIP); ok </span><span class="cov0" title="0">{
 
                 queries = append(queries, remoteIp)
         }</span>
 
-        <span class="cov0" title="0">if logParam.Priority != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if logParam.Priority != nil </span><span class="cov8" title="1">{
                 priStr := logParam.Priority.String()
                 priFrom := slices.Index(Priority, priStr)
                 if priFrom &gt; 0 </span><span class="cov0" title="0">{
                         requiredPri = Priority[priFrom:]
                 }</span>
-                <span class="cov0" title="0">if ok, pri := termQueryForField(pri, nil, requiredPri...); ok </span><span class="cov0" title="0">{
+                <span class="cov8" title="1">if ok, pri := termQueryForField(pri, nil, requiredPri...); ok </span><span class="cov0" title="0">{
                         queries = append(queries, pri)
                 }</span>
         }
 
         // creating elastic search bool query
-        <span class="cov0" title="0">query := &amp;types.Query{
+        <span class="cov8" title="1">query := &amp;types.Query{
                 Bool: &amp;types.BoolQuery{
                         Filter: queries,
                 },
@@ -312,7 +334,7 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
         }</span>
 
         // sorting record on base of when
-        <span class="cov0" title="0">sortByWhen := types.SortOptions{
+        <span class="cov8" title="1">sortByWhen := types.SortOptions{
                 SortOptions: map[string]types.FieldSort{
                         when: {Order: &amp;sortorder.Desc},
                 },
@@ -333,7 +355,7 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
                         Sort:        []types.SortCombinations{sortByWhen},
                 }).Do(context.Background())
                 //  calling search query when SearchAfterTS is given
-        }</span> else<span class="cov0" title="0"> if logParam.SearchAfterTS != nil &amp;&amp; logParam.SearchAfterDocID == nil </span><span class="cov0" title="0">{
+        }</span> else<span class="cov8" title="1"> if logParam.SearchAfterTS != nil &amp;&amp; logParam.SearchAfterDocID == nil </span><span class="cov0" title="0">{
                 res, err = client.Search().Index(Index).Request(&amp;search.Request{
                         Size:        &amp;LOGHARBOUR_GETLOGS_MAXREC,
                         Query:       query,
@@ -341,14 +363,14 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
                         Sort:        []types.SortCombinations{sortByWhen},
                 }).Do(context.Background())
                 //  calling search query when is SearchAfterDocID
-        }</span> else<span class="cov0" title="0"> if logParam.SearchAfterTS == nil &amp;&amp; logParam.SearchAfterDocID != nil </span><span class="cov0" title="0">{
+        }</span> else<span class="cov8" title="1"> if logParam.SearchAfterTS == nil &amp;&amp; logParam.SearchAfterDocID != nil </span><span class="cov0" title="0">{
                 res, err = client.Search().Index(Index).Request(&amp;search.Request{
                         Size:        &amp;LOGHARBOUR_GETLOGS_MAXREC,
                         Query:       query,
                         SearchAfter: []types.FieldValue{logParam.SearchAfterDocID},
                         Sort:        []types.SortCombinations{sortByWhen},
                 }).Do(context.Background())
-        }</span> else<span class="cov0" title="0"> {
+        }</span> else<span class="cov8" title="1"> {
                 //  calling search query when SearchAfterTS and SearchAfterDocID not given
                 res, err = client.Search().Index(Index).Request(&amp;search.Request{
                         Size:  &amp;LOGHARBOUR_GETLOGS_MAXREC,
@@ -356,115 +378,26 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
                         Sort:  []types.SortCombinations{sortByWhen},
                 }).Do(context.Background())
         }</span>
-        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if err != nil </span><span class="cov0" title="0">{
                 return nil, 0, fmt.Errorf("Error while searching document in es:%v", err)
         }</span>
-        <span class="cov0" title="0">var logEnter LogEntry
+        <span class="cov8" title="1">var logEnter LogEntry
 
         // Unmarshalling hit.source into LogEntry
-        if res != nil </span><span class="cov0" title="0">{
-                for _, hit := range res.Hits.Hits </span><span class="cov0" title="0">{
+        if res != nil </span><span class="cov8" title="1">{
+                for _, hit := range res.Hits.Hits </span><span class="cov8" title="1">{
                         if err := json.Unmarshal([]byte(hit.Source_), &amp;logEnter); err != nil </span><span class="cov0" title="0">{
                                 return nil, 0, fmt.Errorf("error while unmarshalling response:%v", err)
                         }</span>
-                        <span class="cov0" title="0">logEntries = append(logEntries, logEnter)</span>
+                        <span class="cov8" title="1">logEntries = append(logEntries, logEnter)</span>
                 }
         }
-        <span class="cov0" title="0">return logEntries, int(res.Hits.Total.Value), nil</span>
-}
-
-// termQueryForField constructs and returns a term query for a specified field and its corresponding value.
-func termQueryForField(field string, value *string, values ...string) (bool, types.Query) <span class="cov0" title="0">{
-        if value != nil </span><span class="cov0" title="0">{
-                query := types.Query{
-                        Term: map[string]types.TermQuery{
-                                field: {Value: value},
-                        },
-                }
-                return true, query
-        }</span>
-        <span class="cov0" title="0">if values != nil </span><span class="cov0" title="0">{
-                var vals []types.FieldValue
-                for _, val := range values </span><span class="cov0" title="0">{
-                        vals = append(vals, val)
-                }</span>
-                <span class="cov0" title="0">query := types.Query{
-                        Terms: &amp;types.TermsQuery{
-                                TermsQuery: map[string]types.TermsQueryField{
-                                        field: vals,
-                                },
-                        },
-                }
-                return true, query</span>
-        }
-        <span class="cov0" title="0">return false, types.Query{}</span>
-}
-
-// rangeQueryForTimestamp generates a range query for Elasticsearch based on the provided timestamps and number of days.
-func rangeQueryForTimestamp(fromTS, toTS *time.Time, nDays *int) (bool, types.Query, error) <span class="cov0" title="0">{
-
-        // return query if both present fromTs and toTs
-        if fromTS != nil &amp;&amp; toTS != nil </span><span class="cov0" title="0">{
-                fromTs := fromTS.Format(layout)
-                toTs := toTS.Format(layout)
-                if fromTS.Before(*toTS) </span><span class="cov0" title="0">{
-                        query := types.Query{
-                                Range: map[string]types.RangeQuery{
-                                        when: types.DateRangeQuery{
-                                                Gte: &amp;fromTs,
-                                                Lte: &amp;toTs,
-                                        },
-                                },
-                        }
-                        return true, query, nil
-                }</span> else<span class="cov0" title="0"> {
-                        return false, types.Query{}, fmt.Errorf("tots must be after fromts")
-                }</span>
-
-                // appending query if FromTs is present
-        } else<span class="cov0" title="0"> if fromTS != nil &amp;&amp; toTS == nil </span><span class="cov0" title="0">{
-                fromTs := fromTS.Format(layout)
-                query := types.Query{
-                        Range: map[string]types.RangeQuery{
-                                when: types.DateRangeQuery{
-                                        Gte: &amp;fromTs,
-                                },
-                        },
-                }
-                return true, query, nil
-
-                // appending query if ToTS is present
-        }</span> else<span class="cov0" title="0"> if fromTS == nil &amp;&amp; toTS != nil </span><span class="cov0" title="0">{
-                toTs := toTS.Format(layout)
-                query := types.Query{
-                        Range: map[string]types.RangeQuery{
-                                when: types.DateRangeQuery{
-                                        Lte: &amp;toTs,
-                                },
-                        },
-                }
-                return true, query, nil
-
-                // appending query for get log for n number of day
-        }</span> else<span class="cov0" title="0"> if nDays != nil &amp;&amp; fromTS == nil &amp;&amp; toTS == nil </span><span class="cov0" title="0">{
-                if *nDays &gt; 0 </span><span class="cov0" title="0">{
-                        day := fmt.Sprintf("now-%dd/d", *nDays) // now-5d
-                        query := types.Query{
-                                Range: map[string]types.RangeQuery{
-                                        when: types.DateRangeQuery{
-                                                Gte: &amp;day,
-                                        },
-                                },
-                        }
-                        return true, query, nil
-                }</span>
-        }
-        <span class="cov0" title="0">return false, types.Query{}, nil</span>
+        <span class="cov8" title="1">return logEntries, int(res.Hits.Total.Value), nil</span>
 }
 
 // GetUnusualIP will go through the logs of the last ndays days which match the search criteria, and pull out all the
 // remote IP addresses which account for a low enough percentage of the total to be treated as unusual or suspicious.
-func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, logParam GetUnusualIPParam, unusualPercent float64) ([]string, error) <span class="cov0" title="0">{
+func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, unusualPercent float64, logParam GetUnusualIPParam) ([]string, error) <span class="cov0" title="0">{
         unusualIPs := []string{}
 
         if unusualPercent &lt; 0.5 || unusualPercent &gt; 50 </span><span class="cov0" title="0">{
@@ -488,11 +421,18 @@ func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, logParam
         }</span>
         <span class="cov0" title="0">percentThreshold := float64(count) * unusualPercent / 100
 
+        localIp, err := GetLocalIPAddress()
+        if err != nil </span><span class="cov0" title="0">{
+                println("Error:", err)
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">println("Local IP address:", localIp)
+
         if percentThreshold &gt; 1 </span><span class="cov0" title="0">{
                 for ip, count := range aggregatedIPs </span><span class="cov0" title="0">{
                         fmt.Printf("IP: %s, Count: %d\n", ip, count)
                         if count &lt;= int64(percentThreshold) </span><span class="cov0" title="0">{
-                                if ip != "local" </span><span class="cov0" title="0">{
+                                if ip != localIp </span><span class="cov0" title="0">{
                                         unusualIPs = append(unusualIPs, ip)
                                 }</span>
                         }
@@ -501,58 +441,24 @@ func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, logParam
         <span class="cov0" title="0">return unusualIPs, nil</span>
 
 }
-</pre>
-		
-		<pre class="file" id="file1" style="display: none">package logharbour
 
-import (
-        "context"
-        "fmt"
-        "reflect"
-        "regexp"
-        "slices"
-        "time"
+// GetLocalIPAddress returns the local IPv4 address of the system.
+func GetLocalIPAddress() (string, error) <span class="cov0" title="0">{
+        addrs, err := net.InterfaceAddrs()
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
 
-        "github.com/elastic/go-elasticsearch/v8"
-        "github.com/elastic/go-elasticsearch/v8/typedapi/core/search"
-        "github.com/elastic/go-elasticsearch/v8/typedapi/some"
-        "github.com/elastic/go-elasticsearch/v8/typedapi/types"
-)
+        <span class="cov0" title="0">for _, addr := range addrs </span><span class="cov0" title="0">{
+                if ipnet, ok := addr.(*net.IPNet); ok &amp;&amp; !ipnet.IP.IsLoopback() </span><span class="cov0" title="0">{
+                        if ipnet.IP.To4() != nil </span><span class="cov0" title="0">{
+                                return ipnet.IP.String(), nil
+                        }</span>
+                }
+        }
 
-type GetSetParam struct {
-        App      *string      `json:"app" validate:"omitempty,alpha,lt=30"`
-        Type     *LogType     `json:"type" validate:"omitempty,oneof=1 2 3 4"`
-        Who      *string      `json:"who" validate:"omitempty,alpha,lt=20"`
-        Class    *string      `json:"class" validate:"omitempty,alpha,lt=30"`
-        Instance *string      `json:"instance" validate:"omitempty,alpha,lt=30"`
-        Op       *string      `json:"op" validate:"omitempty,alpha,lt=25"`
-        Fromts   *time.Time   `json:"fromts" validate:"omitempty"`
-        Tots     *time.Time   `json:"tots" validate:"omitempty"`
-        Ndays    *int         `json:"ndays" validate:"omitempty,number,lt=100"`
-        RemoteIP *string      `json:"remoteIP" validate:"omitempty"`
-        Pri      *LogPriority `json:"pri" validate:"omitempty,oneof=1 2 3 4 5 6 7 8"`
+        <span class="cov0" title="0">return "", nil</span>
 }
-
-const (
-        INDEX       = "logharbour"
-        APP         = "app"
-        TYPE        = "type"
-        WHO         = "who"
-        CLASS       = "class"
-        INSTANCE    = "instance"
-        OP          = "op"
-        REMOTE_IP   = "remote_ip"
-        PRI         = "pri"
-        WHEN        = "when"
-        MODULE      = "module"
-        STATUS      = "status"
-        SYSTEM      = "system"
-        LAYOUT      = "2006-01-02T15:04:05Z"
-        DIALTIMEOUT = 10 * time.Second
-        SERVICES    = "services"
-        ACTIVITY    = "A"
-        DEBUG       = "D"
-)
 
 // GetSet gets a set of values for an attribute from the log entries specified.
 // This is a faceted search for one attribute.
@@ -583,11 +489,11 @@ func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string
 
         // To Serach data
         // This will return a set of unique values for an attribute based on method parameters
-        res, err := client.Search().Index(INDEX).Request(&amp;search.Request{
+        res, err := client.Search().Index(Index).Request(&amp;search.Request{
                 Query: query,
                 Size:  &amp;zero,
                 Aggregations: map[string]types.Aggregations{
-                        SERVICES: {
+                        logSet: {
                                 Terms: &amp;types.TermsAggregation{
                                         Field: some.String(setAttr),
                                 },
@@ -600,12 +506,12 @@ func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string
         }</span>
 
         // To assert if response contains aggregation response and it must be type of *types.StringTermsAggregate
-        <span class="cov0" title="0">servicesAgg, ok := res.Aggregations[SERVICES].(*types.StringTermsAggregate)
-        if !ok || servicesAgg == nil </span><span class="cov0" title="0">{
+        <span class="cov0" title="0">logSetAgg, ok := res.Aggregations[logSet].(*types.StringTermsAggregate)
+        if !ok || logSetAgg == nil </span><span class="cov0" title="0">{
                 return nil, fmt.Errorf("services aggregation is not present or not of type *types.StringTermsAggregate")
         }</span>
         // To extract bucket_key and bucket_count from Buckets which must be type of types.BucketsStringTermsBucket and append it to dataMap
-        <span class="cov0" title="0">bucketsSlice, ok := servicesAgg.Buckets.([]types.StringTermsBucket)
+        <span class="cov0" title="0">bucketsSlice, ok := logSetAgg.Buckets.([]types.StringTermsBucket)
         if ok </span><span class="cov0" title="0">{
                 for _, bucket := range bucketsSlice </span><span class="cov0" title="0">{
                         // Ensuring bucket key is a string.
@@ -617,7 +523,7 @@ func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string
                         }</span>
                 }
         } else<span class="cov0" title="0"> {
-                return nil, fmt.Errorf("services aggregation Buckets field has Unknown type: %v , valid type is :%v", reflect.TypeOf(servicesAgg.Buckets), "[]types.StringTermsBucket")
+                return nil, fmt.Errorf("services aggregation Buckets field has Unknown type: %v , valid type is :%v", reflect.TypeOf(logSetAgg.Buckets), "[]types.StringTermsBucket")
         }</span>
 
         <span class="cov0" title="0">return dataMap, nil</span>
@@ -625,170 +531,98 @@ func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string
 
 // To form a query based on valid method parameters
 func getQuery(param GetSetParam) (*types.Query, error) <span class="cov0" title="0">{
+
         var (
                 termQueries = make([]types.Query, 0)
                 typeQueries = make([]types.Query, 0)
+                activity    = "A"
+                debug       = "D"
                 query       *types.Query
                 Priority    = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
         )
 
-        // Case 1:If fromts and tots are specified, then tots must be after fromts.
-        if param.Fromts != nil &amp;&amp; param.Tots != nil </span><span class="cov0" title="0">{
-                fromTs := param.Fromts.Format(LAYOUT)
-                toTs := param.Tots.Format(LAYOUT)
-                if param.Fromts.Before(*param.Tots) </span><span class="cov0" title="0">{
-                        days := types.Query{
-                                Range: map[string]types.RangeQuery{
-                                        WHEN: types.DateRangeQuery{
-                                                Gte: &amp;fromTs,
-                                                Lte: &amp;toTs,
-                                        },
-                                },
-                        }
-                        termQueries = append(termQueries, days)
-                }</span> else<span class="cov0" title="0"> {
-                        return nil, fmt.Errorf("tots must be after fromts")
-                }</span>
-                // Case 2:If only Fromts present
-        } else<span class="cov0" title="0"> if param.Fromts != nil &amp;&amp; param.Tots == nil </span><span class="cov0" title="0">{
-                fromTs := param.Fromts.Format(LAYOUT)
-                days := types.Query{
-                        Range: map[string]types.RangeQuery{
-                                WHEN: types.DateRangeQuery{
-                                        Gte: &amp;fromTs,
-                                },
-                        },
-                }
-                termQueries = append(termQueries, days)
-                // case 3: If only Tots present
-        }</span> else<span class="cov0" title="0"> if param.Fromts == nil &amp;&amp; param.Tots != nil </span><span class="cov0" title="0">{
-                toTs := param.Tots.Format(LAYOUT)
-                days := types.Query{
-                        Range: map[string]types.RangeQuery{
-                                WHEN: types.DateRangeQuery{
-                                        Lte: &amp;toTs,
-                                },
-                        },
-                }
-                termQueries = append(termQueries, days)
-                // Case 4:If both fromts and tots are not specified only days are present
-        }</span> else<span class="cov0" title="0"> if param.Ndays != nil &amp;&amp; param.Fromts == nil &amp;&amp; param.Tots == nil </span><span class="cov0" title="0">{
-                if *param.Ndays &gt; 0 </span><span class="cov0" title="0">{
-                        day := fmt.Sprintf("now-%dd/d", *param.Ndays)
-                        days := types.Query{
-                                Range: map[string]types.RangeQuery{
-                                        WHEN: types.DateRangeQuery{
-                                                Gte: &amp;day,
-                                        },
-                                },
-                        }
-                        termQueries = append(termQueries, days)
-                }</span>
-        }
-
-        <span class="cov0" title="0">if param.App != nil </span><span class="cov0" title="0">{
-                termQueries = append(termQueries, types.Query{
-                        Term: map[string]types.TermQuery{
-                                APP: {Value: param.App},
-                        },
-                })
+        ok, ranges, err := rangeQueryForTimestamp(param.Fromts, param.Tots, param.Ndays)
+        if ok </span><span class="cov0" title="0">{
+                termQueries = append(termQueries, ranges)
         }</span>
-
-        <span class="cov0" title="0">if param.Type != nil </span><span class="cov0" title="0">{
-                termQueries = append(termQueries, types.Query{
-                        Term: map[string]types.TermQuery{
-                                TYPE: {Value: param.Type.String()},
-                        },
-                })
+        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">if ok, app := termQueryForField(app, param.App); ok </span><span class="cov0" title="0">{
+                termQueries = append(termQueries, app)
         }</span>
 
         // typequeris contains only debug and activity logs
-        <span class="cov0" title="0">typeQueries = append(typeQueries, types.Query{
-                Term: map[string]types.TermQuery{
-                        TYPE: {Value: ACTIVITY},
-                },
-        })
+        <span class="cov0" title="0">if ok, typeConst := termQueryForField(typeConst, &amp;activity); ok </span><span class="cov0" title="0">{
+                typeQueries = append(typeQueries, typeConst)
+        }</span>
 
-        typeQueries = append(typeQueries, types.Query{
-                Term: map[string]types.TermQuery{
-                        TYPE: {Value: DEBUG},
-                },
-        })
+        <span class="cov0" title="0">if ok, typeConst := termQueryForField(typeConst, &amp;debug); ok </span><span class="cov0" title="0">{
+                typeQueries = append(typeQueries, typeConst)
+        }</span>
 
         // whenever type parameter is nil it considers all three types i.e Activity,Debug and Data change
         // If pri parameter is present then we cannot consider Data change type logs because it has no priority
         // so, In this case filter is applied for getting only Activity and Debug type i.e. tyqueries
-        if param.Type == nil &amp;&amp; param.Pri != nil </span><span class="cov0" title="0">{
-                termQueries = append(termQueries, types.Query{
-                        Bool: &amp;types.BoolQuery{
-                                Filter: typeQueries,
-                        },
-                })
-
-        }</span>
-        <span class="cov0" title="0">if param.Who != nil </span><span class="cov0" title="0">{
-                termQueries = append(termQueries, types.Query{
-                        Term: map[string]types.TermQuery{
-                                WHO: {Value: *param.Who},
-                        },
-                })
-        }</span>
-
-        <span class="cov0" title="0">if param.Class != nil </span><span class="cov0" title="0">{
-                termQueries = append(termQueries, types.Query{
-                        Term: map[string]types.TermQuery{
-                                CLASS: {Value: *param.Class},
-                        },
-                })
-
-                // Instance must be considered only if class is specified
-                if param.Instance != nil &amp;&amp; param.Class != nil </span><span class="cov0" title="0">{
+        <span class="cov0" title="0">if param.Type == nil </span><span class="cov0" title="0">{
+                if param.Pri != nil </span><span class="cov0" title="0">{
                         termQueries = append(termQueries, types.Query{
-                                Term: map[string]types.TermQuery{
-                                        INSTANCE: {Value: *param.Instance},
+                                Bool: &amp;types.BoolQuery{
+                                        Filter: typeQueries,
                                 },
                         })
                 }</span>
+        } else<span class="cov0" title="0"> {
+                if *param.Type == Change </span><span class="cov0" title="0">{
+                        termQueries = append(termQueries, types.Query{
+                                Bool: &amp;types.BoolQuery{
+                                        Filter: typeQueries,
+                                },
+                        })
+                }</span> else<span class="cov0" title="0"> {
+                        logTypeStr := param.Type.String()
+                        if ok, logType := termQueryForField(typeConst, &amp;logTypeStr); ok </span><span class="cov0" title="0">{
+                                termQueries = append(termQueries, logType)
+                        }</span>
+
+                }
+
         }
 
-        <span class="cov0" title="0">if param.Op != nil </span><span class="cov0" title="0">{
-                termQueries = append(termQueries, types.Query{
-                        Term: map[string]types.TermQuery{
-                                OP: {Value: *param.Op},
-                        },
-                })
-        }</span>
+        <span class="cov0" title="0">if ok, who := termQueryForField(who, param.Who); ok </span><span class="cov0" title="0">{
 
-        <span class="cov0" title="0">if param.RemoteIP != nil </span><span class="cov0" title="0">{
-                termQueries = append(termQueries, types.Query{
-                        Term: map[string]types.TermQuery{
-                                REMOTE_IP: {Value: *param.RemoteIP},
-                        },
-                })
+                termQueries = append(termQueries, who)
+        }</span>
+        <span class="cov0" title="0">if ok, class := termQueryForField(class, param.Class); ok </span><span class="cov0" title="0">{
+
+                termQueries = append(termQueries, class)
+        }</span>
+        // Instance must be considered only if the class is specified
+        <span class="cov0" title="0">if param.Class != nil </span><span class="cov0" title="0">{
+                if ok, instance := termQueryForField(instance, param.Instance); ok </span><span class="cov0" title="0">{
+
+                        termQueries = append(termQueries, instance)
+                }</span>
+        }
+        <span class="cov0" title="0">if ok, op := termQueryForField(op, param.Op); ok </span><span class="cov0" title="0">{
+
+                termQueries = append(termQueries, op)
+        }</span>
+        <span class="cov0" title="0">if ok, remote_ip := termQueryForField(remote_ip, param.RemoteIP); ok </span><span class="cov0" title="0">{
+
+                termQueries = append(termQueries, remote_ip)
         }</span>
 
         // pri specifies that only logs of priority equal to or higher than the value given here will be returned.
-        <span class="cov0" title="0">if param.Pri != nil &amp;&amp; param.Type != nil &amp;&amp; LogType(*param.Type) != Change </span><span class="cov0" title="0">{
-                pri := param.Pri.String()
-                priFrom := slices.Index(Priority, pri)
-                if priFrom &gt;= 0 </span><span class="cov0" title="0">{
-                        priParams := Priority[priFrom:]
-                        if len(priParams) &gt; 0 </span><span class="cov0" title="0">{
-                                var vals []types.FieldValue
-                                for _, val := range priParams </span><span class="cov0" title="0">{
-                                        vals = append(vals, val)
-                                }</span>
-                                <span class="cov0" title="0">termQueries = append(termQueries, types.Query{
-                                        // add filter
-                                        Terms: &amp;types.TermsQuery{
-
-                                                TermsQuery: map[string]types.TermsQueryField{
-                                                        PRI: vals,
-                                                },
-                                        },
-                                })</span>
-                        }
-                }
+        <span class="cov0" title="0">if param.Pri != nil </span><span class="cov0" title="0">{
+                priStr := param.Pri.String()
+                priFrom := slices.Index(Priority, priStr)
+                if priFrom &gt; 0 </span><span class="cov0" title="0">{
+                        requiredPri = Priority[priFrom:]
+                }</span>
+                <span class="cov0" title="0">if ok, pri := termQueryForField(pri, nil, requiredPri...); ok </span><span class="cov0" title="0">{
+                        termQueries = append(termQueries, pri)
+                }</span>
         }
 
         <span class="cov0" title="0">query = &amp;types.Query{
@@ -814,16 +648,16 @@ func isValidSetAttribute(setAttr string) (bool, error) <span class="cov0" title=
         // The attribute named can only be one of those which have finite discrete values, i.e. they are
         // conceptually enumerated types.
         <span class="cov0" title="0">allowedAttributes := map[string]struct{}{
-                APP:       empty,
-                TYPE:      empty,
-                OP:        empty,
-                INSTANCE:  empty,
-                MODULE:    empty,
-                PRI:       empty,
-                STATUS:    empty,
-                REMOTE_IP: empty,
-                SYSTEM:    empty,
-                WHO:       empty,
+                app:       empty,
+                typeConst: empty,
+                op:        empty,
+                instance:  empty,
+                module:    empty,
+                pri:       empty,
+                status:    empty,
+                remote_ip: empty,
+                system:    empty,
+                who:       empty,
         }
 
         // To validate  setAttr only one of allowedAttributes has been named, and if not, will return an error.
@@ -837,10 +671,10 @@ func isValidSetAttribute(setAttr string) (bool, error) <span class="cov0" title=
 func GetApps(querytoken string, client *elasticsearch.TypedClient) (apps []string, err error) <span class="cov0" title="0">{
 
         // Calling GetSet() for getting  all unique values for apps
-        setvalues, err := GetSet(querytoken, client, APP, GetSetParam{})
+        setvalues, err := GetSet(querytoken, client, app, GetSetParam{})
 
         if err != nil </span><span class="cov0" title="0">{
-                return apps, fmt.Errorf("error at calling getset() : %w", err)
+                return apps, fmt.Errorf("error at calling GetSet() : %w", err)
         }</span>
 
         // Extracting keys from setValues
@@ -849,9 +683,98 @@ func GetApps(querytoken string, client *elasticsearch.TypedClient) (apps []strin
         }</span>
         <span class="cov0" title="0">return apps, nil</span>
 }
+
+// termQueryForField constructs and returns a term query for a specified field and its corresponding value.
+func termQueryForField(field string, value *string, values ...string) (bool, types.Query) <span class="cov8" title="1">{
+        if value != nil </span><span class="cov8" title="1">{
+                query := types.Query{
+                        Term: map[string]types.TermQuery{
+                                field: {Value: value},
+                        },
+                }
+                return true, query
+        }</span>
+        <span class="cov8" title="1">if values != nil </span><span class="cov0" title="0">{
+                var vals []types.FieldValue
+                for _, val := range values </span><span class="cov0" title="0">{
+                        vals = append(vals, val)
+                }</span>
+                <span class="cov0" title="0">query := types.Query{
+                        Terms: &amp;types.TermsQuery{
+                                TermsQuery: map[string]types.TermsQueryField{
+                                        field: vals,
+                                },
+                        },
+                }
+                return true, query</span>
+        }
+        <span class="cov8" title="1">return false, types.Query{}</span>
+}
+
+// rangeQueryForTimestamp generates a range query for Elasticsearch based on the provided timestamps and number of days.
+func rangeQueryForTimestamp(fromTS, toTS *time.Time, nDays *int) (bool, types.Query, error) <span class="cov8" title="1">{
+
+        // return query if both present fromTs and toTs
+        if fromTS != nil &amp;&amp; toTS != nil </span><span class="cov0" title="0">{
+                fromTs := fromTS.Format(layout)
+                toTs := toTS.Format(layout)
+                if fromTS.Before(*toTS) </span><span class="cov0" title="0">{
+                        query := types.Query{
+                                Range: map[string]types.RangeQuery{
+                                        when: types.DateRangeQuery{
+                                                Gte: &amp;fromTs,
+                                                Lte: &amp;toTs,
+                                        },
+                                },
+                        }
+                        return true, query, nil
+                }</span> else<span class="cov0" title="0"> {
+                        return false, types.Query{}, fmt.Errorf("tots must be after fromts")
+                }</span>
+
+                // appending query if FromTs is present
+        } else<span class="cov8" title="1"> if fromTS != nil &amp;&amp; toTS == nil </span><span class="cov0" title="0">{
+                fromTs := fromTS.Format(layout)
+                query := types.Query{
+                        Range: map[string]types.RangeQuery{
+                                when: types.DateRangeQuery{
+                                        Gte: &amp;fromTs,
+                                },
+                        },
+                }
+                return true, query, nil
+
+                // appending query if ToTS is present
+        }</span> else<span class="cov8" title="1"> if fromTS == nil &amp;&amp; toTS != nil </span><span class="cov0" title="0">{
+                toTs := toTS.Format(layout)
+                query := types.Query{
+                        Range: map[string]types.RangeQuery{
+                                when: types.DateRangeQuery{
+                                        Lte: &amp;toTs,
+                                },
+                        },
+                }
+                return true, query, nil
+
+                // appending query for get log for n number of day
+        }</span> else<span class="cov8" title="1"> if nDays != nil &amp;&amp; fromTS == nil &amp;&amp; toTS == nil </span><span class="cov8" title="1">{
+                if *nDays &gt; 0 </span><span class="cov8" title="1">{
+                        day := fmt.Sprintf("now-%dd/d", *nDays) // now-5d
+                        query := types.Query{
+                                Range: map[string]types.RangeQuery{
+                                        when: types.DateRangeQuery{
+                                                Gte: &amp;day,
+                                        },
+                                },
+                        }
+                        return true, query, nil
+                }</span>
+        }
+        <span class="cov0" title="0">return false, types.Query{}, nil</span>
+}
 </pre>
 		
-		<pre class="file" id="file2" style="display: none">package logharbour
+		<pre class="file" id="file1" style="display: none">package logharbour
 
 import (
         "time"
@@ -1059,7 +982,7 @@ func applyKafkaConfig(kafkaConfig KafkaConfig) *sarama.Config <span class="cov0"
 }
 </pre>
 		
-		<pre class="file" id="file3" style="display: none">package logharbour
+		<pre class="file" id="file2" style="display: none">package logharbour
 
 import (
         "github.com/IBM/sarama"
@@ -1179,7 +1102,7 @@ func (kc *kafkaConsumer) Stop() error <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">package logharbour
+		<pre class="file" id="file3" style="display: none">package logharbour
 
 import (
         "encoding/json"
@@ -1563,7 +1486,7 @@ func NewChangeInfo(entity, operation string) *ChangeInfo <span class="cov0" titl
 }</span>
 </pre>
 		
-		<pre class="file" id="file5" style="display: none">// Package logharbour is a comprehensive logging system.
+		<pre class="file" id="file4" style="display: none">// Package logharbour is a comprehensive logging system.
 // It supports different log levels, log types, and can encode log entries in JSON.
 // It also provides a fallback mechanism in case the primary log writer fails.
 package logharbour
@@ -1621,7 +1544,7 @@ func (lp LogPriority) String() string <span class="cov8" title="1">{
                 return LogPriorityCrit</span>
         case Sec:<span class="cov0" title="0">
                 return LogPrioritySec</span>
-        default:<span class="cov0" title="0">
+        default:<span class="cov8" title="1">
                 return LogPriorityUnknown</span>
         }
 }
@@ -1813,7 +1736,7 @@ func (fw *FallbackWriter) Write(p []byte) (n int, err error) <span class="cov0" 
 }
 </pre>
 		
-		<pre class="file" id="file6" style="display: none">package logharbour
+		<pre class="file" id="file5" style="display: none">package logharbour
 
 import (
         "fmt"
@@ -1875,7 +1798,7 @@ func formatStackTrace(stackTraceRaw string) string <span class="cov0" title="0">
 }
 </pre>
 		
-		<pre class="file" id="file7" style="display: none">package elasticsearchctl
+		<pre class="file" id="file6" style="display: none">package elasticsearchctl
 
 import (
         "context"
@@ -1972,7 +1895,7 @@ func ReadLogFromFile(filepath string) ([]logharbour.LogEntry, error) <span class
 }
 </pre>
 		
-		<pre class="file" id="file8" style="display: none">package wsc
+		<pre class="file" id="file7" style="display: none">package wsc
 
 import (
         "context"
@@ -2127,7 +2050,7 @@ func GetDebugLog(c *gin.Context, s *service.Service) <span class="cov0" title="0
 }
 </pre>
 		
-		<pre class="file" id="file9" style="display: none">package wsc
+		<pre class="file" id="file8" style="display: none">package wsc
 
 import (
         "github.com/elastic/go-elasticsearch/v8"
@@ -2141,8 +2064,9 @@ import (
 var unusualPercent = 10.0
 
 type GetUnusualIpParam struct {
-        App  string `json:"app" validate:"required,alpha,lt=15"`
-        Days int    `json:"days" validate:"required,number,lt=500"`
+        App            string  `json:"app" validate:"required,alpha,lt=15"`
+        Days           int     `json:"days" validate:"required,number,lt=500"`
+        UnusualPercent float64 `json:"unusualPercent"`
 }
 
 func GetUnusualIP(c *gin.Context, s *service.Service) <span class="cov0" title="0">{
@@ -2170,10 +2094,10 @@ func GetUnusualIP(c *gin.Context, s *service.Service) <span class="cov0" title="
                 return
         }</span>
 
-        <span class="cov0" title="0">unusualIP, err := logharbour.GetUnusualIP("", es, logharbour.GetUnusualIPParam{
+        <span class="cov0" title="0">unusualIP, err := logharbour.GetUnusualIP("", es, req.UnusualPercent, logharbour.GetUnusualIPParam{
                 App:   &amp;req.App,
                 NDays: &amp;req.Days,
-        }, unusualPercent)
+        })
         if err != nil </span><span class="cov0" title="0">{
                 l.Debug0().Error(err).Log("error in GetUnusualIP")
                 wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(222, err.Error()))
@@ -2188,7 +2112,7 @@ func GetUnusualIP(c *gin.Context, s *service.Service) <span class="cov0" title="
 }
 </pre>
 		
-		<pre class="file" id="file10" style="display: none">package wsc
+		<pre class="file" id="file9" style="display: none">package wsc
 
 import (
         "github.com/elastic/go-elasticsearch/v8"
@@ -2276,7 +2200,7 @@ func GetHighprilog(c *gin.Context, s *service.Service) <span class="cov0" title=
 }
 </pre>
 		
-		<pre class="file" id="file11" style="display: none">package wsc
+		<pre class="file" id="file10" style="display: none">package wsc
 
 import (
         "fmt"
@@ -2336,14 +2260,14 @@ func ShowActivityLog(c *gin.Context, s *service.Service) <span class="cov8" titl
                 return
         }</span>
 
-        <span class="cov0" title="0">es, ok := s.Dependencies["client"].(*elasticsearch.TypedClient)
+        <span class="cov8" title="1">es, ok := s.Dependencies["client"].(*elasticsearch.TypedClient)
         if !ok </span><span class="cov0" title="0">{
                 l.Debug0().Log("Error while getting elasticsearch instance from service Dependencies")
                 wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(MsgId_InternalErr, ErrCode_DatabaseError))
                 return
         }</span>
 
-        <span class="cov0" title="0">res.LogEntery, res.Nrec, err = logharbour.GetLogs(queryToken, es, logharbour.GetLogsParam{
+        <span class="cov8" title="1">res.LogEntery, res.Nrec, err = logharbour.GetLogs(queryToken, es, logharbour.GetLogsParam{
                 App:       &amp;req.App,
                 Type:      &amp;LogType,
                 Who:       req.Who,
@@ -2364,7 +2288,7 @@ func ShowActivityLog(c *gin.Context, s *service.Service) <span class="cov8" titl
                 wscutils.SendErrorResponse(c, wscutils.NewResponse(wscutils.ErrorStatus, nil, []wscutils.ErrorMessage{errmsg}))
                 return
         }</span>
-        <span class="cov0" title="0">fmt.Println("res.nrec", len(res.LogEntery))
+        <span class="cov8" title="1">fmt.Println("res.nrec", len(res.LogEntery))
         wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(res))</span>
 }
 
@@ -2380,7 +2304,7 @@ func errorHandler(err error) wscutils.ErrorMessage <span class="cov0" title="0">
 }
 </pre>
 		
-		<pre class="file" id="file12" style="display: none">package testUtils
+		<pre class="file" id="file11" style="display: none">package testUtils
 
 import (
         "encoding/json"
