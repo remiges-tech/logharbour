@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net"
 	"reflect"
 	"regexp"
 	"slices"
@@ -303,7 +304,7 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 
 // GetUnusualIP will go through the logs of the last ndays days which match the search criteria, and pull out all the
 // remote IP addresses which account for a low enough percentage of the total to be treated as unusual or suspicious.
-func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, logParam GetUnusualIPParam, unusualPercent float64) ([]string, error) {
+func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, unusualPercent float64, logParam GetUnusualIPParam) ([]string, error) {
 	unusualIPs := []string{}
 
 	if unusualPercent < 0.5 || unusualPercent > 50 {
@@ -327,11 +328,18 @@ func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, logParam
 	}
 	percentThreshold := float64(count) * unusualPercent / 100
 
+	localIp, err := GetLocalIPAddress()
+	if err != nil {
+		println("Error:", err)
+		return nil, err
+	}
+	println("Local IP address:", localIp)
+
 	if percentThreshold > 1 {
 		for ip, count := range aggregatedIPs {
 			fmt.Printf("IP: %s, Count: %d\n", ip, count)
 			if count <= int64(percentThreshold) {
-				if ip != "local" {
+				if ip != localIp {
 					unusualIPs = append(unusualIPs, ip)
 				}
 			}
@@ -339,6 +347,24 @@ func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, logParam
 	}
 	return unusualIPs, nil
 
+}
+
+// GetLocalIPAddress returns the local IPv4 address of the system.
+func GetLocalIPAddress() (string, error) {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return "", err
+	}
+
+	for _, addr := range addrs {
+		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				return ipnet.IP.String(), nil
+			}
+		}
+	}
+
+	return "", nil
 }
 
 // GetSet gets a set of values for an attribute from the log entries specified.

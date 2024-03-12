@@ -12,8 +12,9 @@ import (
 var unusualPercent = 10.0
 
 type GetUnusualIpParam struct {
-	App  string `json:"app" validate:"required,alpha,lt=15"`
-	Days int    `json:"days" validate:"required,number,lt=500"`
+	App            string  `json:"app" validate:"required,alpha,lt=15"`
+	Days           int     `json:"days" validate:"required,number,lt=500"`
+	UnusualPercent float64 `json:"unusualPercent"`
 }
 
 func GetUnusualIP(c *gin.Context, s *service.Service) {
@@ -41,10 +42,10 @@ func GetUnusualIP(c *gin.Context, s *service.Service) {
 		return
 	}
 
-	unusualIP, err := logharbour.GetUnusualIP("", es, logharbour.GetUnusualIPParam{
+	unusualIP, err := logharbour.GetUnusualIP("", es, req.UnusualPercent, logharbour.GetUnusualIPParam{
 		App:   &req.App,
 		NDays: &req.Days,
-	}, unusualPercent)
+	})
 	if err != nil {
 		l.Debug0().Error(err).Log("error in GetUnusualIP")
 		wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(222, err.Error()))

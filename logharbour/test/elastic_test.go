@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-type TestCasesStruct struct {
+type GetlogsTestCaseStruct struct {
 	Name               string
 	LogsParam          logharbour.GetLogsParam
 	ExpectedLogEntries []logharbour.LogEntry
@@ -31,6 +31,16 @@ type GetSetTestCasesStruct struct {
 	ExpectedError    bool
 }
 
+type GetUnusualIPTestCaseStruct struct {
+	Name              string
+	GetUnusualIPParam logharbour.GetUnusualIPParam
+	unusualPercent    float64
+	ActualLogEntries  []logharbour.LogEntry
+	ExpectedIps       []string
+	ActualIps         []string
+	ExpectError       bool
+}
+
 var err error
 
 func TestGetLogs(t *testing.T) {
@@ -45,7 +55,7 @@ func TestGetLogs(t *testing.T) {
 				}
 
 			}
-			logharbour.Index = "logharbour_unit_test"
+			logharbour.Index = "logharbour_unit_test1"
 			tc.ActualLogEntries, tc.ActualRecords, err = logharbour.GetLogs("", typedClient, tc.LogsParam)
 
 			if tc.ExpectError {
@@ -70,7 +80,7 @@ func TestGetLogs(t *testing.T) {
 
 }
 
-func getLogsTestCase() []TestCasesStruct {
+func getLogsTestCase() []GetlogsTestCaseStruct {
 	app := "crux"
 	typeConst := logharbour.Activity
 	who := "Tushar"
@@ -82,7 +92,7 @@ func getLogsTestCase() []TestCasesStruct {
 	fromTs := time.Date(2024, 02, 01, 00, 00, 00, 00, time.UTC)
 	toTs := time.Date(2024, 03, 01, 00, 00, 00, 00, time.UTC)
 	searchAfterTS := "2024-02-25T07:28:00.110813597Z"
-	logsTestCase := []TestCasesStruct{{
+	logsTestCase := []GetlogsTestCaseStruct{{
 		Name: "1st test case ",
 		LogsParam: logharbour.GetLogsParam{
 			App:      &app,
@@ -136,7 +146,7 @@ func TestGetSet(t *testing.T) {
 	testCases := getSetTestCase()
 	for _, tc := range testCases {
 		t.Run(tc.Name, func(t *testing.T) {
-			logharbour.Index = "logharbour_unit_test"
+			logharbour.Index = "logharbour_unit_test2"
 			tc.ActualResponse, err = logharbour.GetSet("", typedClient, tc.SetAttribute, tc.GetSetParam)
 
 			if tc.ExpectedError {
@@ -217,4 +227,55 @@ func getSetTestCase() []GetSetTestCasesStruct {
 	},
 	}
 	return getSetTestCase
+}
+
+func TestGetUnusualIP(t *testing.T) {
+	testCases := getUnusualIPTestCase()
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+
+			logharbour.Index = "logharbour_unit_test1"
+			tc.ActualIps, err = logharbour.GetUnusualIP("", typedClient, tc.unusualPercent, tc.GetUnusualIPParam)
+
+			if tc.ExpectError {
+				if err == nil {
+					t.Errorf("Expected error for input %d, but got nil", tc.GetUnusualIPParam)
+				}
+			} else {
+				require.NoError(t, err)
+			}
+
+			// Compare the LogEntries
+			if !reflect.DeepEqual(tc.ExpectedIps, tc.ActualIps) {
+				t.Errorf("IPs are not equal. Expected: %v, Actual: %v", tc.ExpectedIps, tc.ActualIps)
+			}
+		})
+	}
+
+}
+
+func getUnusualIPTestCase() []GetUnusualIPTestCaseStruct {
+	app := "crux"
+	// who := "tushar"
+	// class := "wfinstance"
+	tasteCase := []GetUnusualIPTestCaseStruct{
+		{
+			Name:              "1st test for empty param",
+			GetUnusualIPParam: logharbour.GetUnusualIPParam{},
+			unusualPercent:    0.0,
+			ExpectError:       true,
+		},
+		{
+			Name: "2st test for unusualPercent 12",
+			GetUnusualIPParam: logharbour.GetUnusualIPParam{
+				App: &app,
+				// Who:   &who,
+				// Class: &class,
+			},
+			unusualPercent: 3.0,
+			ExpectedIps:    []string{"185.199.110.154"},
+			ExpectError:    false,
+		},
+	}
+	return tasteCase
 }

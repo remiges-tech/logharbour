@@ -71,8 +71,10 @@ var (
 		}
 	  }`
 	typedClient *es.TypedClient
-	filepath    = "../test/testData/log.json"
-	indexName   = "logharbour_unit_test"
+	filepath1   = "../test/testData/testData.json"
+	filepath2   = "../test/testData/testdata2.json"
+	indexName1  = "logharbour_unit_test1"
+	indexName2  = "logharbour_unit_test2"
 	timeout     = 500 * time.Second
 )
 
@@ -119,7 +121,10 @@ func TestMain(m *testing.M) {
 		log.Fatalf("error creating the client: %s", err)
 	}
 
-	if err := fillElasticWithData(esClient, indexName, indexBody); err != nil {
+	if err := fillElasticWithData(esClient, indexName1, indexBody, filepath1); err != nil {
+		log.Fatalf("error while creating elastic search index: %v", err)
+	}
+	if err := fillElasticWithData(esClient, indexName2, indexBody, filepath2); err != nil {
 		log.Fatalf("error while creating elastic search index: %v", err)
 	}
 
@@ -127,7 +132,7 @@ func TestMain(m *testing.M) {
 	os.Exit(exitVal)
 }
 
-func fillElasticWithData(esClient *es.Client, indexName, indexBody string) error {
+func fillElasticWithData(esClient *es.Client, indexName, indexBody, filepath string) error {
 
 	if err := elasticsearchctl.CreateElasticIndex(esClient, indexName, indexBody); err != nil {
 		return fmt.Errorf("error while creating elastic search index: %v", err)
