@@ -1,0 +1,88 @@
+{
+    "status": "success",
+    "data": {
+        "logs": [
+            {
+                "app": "crux",
+                "system": "merceadm-Latitude-3420",
+                "module": "",
+                "type": "A",
+                "pri": "Info",
+                "when": "2024-02-29T07:28:00.099424231Z",
+                "who": "Tushar",
+                "op": "",
+                "class": "wfinstance",
+                "instance": "2",
+                "status": 0,
+                "remote_ip": "192.168.1.100",
+                "msg": "GetWFinstanceNew request received",
+                "data": "{}"
+            },
+            {
+                "app": "crux",
+                "system": "merceadm-Latitude-3420",
+                "module": "",
+                "type": "A",
+                "pri": "Info",
+                "when": "2024-02-29T07:28:00.099424231Z",
+                "who": "Tushar",
+                "op": "",
+                "class": "wfinstance",
+                "instance": "",
+                "status": 0,
+                "remote_ip": "192.168.1.100",
+                "msg": "GetWFinstanceNew request received",
+                "data": "{}"
+            },
+            {
+                "app": "crux",
+                "system": "merceadm-Latitude-3420",
+                "module": "",
+                "type": "A",
+                "pri": "Info",
+                "when": "2024-02-29T07:28:00.099424231Z",
+                "who": "Tushar",
+                "op": "",
+                "class": "wfinstance",
+                "instance": "",
+                "status": 0,
+                "remote_ip": "192.168.1.100",
+                "msg": "GetWFinstanceNew request received",
+                "data": "{}"
+            },
+            {
+                "app": "crux",
+                "system": "merceadm-Latitude-3420",
+                "module": "login",
+                "type": "D",
+                "pri": "Info",
+                "when": "2024-02-29T06:32:18.376147788Z",
+                "who": "kanchan",
+                "op": "",
+                "class": "",
+                "instance": "1",
+                "status": 0,
+                "remote_ip": "203.0.113.45",
+                "msg": "WorkflowDelete request received",
+                "data": ""
+            },
+            {
+                "app": "crux",
+                "system": "merceadm-Latitude-3420",
+                "module": "login",
+                "type": "C",
+                "pri": "Info",
+                "when": "2024-02-29T06:32:13.333280114Z",
+                "who": "kanchan",
+                "op": "",
+                "class": "ruleset",
+                "instance":"",
+                "status": 0,
+                "remote_ip": "203.0.113.45",
+                "msg": "Updated ruleset",
+                "data": ""
+            }
+        ]
+    },
+    "messages": null
+}

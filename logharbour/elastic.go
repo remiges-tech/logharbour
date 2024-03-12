@@ -244,14 +244,9 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 	sortByWhen := types.SortOptions{
 		SortOptions: map[string]types.FieldSort{
 			when: {Order: &sortorder.Desc},
+			// "_doc": {Order: &sortorder.Desc},
 		},
 	}
-
-	// sortById := types.SortOptions{
-	// 	SortOptions: map[string]types.FieldSort{
-	// 		id : {Order: &sortorder.Desc},
-	// 	},
-	// }
 
 	//  calling search query when SearchAfterTS and SearchAfterDocID given
 	if logParam.SearchAfterTS != nil && logParam.SearchAfterDocID != nil {

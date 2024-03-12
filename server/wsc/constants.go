@@ -18,3 +18,8 @@ const (
 	ErrCode_InvalidJson    = "invalid_json"
 	ErrCode_DatabaseError  = "database_error"
 )
+
+var (
+	APP, PRI, DAYS, SEARCHAFTERTIMESTAMP, SEARCHAFTERDOCID string = "App", "Pri", "Days", "SearchAfterTimestamp", "SearchAfterDocId"
+	Priority                                                      = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
+)
