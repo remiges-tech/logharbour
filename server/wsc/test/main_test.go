@@ -78,11 +78,9 @@ var (
 	  }`
 	typedClient *es.TypedClient
 	r           *gin.Engine
-	filepath1   = "../test/testData.json"
-	// filepath2   = "../test/testData/testdata2.json"
-	indexName1 = "logharbour_unit_test1"
-	// indexName2  = "logharbour_unit_test2"
-	timeout = 500 * time.Second
+	filepath    = "../test/testData.json"
+	indexName   = "logharbour"
+	timeout     = 100 * time.Second
 )
 
 func TestMain(m *testing.M) {
@@ -128,12 +126,9 @@ func TestMain(m *testing.M) {
 		log.Fatalf("error creating the client: %s", err)
 	}
 
-	if err := fillElasticWithData(esClient, indexName1, indexBody, filepath1); err != nil {
+	if err := fillElasticWithData(esClient, indexName, indexBody, filepath); err != nil {
 		log.Fatalf("error while creating elastic search index: %v", err)
 	}
-	// if err := fillElasticWithData(esClient, indexName2, indexBody, filepath2); err != nil {
-	// 	log.Fatalf("error while creating elastic search index: %v", err)
-	// }
 
 	// Register routes.
 	r, err = registerRoutes(typedClient)

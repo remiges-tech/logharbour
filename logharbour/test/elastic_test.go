@@ -55,7 +55,7 @@ func TestGetLogs(t *testing.T) {
 				}
 
 			}
-			logharbour.Index = "logharbour_unit_test1"
+			logharbour.Index = "logharbour"
 			tc.ActualLogEntries, tc.ActualRecords, err = logharbour.GetLogs("", typedClient, tc.LogsParam)
 
 			if tc.ExpectError {
@@ -146,7 +146,7 @@ func TestGetSet(t *testing.T) {
 	testCases := getSetTestCase()
 	for _, tc := range testCases {
 		t.Run(tc.Name, func(t *testing.T) {
-			logharbour.Index = "logharbour_unit_test2"
+			logharbour.Index = "logharbour"
 			tc.ActualResponse, err = logharbour.GetSet("", typedClient, tc.SetAttribute, tc.GetSetParam)
 
 			if tc.ExpectedError {
@@ -183,8 +183,8 @@ func getSetTestCase() []GetSetTestCasesStruct {
 
 	expectedData := map[string]int64{"A": 3}
 
-	expectedDataForApp := map[string]int64{"crux": 56,
-		"idshield": 2}
+	expectedDataForApp := map[string]int64{"crux": 163,
+		"idshield": 6}
 
 	getSetTestCase := []GetSetTestCasesStruct{{
 		Name: "SUCCESS : GetSet() with valid method parameters",
@@ -234,7 +234,7 @@ func TestGetUnusualIP(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.Name, func(t *testing.T) {
 
-			logharbour.Index = "logharbour_unit_test1"
+			logharbour.Index = "logharbour"
 			tc.ActualIps, err = logharbour.GetUnusualIP("", typedClient, tc.unusualPercent, tc.GetUnusualIPParam)
 
 			if tc.ExpectError {
