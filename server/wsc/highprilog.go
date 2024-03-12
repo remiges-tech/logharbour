@@ -9,17 +9,14 @@ import (
 	"github.com/remiges-tech/logharbour/logharbour"
 )
 
-var (
-	Priority = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
-)
-
+// HighPriReq: is for request of GetHighprilog()
 type HighPriReq struct {
 	App string                 `json:"app" validate:"required,alpha"`
 	Pri logharbour.LogPriority `json:"pri" validate:"required"`
 	// Pri  logharbour.LogPriority `json:"pri" validate:"required, oneof=Info Debug2 Debug1 Debug0 Warn Err Crit Sec"`
-	Days                 int    `json:"days" validate:"number,required"`
-	SearchAfterTimestamp string `json:"search_after_timestamp" validate:"omitempty,datetime=2006-01-02T15:04:05Z"`
-	SearchAfterDocId     string `json:"search_after_doc_id,omitempty"`
+	Days                 int     `json:"days" validate:"number,required"`
+	SearchAfterTimestamp *string `json:"search_after_timestamp" validate:"omitempty,datetime=2006-01-02T15:04:05Z"`
+	SearchAfterDocId     *string `json:"search_after_doc_id,omitempty"`
 }
 
 // GetHighprilog : handler for POST: "/highprilog" API
@@ -53,27 +50,14 @@ func GetHighprilog(c *gin.Context, s *service.Service) {
 		wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(100, "ErrCode_DatabaseError"))
 		return
 	}
-	if request.SearchAfterTimestamp == "" && request.SearchAfterDocId == "" {
-		searchQuery, recordCount, err = logharbour.GetLogs("", esClient, logharbour.GetLogsParam{
-			App:      &request.App,
-			Priority: &request.Pri,
-			NDays:    &request.Days,
-		})
-	} else if request.SearchAfterDocId == "" {
-		searchQuery, recordCount, err = logharbour.GetLogs("", esClient, logharbour.GetLogsParam{
-			App:           &request.App,
-			Priority:      &request.Pri,
-			NDays:         &request.Days,
-			SearchAfterTS: &request.SearchAfterTimestamp,
-		})
-	} else if request.SearchAfterTimestamp == "" {
-		searchQuery, recordCount, err = logharbour.GetLogs("", esClient, logharbour.GetLogsParam{
-			App:              &request.App,
-			Priority:         &request.Pri,
-			NDays:            &request.Days,
-			SearchAfterDocID: &request.SearchAfterDocId,
-		})
-	}
+
+	searchQuery, recordCount, err = logharbour.GetLogs("", esClient, logharbour.GetLogsParam{
+		App:              &request.App,
+		Priority:         &request.Pri,
+		NDays:            &request.Days,
+		SearchAfterTS:    request.SearchAfterTimestamp,
+		SearchAfterDocID: request.SearchAfterDocId,
+	})
 
 	if err != nil {
 		lh.Err().Error(err).Log("error while retriving data from db")
@@ -81,6 +65,6 @@ func GetHighprilog(c *gin.Context, s *service.Service) {
 		return
 	}
 
-	lh.Info().Log("exit from GetHighprilog")
-	wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(map[string]any{"logs": searchQuery, "count": recordCount}))
+	lh.Info().LogActivity("exit from GetHighprilog with recordCount:", recordCount)
+	wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(map[string]any{"logs": searchQuery}))
 }

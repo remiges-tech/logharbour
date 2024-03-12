@@ -76,11 +76,11 @@ var (
 		  }
 		}
 	  }`
-	typedClient *es.TypedClient
-	r           *gin.Engine
-	filepath    = "../test/testData.json"
-	indexName   = "logharbour"
-	timeout     = 100 * time.Second
+	typedClient      *es.TypedClient
+	r                *gin.Engine
+	seedDataFilePath = "../test/seed_data.json"
+	indexName        = "logharbour"
+	timeout          = 100 * time.Second
 )
 
 func TestMain(m *testing.M) {
@@ -126,7 +126,7 @@ func TestMain(m *testing.M) {
 		log.Fatalf("error creating the client: %s", err)
 	}
 
-	if err := fillElasticWithData(esClient, indexName, indexBody, filepath); err != nil {
+	if err := fillElasticWithData(esClient, indexName, indexBody, seedDataFilePath); err != nil {
 		log.Fatalf("error while creating elastic search index: %v", err)
 	}
 
