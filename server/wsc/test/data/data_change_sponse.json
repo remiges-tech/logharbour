@@ -1,0 +1,138 @@
+{
+    "status": "success",
+    "data": {
+        "logs": [
+            {
+                "app": "crux",
+                "system": "merceadm-Latitude-3420",
+                "module": "",
+                "type": "C",
+                "pri": "Info",
+                "when": "2024-02-25T07:28:00.110813597Z",
+                "who": "Tushar",
+                "op": "",
+                "class": "wfinstance",
+                "instance": "1",
+                "status": 0,
+                "remote_ip": "198.51.100.55",
+                "msg": "created wfinstance ",
+                "data": {
+                    "changes": [
+                        {
+                            "field": "row",
+                            "new_value": "{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-02-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}",
+                            "old_value": ""
+                        }
+                    ],
+                    "entity": "wfinstance",
+                    "operation": "create"
+                }
+            },
+            {
+                "app": "crux",
+                "system": "merceadm-Latitude-3420",
+                "module": "",
+                "type": "C",
+                "pri": "Info",
+                "when": "2024-02-25T07:28:00.110813597Z",
+                "who": "Tushar",
+                "op": "",
+                "class": "wfinstance",
+                "instance": "1",
+                "status": 0,
+                "remote_ip": "198.51.100.55",
+                "msg": "created wfinstance ",
+                "data": {
+                    "changes": [
+                        {
+                            "field": "row",
+                            "new_value": "{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-02-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}",
+                            "old_value": ""
+                        }
+                    ],
+                    "entity": "wfinstance",
+                    "operation": "create"
+                }
+            },
+            {
+                "app": "crux",
+                "system": "merceadm-Latitude-3420",
+                "module": "",
+                "type": "C",
+                "pri": "Info",
+                "when": "2024-02-25T07:28:00.110813597Z",
+                "who": "Tushar",
+                "op": "",
+                "class": "wfinstance",
+                "instance": "1",
+                "status": 0,
+                "remote_ip": "198.51.100.55",
+                "msg": "created wfinstance ",
+                "data": {
+                    "changes": [
+                        {
+                            "field": "row",
+                            "new_value": "{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-02-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}",
+                            "old_value": ""
+                        }
+                    ],
+                    "entity": "wfinstance",
+                    "operation": "create"
+                }
+            },
+            {
+                "app": "crux",
+                "system": "merceadm-Latitude-3420",
+                "module": "",
+                "type": "C",
+                "pri": "Info",
+                "when": "2024-01-01T07:28:05.396158202Z",
+                "who": "Kanchan",
+                "op": "",
+                "class": "wfinstance",
+                "instance": "1",
+                "status": 0,
+                "remote_ip": "198.51.100.25",
+                "msg": "deleted wfinstance ",
+                "data": {
+                    "changes": [
+                        {
+                            "field": "row",
+                            "new_value": "",
+                            "old_value": "{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}"
+                        }
+                    ],
+                    "entity": "wfinstance",
+                    "operation": "delete"
+                }
+            },
+            {
+                "app": "crux",
+                "system": "merceadm-Latitude-3420",
+                "module": "",
+                "type": "C",
+                "pri": "Info",
+                "when": "2024-01-01T07:28:05.396158202Z",
+                "who": "Kanchan",
+                "op": "",
+                "class": "wfinstance",
+                "instance": "1",
+                "status": 0,
+                "remote_ip": "203.0.113.45",
+                "msg": "deleted wfinstance ",
+                "data": {
+                    "changes": [
+                        {
+                            "field": "row",
+                            "new_value": "",
+                            "old_value": "{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}"
+                        }
+                    ],
+                    "entity": "wfinstance",
+                    "operation": "delete"
+                }
+            }
+        ]
+    },
+    "messages": null
+}

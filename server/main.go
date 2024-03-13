@@ -45,7 +45,7 @@ func main() {
 	// etcdEndpoints := flag.String("etcdEndpoints", "localhost:2379", "Comma-separated list of etcd endpoints")
 
 	// flag.Parse()
-	// // Create a new EtcdStorage instance
+	// Create a new EtcdStorage instance
 	// etcdStorage, err := etcd.NewEtcdStorage([]string{*etcdEndpoints})
 	// if err != nil {
 	// 	l.LogActivity("Error while Creating new instance of EtcdStorage", err)
@@ -53,11 +53,11 @@ func main() {
 	// }
 	// l.LogActivity("Creates a new instance of EtcdStorage with endpoints", "localhost:2379")
 
-	// // Create a new Rigel instance
+	// Create a new Rigel instance
 	// rigel := rigel.New(etcdStorage, *rigelAppName, *rigelModuleName, *rigelVersionNumber, *rigelConfigName)
 	// l.LogActivity("Creates a new instance of rigel", rigel)
 
-	// // Create a context with a timeout
+	// Create a context with a timeout
 	// ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	// defer cancel()
 
@@ -133,6 +133,7 @@ func main() {
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/highprilog", wsc.GetHighprilog)
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/activitylog", wsc.ShowActivityLog)
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/debuglog", wsc.GetDebugLog)
+	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/datachange", wsc.ShowDataChange)
 
 	r.Run(":" + appConfig.AppServerPort)
 	if err != nil {

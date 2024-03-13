@@ -7,26 +7,25 @@ import (
 	"testing"
 
 	"github.com/remiges-tech/alya/wscutils"
-	"github.com/remiges-tech/logharbour/logharbour"
 	"github.com/remiges-tech/logharbour/server/wsc"
 	"github.com/remiges-tech/logharbour/server/wsc/test/testUtils"
 	"github.com/stretchr/testify/require"
 )
 
 const (
-	TestHighpriLog_1 = "ERROR_1- slice validation"
-	TestHighpriLog_2 = "SUCCESS_2- get data by valid req"
+	TestDataChangeLog_1 = "ERROR_1- slice validation"
+	TestDataChangeLog_2 = "SUCCESS_2- get data by valid req"
 )
 
-func TestHighpriLog(t *testing.T) {
-	testCases := highpriLogTestcase()
+func TestDataChangeLog(t *testing.T) {
+	testCases := dataChangeLogTestcase()
 	for _, tc := range testCases {
 		t.Run(tc.Name, func(t *testing.T) {
 			// Setting up buffer
 			payload := bytes.NewBuffer(testUtils.MarshalJson(tc.RequestPayload))
 
 			res := httptest.NewRecorder()
-			req, err := http.NewRequest(http.MethodPost, "/highprilog", payload)
+			req, err := http.NewRequest(http.MethodPost, "/datachange", payload)
 			require.NoError(t, err)
 
 			r.ServeHTTP(res, req)
@@ -44,13 +43,18 @@ func TestHighpriLog(t *testing.T) {
 	}
 }
 
-func highpriLogTestcase() []testUtils.TestCasesStruct {
+func dataChangeLogTestcase() []testUtils.TestCasesStruct {
+	app := "crux"
+	class := "wfinstance"
+	instance := "1"
+	field := "row"
+	days := 1000
 	schemaNewTestCase := []testUtils.TestCasesStruct{
 		// 1st test case
 		{
-			Name: TestHighpriLog_1,
+			Name: TestDataChangeLog_1,
 			RequestPayload: wscutils.Request{
-				Data: wsc.HighPriReq{},
+				Data: wsc.DataChangeReq{},
 			},
 
 			ExpectedHttpCode: http.StatusBadRequest,
@@ -59,25 +63,36 @@ func highpriLogTestcase() []testUtils.TestCasesStruct {
 				Data:   nil,
 				Messages: []wscutils.ErrorMessage{
 					{
-						MsgID:   1001,
-						ErrCode: "invalid_json",
+						MsgID:   101,
+						ErrCode: "required",
+						Field:   &wsc.APP,
+					}, {
+						MsgID:   101,
+						ErrCode: "required",
+						Field:   &wsc.CLASS,
+					}, {
+						MsgID:   101,
+						ErrCode: "required",
+						Field:   &wsc.INSTANCE,
 					},
 				},
 			},
 		},
 		// 2nd test case
 		{
-			Name: TestHighpriLog_2,
+			Name: TestDataChangeLog_2,
 			RequestPayload: wscutils.Request{
-				Data: wsc.HighPriReq{
-					App:  "crux",
-					Pri:  logharbour.Info,
-					Days: 1000,
+				Data: wsc.DataChangeReq{
+					App:      app,
+					Class:    &class,
+					Instance: &instance,
+					Field:    &field,
+					Days:     &days,
 				},
 			},
 
 			ExpectedHttpCode: http.StatusOK,
-			TestJsonFile:     "./data/high_pri_response.json",
+			TestJsonFile:     "./data/data_change_sponse.json",
 		},
 	}
 	return schemaNewTestCase

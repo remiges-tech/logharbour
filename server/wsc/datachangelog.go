@@ -9,24 +9,25 @@ import (
 	"github.com/remiges-tech/logharbour/logharbour"
 )
 
-// HighPriReq: is for request of GetHighprilog()
-type HighPriReq struct {
-	App string                 `json:"app" validate:"required,alpha,lt=15"`
-	Pri logharbour.LogPriority `json:"pri" validate:"required,lt=15"`
-	// Pri  logharbour.LogPriority `json:"pri" validate:"required, oneof=Info Debug2 Debug1 Debug0 Warn Err Crit Sec"`
-	Days                 int     `json:"days" validate:"required,gt=0,lt=1003"`
+// DataChangeReq: is for request of ShowDataChange()
+type DataChangeReq struct {
+	App                  string  `json:"app" validate:"required,alpha,lt=15"`
+	Class                *string `json:"class" validate:"required,alpha,lowercase,lt=15"`
+	Instance             *string `json:"instance" validate:"required,lt=15"`
+	Field                *string `json:"field" validate:"omitempty,alpha,lt=15"`
+	Days                 *int    `json:"days" validate:"omitempty,gt=0,lt=1003"`
 	SearchAfterTimestamp *string `json:"search_after_timestamp" validate:"omitempty,datetime=2006-01-02T15:04:05Z"`
 	SearchAfterDocId     *string `json:"search_after_doc_id,omitempty"`
 }
 
-// GetHighprilog : handler for POST: "/highprilog" API
-func GetHighprilog(c *gin.Context, s *service.Service) {
+// ShowDataChange : handler for POST: "/datachangelog" API
+func ShowDataChange(c *gin.Context, s *service.Service) {
 	lh := s.LogHarbour
-	lh.Debug0().Log("starting execution of GetHighprilog()")
+	lh.Debug0().Log("starting execution of ShowDataChange()")
 	var (
-		request     HighPriReq
+		request     DataChangeReq
 		recordCount int
-		searchQuery []logharbour.LogEntry
+		// searchQuery []logharbour.LogEntry
 	)
 
 	// step 1: json request binding with a struct
@@ -51,10 +52,13 @@ func GetHighprilog(c *gin.Context, s *service.Service) {
 		return
 	}
 
-	searchQuery, recordCount, err = logharbour.GetLogs("", esClient, logharbour.GetLogsParam{
+	// response := logharbour.Change
+	searchQuery, recordCount, err := logharbour.GetChanges("", esClient, logharbour.GetLogsParam{
 		App:              &request.App,
-		Priority:         &request.Pri,
-		NDays:            &request.Days,
+		Class:            request.Class,
+		Instance:         request.Instance,
+		Field:            request.Field,
+		NDays:            request.Days,
 		SearchAfterTS:    request.SearchAfterTimestamp,
 		SearchAfterDocID: request.SearchAfterDocId,
 	})
@@ -65,6 +69,20 @@ func GetHighprilog(c *gin.Context, s *service.Service) {
 		return
 	}
 
+	// var jsonMap map[string]interface{}
+	// var actualResult []logharbour.LogEntry
+	// for _, v := range searchQuery {
+	// 	if len(fmt.Sprint(v.Data)) > 0 {
+	// 		err := json.Unmarshal([]byte(fmt.Sprint(v.Data)), &jsonMap)
+	// 		if err == nil {
+	// 			if v.Data {
+
+	// 			}
+	// 		}
+	// 	}
+	// }
+
 	lh.Info().LogActivity("exit from GetHighprilog with recordCount:", recordCount)
 	wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(map[string]any{"logs": searchQuery}))
+	// wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(map[string]any{"logs": searchQuery}))
 }

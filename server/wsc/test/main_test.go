@@ -71,8 +71,23 @@ var (
 			  "type": "keyword"
 			},
 			"data": {
-			  "type": "text"
-			}
+			  "type": "object"
+			},
+			"data.entity": {
+			  "type": "keyword"
+			},
+			"data.op": {
+				"type": "keyword"
+			  },
+			"data.changes.field": {
+				"type": "keyword"
+			  },
+			  "data.changes.new_value": {
+				  "type": "text"
+				},
+				"data.changes.old_value": {
+					"type": "text"
+				  }
 		  }
 		}
 	  }`
@@ -202,6 +217,7 @@ func registerRoutes(typedClient *es.TypedClient) (*gin.Engine, error) {
 	s.RegisterRoute(http.MethodPost, "/activitylog", wsc.ShowActivityLog)
 	s.RegisterRoute(http.MethodPost, "/debuglog", wsc.GetDebugLog)
 	s.RegisterRoute(http.MethodPost, "/getUnusualIP", wsc.GetUnusualIP)
+	s.RegisterRoute(http.MethodPost, "/datachange", wsc.ShowDataChange)
 
 	return r, nil
 

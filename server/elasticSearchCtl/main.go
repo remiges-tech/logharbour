@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"log"
 
+	// "main/elasticSearchCtl"
 	"os"
 
+	"github.com/elastic/elastic-transport-go/v8/elastictransport"
 	"github.com/elastic/go-elasticsearch/v8"
 	elasticsearchctl "github.com/remiges-tech/logharbour/server/elasticSearchCtl/elasticSearch"
 
@@ -70,8 +72,23 @@ var createIndexBody = `{
 		  "type": "keyword"
 		},
 		"data": {
-		  "type": "text"
-		}
+		  "type": "object"
+		},
+		"data.entity": {
+		  "type": "keyword"
+		},
+		"data.op": {
+			"type": "keyword"
+		  },
+		"data.changes.field": {
+			"type": "keyword"
+		  },
+		  "data.changes.new_value": {
+			  "type": "text"
+			},
+			"data.changes.old_value": {
+				"type": "text"
+			  }
 	  }
 	}
   }`
@@ -106,6 +123,7 @@ func main() {
 				Username:               username,
 				Password:               password,
 				CertificateFingerprint: esCer,
+				Logger:                 &elastictransport.TextLogger{Output: log.Writer(), EnableRequestBody: true},
 			}
 
 			client, err := elasticsearch.NewClient(cfg)
@@ -121,13 +139,13 @@ func main() {
 	}
 	rootCmd.PersistentFlags().StringVarP(&address, "address", "a", "https://localhost:9200", "URL for Elasticsearch")
 	rootCmd.PersistentFlags().StringVarP(&username, "username", "u", "elastic", "Username for Elasticsearch")
-	rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "Iu4K4=VsUZEBExLjDu4k", "Password for Elasticsearch")
-	rootCmd.PersistentFlags().StringVarP(&esCer, "es-cer", "c", "c0456a9e300eac38c9af6f416c54c55857e2fbc19a2deaa44bb8a582618bcd62", "certificateFingerprint")
+	// TUSHAR DB DETAILS
+	// rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "Iu4K4=VsUZEBExLjDu4k", "Password for Elasticsearch")
+	// rootCmd.PersistentFlags().StringVarP(&esCer, "es-cer", "c", "c0456a9e300eac38c9af6f416c54c55857e2fbc19a2deaa44bb8a582618bcd62", "certificateFingerprint")
 
-	// rootCmd.PersistentFlags().StringVarP(&address, "address", "a", "https://10.10.10.220:9200", "URL for Elasticsearch")
-	// rootCmd.PersistentFlags().StringVarP(&username, "username", "u", "elastic", "Username for Elasticsearch")
-	// rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "Yga1QzMVaqzw-UnMBt=n", "Password for Elasticsearch")
-	// rootCmd.PersistentFlags().StringVarP(&esCer, "es-cer", "c", "2a0808ed5628b523dec26435eb2761b4e27305a0e7c44f295eea7feabf208a22", "certificateFingerprint")
+	// ANIKET DB DETAILS
+	rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "Yga1QzMVaqzw-UnMBt=n", "Password for Elasticsearch")
+	rootCmd.PersistentFlags().StringVarP(&esCer, "es-cer", "c", "2a0808ed5628b523dec26435eb2761b4e27305a0e7c44f295eea7feabf208a22", "certificateFingerprint")
 
 	var insertCmd = &cobra.Command{
 		Use:   "add [logFile]",
