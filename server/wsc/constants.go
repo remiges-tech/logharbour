@@ -20,6 +20,6 @@ const (
 )
 
 var (
-	APP, PRI, DAYS, SEARCHAFTERTIMESTAMP, SEARCHAFTERDOCID string = "App", "Pri", "Days", "SearchAfterTimestamp", "SearchAfterDocId"
-	Priority                                                      = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
+	APP, PRI, DAYS, SEARCHAFTERTIMESTAMP, SEARCHAFTERDOCID, CLASS, INSTANCE string = "App", "Pri", "Days", "SearchAfterTimestamp", "SearchAfterDocId", "Class", "Instance"
+	Priority                                                                       = []string{"Debug2", "Debug1", "Debug0", "Info", "Warn", "Err", "Crit", "Sec"}
 )

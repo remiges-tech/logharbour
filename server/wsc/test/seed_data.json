@@ -13,7 +13,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "GetWFinstanceNew request received",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -29,7 +29,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "Inside ValidateWFInstaceNewReq()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -45,7 +45,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "Inside validateWorkflow()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -61,7 +61,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether app present in request is valid",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -77,7 +77,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether class present in request is valid",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -93,7 +93,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow active status is valid",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -109,7 +109,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow internal status is valid",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -125,7 +125,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether record is already exist in wfinstance table",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -141,7 +141,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "GetWFinstanceNew||validateWFInstanceNewReq()||patternschema :",
-        "data": "{\"class\":\"inventoryitems\",\"attr\":[{\"name\":\"cat\",\"shortdesc\":\"Categoryofitem\",\"longdesc\":\"Eachitemcanbelongtooneofthefollowingcategories:textbooks,notebooks,stationery,orreferencebooks.\",\"valtype\":\"enum\",\"vals\":[\"textbook\",\"notebook\",\"stationery\",\"refbooks\"],\"enumdesc\":[\"Textbooks\",\"Notebooks\",\"Stationeryandmiscellaneousitems\",\"Referencebooks,librarybooks\"]},{\"name\":\"mrp\",\"shortdesc\":\"Maximumretailprice\",\"longdesc\":\"ThemaximumretailpriceoftheiteminINRasdeclaredbythemanufacturer.\",\"valtype\":\"float\",\"valmax\":20000,\"valmin\":0},{\"name\":\"fullname\",\"shortdesc\":\"Fullnameofitem\",\"longdesc\":\"Thefullhuman-readablenameoftheitem.Notunique,thereforesometimesconfusing.\",\"valtype\":\"str\",\"lenmax\":40,\"lenmin\":5},{\"name\":\"ageinstock\",\"shortdesc\":\"Ageinstock,indays\",\"longdesc\":\"Theageindaysthattheoldestsampleofthisitemhasbeenlyinginstock\",\"valtype\":\"int\",\"valmax\":1000,\"valmin\":1},{\"name\":\"inventoryqty\",\"shortdesc\":\"Numberofitemsininventory\",\"longdesc\":\"Howmanyoftheseitemsarecurrentlypresentintheinventory\",\"valtype\":\"int\",\"valmax\":10000,\"valmin\":0}]}"
+        "data": {"class":"inventoryitems","attr":[{"name":"cat","shortdesc":"Categoryofitem","longdesc":"Eachitemcanbelongtooneofthefollowingcategories:textbooks,notebooks,stationery,orreferencebooks.","valtype":"enum","vals":["textbook","notebook","stationery","refbooks"],"enumdesc":["Textbooks","Notebooks","Stationeryandmiscellaneousitems","Referencebooks,librarybooks"]},{"name":"mrp","shortdesc":"Maximumretailprice","longdesc":"ThemaximumretailpriceoftheiteminINRasdeclaredbythemanufacturer.","valtype":"float","valmax":20000,"valmin":0},{"name":"fullname","shortdesc":"Fullnameofitem","longdesc":"Thefullhuman-readablenameoftheitem.Notunique,thereforesometimesconfusing.","valtype":"str","lenmax":40,"lenmin":5},{"name":"ageinstock","shortdesc":"Ageinstock,indays","longdesc":"Theageindaysthattheoldestsampleofthisitemhasbeenlyinginstock","valtype":"int","valmax":1000,"valmin":1},{"name":"inventoryqty","shortdesc":"Numberofitemsininventory","longdesc":"Howmanyoftheseitemsarecurrentlypresentintheinventory","valtype":"int","valmax":10000,"valmin":0}]}
     },
     {
         "app": "crux",
@@ -157,7 +157,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "Inside validateEntity()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -173,7 +173,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "validating entity attributes",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -189,7 +189,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "wfinstanceNewRequest after adding additional attributes :",
-        "data": "{\"slice\":2,\"app\":\"retailBANK\",\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"entity_have_to_change\":{\"ageinstock\":\"2\",\"class\":\"inventoryitems\",\"fullname\":\"belampally\",\"inventoryqty\":\"2\",\"mrp\":\"200.00\",\"step\":\"START\",\"stepfailed\":\"false\"},\"workflow\":\"discountcheck\",\"trace\":0,\"parent\":77}"
+        "data": {"slice":2,"app":"retailBANK","entityid":"0eb8da50-aece-11ee-b168-3b192f7cd2b6","entity_have_to_change":{"ageinstock":"2","class":"inventoryitems","fullname":"belampally","inventoryqty":"2","mrp":"200.00","step":"START","stepfailed":"false"},"workflow":"discountcheck","trace":0,"parent":77}
     },
     {
         "app": "crux",
@@ -205,7 +205,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "inside addTasks()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -221,7 +221,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "created wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"create\",\"changes\":[{\"field\":\"row\",\"old_value\":\"\",\"new_value\":{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-02-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}}]}"
+        "data": {"entity":"wfinstance","operation":"create","changes":[{"field":"row","old_value":"","new_value":"{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-02-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}"}]}
     },
     {
         "app": "crux",
@@ -237,7 +237,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "created wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"create\",\"changes\":[{\"field\":\"row\",\"old_value\":\"\",\"new_value\":{\"id\":2,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"yearendsale\",\"loggedat\":\"2024-01-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}}]}"
+        "data": {"entity":"wfinstance","operation":"create","changes":[{"field":"row","old_value":"","new_value":"{\"id\":2,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"yearendsale\",\"loggedat\":\"2024-01-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}"}]}
     },
     {
         "app": "crux",
@@ -253,7 +253,7 @@
         "status": 0,
         "remote_ip": "240.12.34.56",
         "msg": "WFInstanceNew||addTasks()||verifying whether step is workflow if it is, then append it to subflow",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -269,7 +269,7 @@
         "status": 0,
         "remote_ip": "240.12.34.56",
         "msg": "Inside getResponse()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -285,7 +285,7 @@
         "status": 0,
         "remote_ip": "240.12.34.56",
         "msg": "response of addTask() :",
-        "data": "{\"tasks\":[{\"discount\":1},{\"yearendsale\":2}],\"nextstep\":\"coupondistribution\",\"loggedat\":\"2024-01-25T12:58:00.102803Z\",\"subflows\":{\"yearendsale\":\"doyearendsalechk\"},\"tracedata\":\"\"}"
+        "data": {"tasks":[{"discount":1},{"yearendsale":2}],"nextstep":"coupondistribution","loggedat":"2024-01-25T12:58:00.102803Z","subflows":{"yearendsale":"doyearendsalechk"},"tracedata":""}
     },
     {
         "app": "crux",
@@ -301,7 +301,7 @@
         "status": 0,
         "remote_ip": "240.12.34.56",
         "msg": "GetWFInstanceList request received",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -317,7 +317,7 @@
         "status": 0,
         "remote_ip": "240.12.34.56",
         "msg": "GetWFInstanceList|parameters from request :",
-        "data": "{\"Slice\":2,\"EntityID\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"App\":\"retailBANK\",\"Workflow\":\"discountcheck\",\"Parent\":77}"
+        "data": {"Slice":2,"EntityID":"0eb8da50-aece-11ee-b168-3b192f7cd2b6","App":"retailBANK","Workflow":"discountcheck","Parent":77}
     },
     {
         "app": "crux",
@@ -333,7 +333,7 @@
         "status": 0,
         "remote_ip": "185.199.110.154",
         "msg": "GetWFInstanceList||parentlist form WFInstanceList data:",
-        "data": "[77]"
+        "data": {}
     },
     {
         "app": "crux",
@@ -349,7 +349,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceList||inside for loop : if parentList is Not Nil ",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -365,7 +365,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceList||updated ParentList :",
-        "data": "[78]"
+        "data": {}
     },
     {
         "app": "crux",
@@ -381,7 +381,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceList||inside for loop : if parentList is Not Nil ",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -397,7 +397,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceList||updated ParentList :",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -413,7 +413,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Record found finished execution of GetWFInstanceList request",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -429,7 +429,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceAbort request received",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -445,7 +445,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceAbort||present values :",
-        "data": "{\"EntityId\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"ID\":0}"
+        "data": {"EntityId":"0eb8da50-aece-11ee-b168-3b192f7cd2b6","ID":0}
     },
     {
         "app": "crux",
@@ -461,7 +461,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceAbort||parentlist form WFInstanceListByID data:",
-        "data": "[77]"
+        "data": {}
     },
     {
         "app": "crux",
@@ -477,7 +477,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceAbort||inside for loop : if parentList is Not Nil ",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -493,7 +493,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceAbort||updated ParentList :",
-        "data": "[78]"
+        "data": {}
     },
     {
         "app": "crux",
@@ -509,7 +509,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceAbort||inside for loop : if parentList is Not Nil ",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -525,7 +525,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceAbort||updated ParentList :",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -541,7 +541,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "deleted wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77},\"new_value\":\"\"}]}"
+        "data": {"entity":"wfinstance","operation":"delete","changes":[{"field":"row","old_value":"{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}","new_value":""}]}
     },
     {
         "app": "crux",
@@ -557,7 +557,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "deleted wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":2,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"yearendsale\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77},\"new_value\":\"\"}]}"
+        "data": {"entity":"wfinstance","operation":"delete","changes":[{"field":"row","old_value":"{\"id\":2,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"yearendsale\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}","new_value":""}]}
     },
     {
         "app": "crux",
@@ -573,7 +573,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "deleted wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":77,\"entityid\":\"tempentityid\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"temp\",\"step\":\"tempstep\",\"loggedat\":\"2024-02-05T00:00:00Z\",\"doneat\":\"\",\"nextstep\":\"temp\",\"parent\":78},\"new_value\":\"\"}]}"
+        "data": {"entity":"wfinstance","operation":"delete","changes":[{"field":"row","old_value":"{\"id\":77,\"entityid\":\"tempentityid\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"temp\",\"step\":\"tempstep\",\"loggedat\":\"2024-02-05T00:00:00Z\",\"doneat\":\"\",\"nextstep\":\"temp\",\"parent\":78}","new_value":""}]}
     },
     {
         "app": "crux",
@@ -589,7 +589,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "deleted wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":78,\"entityid\":\"tempentityid\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"temp\",\"step\":\"tempstep\",\"loggedat\":\"2024-02-05T00:00:00Z\",\"doneat\":\"\",\"nextstep\":\"temp\",\"parent\":\"\"},\"new_value\":\"\"}]}"
+        "data": {"entity":"wfinstance","operation":"delete","changes":[{"field":"row","old_value":"{\"id\":78,\"entityid\":\"tempentityid\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"temp\",\"step\":\"tempstep\",\"loggedat\":\"2024-02-05T00:00:00Z\",\"doneat\":\"\",\"nextstep\":\"temp\",\"parent\":\"\"}","new_value":""}]}
     },
     {
         "app": "crux",
@@ -605,7 +605,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "GetWFinstanceNew request received",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -621,7 +621,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "Inside ValidateWFInstaceNewReq()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -637,7 +637,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "Inside validateWorkflow()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -653,7 +653,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether app present in request is valid",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -669,7 +669,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether class present in request is valid",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -685,7 +685,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow active status is valid",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -701,7 +701,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow internal status is valid",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -717,7 +717,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether record is already exist in wfinstance table",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -733,7 +733,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "GetWFinstanceNew||validateWFInstanceNewReq()||patternschema :",
-        "data": "{\"class\":\"inventoryitems\",\"attr\":[{\"name\":\"cat\",\"shortdesc\":\"Categoryofitem\",\"longdesc\":\"Eachitemcanbelongtooneofthefollowingcategories:textbooks,notebooks,stationery,orreferencebooks.\",\"valtype\":\"enum\",\"vals\":[\"textbook\",\"notebook\",\"stationery\",\"refbooks\"],\"enumdesc\":[\"Textbooks\",\"Notebooks\",\"Stationeryandmiscellaneousitems\",\"Referencebooks,librarybooks\"]},{\"name\":\"mrp\",\"shortdesc\":\"Maximumretailprice\",\"longdesc\":\"ThemaximumretailpriceoftheiteminINRasdeclaredbythemanufacturer.\",\"valtype\":\"float\",\"valmax\":20000,\"valmin\":0},{\"name\":\"fullname\",\"shortdesc\":\"Fullnameofitem\",\"longdesc\":\"Thefullhuman-readablenameoftheitem.Notunique,thereforesometimesconfusing.\",\"valtype\":\"str\",\"lenmax\":40,\"lenmin\":5},{\"name\":\"ageinstock\",\"shortdesc\":\"Ageinstock,indays\",\"longdesc\":\"Theageindaysthattheoldestsampleofthisitemhasbeenlyinginstock\",\"valtype\":\"int\",\"valmax\":1000,\"valmin\":1},{\"name\":\"inventoryqty\",\"shortdesc\":\"Numberofitemsininventory\",\"longdesc\":\"Howmanyoftheseitemsarecurrentlypresentintheinventory\",\"valtype\":\"int\",\"valmax\":10000,\"valmin\":0}]}"
+        "data": {"class":"inventoryitems","attr":[{"name":"cat","shortdesc":"Categoryofitem","longdesc":"Eachitemcanbelongtooneofthefollowingcategories:textbooks,notebooks,stationery,orreferencebooks.","valtype":"enum","vals":["textbook","notebook","stationery","refbooks"],"enumdesc":["Textbooks","Notebooks","Stationeryandmiscellaneousitems","Referencebooks,librarybooks"]},{"name":"mrp","shortdesc":"Maximumretailprice","longdesc":"ThemaximumretailpriceoftheiteminINRasdeclaredbythemanufacturer.","valtype":"float","valmax":20000,"valmin":0},{"name":"fullname","shortdesc":"Fullnameofitem","longdesc":"Thefullhuman-readablenameoftheitem.Notunique,thereforesometimesconfusing.","valtype":"str","lenmax":40,"lenmin":5},{"name":"ageinstock","shortdesc":"Ageinstock,indays","longdesc":"Theageindaysthattheoldestsampleofthisitemhasbeenlyinginstock","valtype":"int","valmax":1000,"valmin":1},{"name":"inventoryqty","shortdesc":"Numberofitemsininventory","longdesc":"Howmanyoftheseitemsarecurrentlypresentintheinventory","valtype":"int","valmax":10000,"valmin":0}]}
     },
     {
         "app": "crux",
@@ -749,7 +749,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "Inside validateEntity()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -765,7 +765,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "validating entity attributes",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -781,7 +781,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "wfinstanceNewRequest after adding additional attributes :",
-        "data": "{\"slice\":2,\"app\":\"retailBANK\",\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"entity_have_to_change\":{\"ageinstock\":\"2\",\"class\":\"inventoryitems\",\"fullname\":\"belampally\",\"inventoryqty\":\"2\",\"mrp\":\"200.00\",\"step\":\"START\",\"stepfailed\":\"false\"},\"workflow\":\"discountcheck\",\"trace\":0,\"parent\":77}"
+        "data": {"slice":2,"app":"retailBANK","entityid":"0eb8da50-aece-11ee-b168-3b192f7cd2b6","entity_have_to_change":{"ageinstock":"2","class":"inventoryitems","fullname":"belampally","inventoryqty":"2","mrp":"200.00","step":"START","stepfailed":"false"},"workflow":"discountcheck","trace":0,"parent":77}
     },
     {
         "app": "crux",
@@ -797,7 +797,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "inside addTasks()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -813,7 +813,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "created wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"create\",\"changes\":[{\"field\":\"row\",\"old_value\":\"\",\"new_value\":{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-02-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}}]}"
+        "data": {"entity":"wfinstance","operation":"create","changes":[{"field":"row","old_value":"","new_value":"{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-02-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}"}]}
     },
     {
         "app": "crux",
@@ -829,7 +829,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "created wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"create\",\"changes\":[{\"field\":\"row\",\"old_value\":\"\",\"new_value\":{\"id\":2,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"yearendsale\",\"loggedat\":\"2024-01-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}}]}"
+        "data": {"entity":"wfinstance","operation":"create","changes":[{"field":"row","old_value":"","new_value":"{\"id\":2,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"yearendsale\",\"loggedat\":\"2024-01-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}"}]}
     },
     {
         "app": "crux",
@@ -845,7 +845,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "WFInstanceNew||addTasks()||verifying whether step is workflow if it is, then append it to subflow",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -861,7 +861,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "Inside getResponse()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -877,7 +877,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "response of addTask() :",
-        "data": "{\"tasks\":[{\"discount\":1},{\"yearendsale\":2}],\"nextstep\":\"coupondistribution\",\"loggedat\":\"2024-01-25T12:58:00.102803Z\",\"subflows\":{\"yearendsale\":\"doyearendsalechk\"},\"tracedata\":\"\"}"
+        "data": {"tasks":[{"discount":1},{"yearendsale":2}],"nextstep":"coupondistribution","loggedat":"2024-01-25T12:58:00.102803Z","subflows":{"yearendsale":"doyearendsalechk"},"tracedata":""}
     },
     {
         "app": "crux",
@@ -893,7 +893,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "GetWFInstanceList request received",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -909,7 +909,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "GetWFInstanceList|parameters from request :",
-        "data": "{\"Slice\":2,\"EntityID\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"App\":\"retailBANK\",\"Workflow\":\"discountcheck\",\"Parent\":77}"
+        "data": {"Slice":2,"EntityID":"0eb8da50-aece-11ee-b168-3b192f7cd2b6","App":"retailBANK","Workflow":"discountcheck","Parent":77}
     },
     {
         "app": "crux",
@@ -925,7 +925,7 @@
         "status": 0,
         "remote_ip": "185.199.110.154",
         "msg": "GetWFInstanceList||parentlist form WFInstanceList data:",
-        "data": "[77]"
+        "data": {}
     },
     {
         "app": "crux",
@@ -941,7 +941,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "GetWFInstanceList||inside for loop : if parentList is Not Nil ",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -957,7 +957,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "GetWFInstanceList||updated ParentList :",
-        "data": "[78]"
+        "data": {}
     },
     {
         "app": "crux",
@@ -973,7 +973,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "GetWFInstanceList||inside for loop : if parentList is Not Nil ",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -989,7 +989,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "GetWFInstanceList||updated ParentList :",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1005,7 +1005,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "Record found finished execution of GetWFInstanceList request",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1021,7 +1021,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "GetWFInstanceAbort request received",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1037,7 +1037,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "GetWFInstanceAbort||present values :",
-        "data": "{\"EntityId\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"ID\":0}"
+        "data": {"EntityId":"0eb8da50-aece-11ee-b168-3b192f7cd2b6","ID":0}
     },
     {
         "app": "crux",
@@ -1053,7 +1053,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "GetWFInstanceAbort||parentlist form WFInstanceListByID data:",
-        "data": "[77]"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1069,7 +1069,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "GetWFInstanceAbort||inside for loop : if parentList is Not Nil ",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1085,7 +1085,7 @@
         "status": 0,
         "remote_ip": "121.14.56.78",
         "msg": "GetWFInstanceAbort||updated ParentList :",
-        "data": "[78]"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1101,7 +1101,7 @@
         "status": 0,
         "remote_ip": "198.51.100.25",
         "msg": "GetWFInstanceAbort||inside for loop : if parentList is Not Nil ",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1117,7 +1117,7 @@
         "status": 0,
         "remote_ip": "198.51.100.25",
         "msg": "GetWFInstanceAbort||updated ParentList :",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1133,7 +1133,7 @@
         "status": 0,
         "remote_ip": "198.51.100.25",
         "msg": "deleted wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77},\"new_value\":\"\"}]}"
+        "data": {"entity":"wfinstance","operation":"delete","changes":[{"field":"row","old_value":"{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}","new_value":""}]}
     },
     {
         "app": "crux",
@@ -1149,7 +1149,7 @@
         "status": 0,
         "remote_ip": "198.51.100.25",
         "msg": "deleted wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":2,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"yearendsale\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77},\"new_value\":\"\"}]}"
+        "data": {"entity":"wfinstance","operation":"delete","changes":[{"field":"row","old_value":"{\"id\":2,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"yearendsale\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}","new_value":""}]}
     },
     {
         "app": "crux",
@@ -1165,7 +1165,7 @@
         "status": 0,
         "remote_ip": "198.51.100.25",
         "msg": "deleted wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":77,\"entityid\":\"tempentityid\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"temp\",\"step\":\"tempstep\",\"loggedat\":\"2024-02-05T00:00:00Z\",\"doneat\":\"\",\"nextstep\":\"temp\",\"parent\":78},\"new_value\":\"\"}]}"
+        "data": {"entity":"wfinstance","operation":"delete","changes":[{"field":"row","old_value":"{\"id\":77,\"entityid\":\"tempentityid\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"temp\",\"step\":\"tempstep\",\"loggedat\":\"2024-02-05T00:00:00Z\",\"doneat\":\"\",\"nextstep\":\"temp\",\"parent\":78}","new_value":""}]}
     },
     {
         "app": "crux",
@@ -1181,7 +1181,7 @@
         "status": 0,
         "remote_ip": "198.51.100.25",
         "msg": "deleted wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":78,\"entityid\":\"tempentityid\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"temp\",\"step\":\"tempstep\",\"loggedat\":\"2024-02-05T00:00:00Z\",\"doneat\":\"\",\"nextstep\":\"temp\",\"parent\":\"\"},\"new_value\":\"\"}]}"
+        "data": {"entity":"wfinstance","operation":"delete","changes":[{"field":"row","old_value":"{\"id\":78,\"entityid\":\"tempentityid\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"temp\",\"step\":\"tempstep\",\"loggedat\":\"2024-02-05T00:00:00Z\",\"doneat\":\"\",\"nextstep\":\"temp\",\"parent\":\"\"}","new_value":""}]}
     },
     {
         "app": "crux",
@@ -1197,7 +1197,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "GetWFinstanceNew request received",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1213,7 +1213,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "Inside ValidateWFInstaceNewReq()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1229,7 +1229,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "Inside validateWorkflow()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1245,7 +1245,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether app present in request is valid",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1261,7 +1261,7 @@
         "status": 0,
         "remote_ip": "192.168.1.100",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether class present in request is valid",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1277,7 +1277,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow active status is valid",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1293,7 +1293,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow internal status is valid",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1309,7 +1309,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether record is already exist in wfinstance table",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1325,7 +1325,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "GetWFinstanceNew||validateWFInstanceNewReq()||patternschema :",
-        "data": "{\"class\":\"inventoryitems\",\"attr\":[{\"name\":\"cat\",\"shortdesc\":\"Categoryofitem\",\"longdesc\":\"Eachitemcanbelongtooneofthefollowingcategories:textbooks,notebooks,stationery,orreferencebooks.\",\"valtype\":\"enum\",\"vals\":[\"textbook\",\"notebook\",\"stationery\",\"refbooks\"],\"enumdesc\":[\"Textbooks\",\"Notebooks\",\"Stationeryandmiscellaneousitems\",\"Referencebooks,librarybooks\"]},{\"name\":\"mrp\",\"shortdesc\":\"Maximumretailprice\",\"longdesc\":\"ThemaximumretailpriceoftheiteminINRasdeclaredbythemanufacturer.\",\"valtype\":\"float\",\"valmax\":20000,\"valmin\":0},{\"name\":\"fullname\",\"shortdesc\":\"Fullnameofitem\",\"longdesc\":\"Thefullhuman-readablenameoftheitem.Notunique,thereforesometimesconfusing.\",\"valtype\":\"str\",\"lenmax\":40,\"lenmin\":5},{\"name\":\"ageinstock\",\"shortdesc\":\"Ageinstock,indays\",\"longdesc\":\"Theageindaysthattheoldestsampleofthisitemhasbeenlyinginstock\",\"valtype\":\"int\",\"valmax\":1000,\"valmin\":1},{\"name\":\"inventoryqty\",\"shortdesc\":\"Numberofitemsininventory\",\"longdesc\":\"Howmanyoftheseitemsarecurrentlypresentintheinventory\",\"valtype\":\"int\",\"valmax\":10000,\"valmin\":0}]}"
+        "data": {"class":"inventoryitems","attr":[{"name":"cat","shortdesc":"Categoryofitem","longdesc":"Eachitemcanbelongtooneofthefollowingcategories:textbooks,notebooks,stationery,orreferencebooks.","valtype":"enum","vals":["textbook","notebook","stationery","refbooks"],"enumdesc":["Textbooks","Notebooks","Stationeryandmiscellaneousitems","Referencebooks,librarybooks"]},{"name":"mrp","shortdesc":"Maximumretailprice","longdesc":"ThemaximumretailpriceoftheiteminINRasdeclaredbythemanufacturer.","valtype":"float","valmax":20000,"valmin":0},{"name":"fullname","shortdesc":"Fullnameofitem","longdesc":"Thefullhuman-readablenameoftheitem.Notunique,thereforesometimesconfusing.","valtype":"str","lenmax":40,"lenmin":5},{"name":"ageinstock","shortdesc":"Ageinstock,indays","longdesc":"Theageindaysthattheoldestsampleofthisitemhasbeenlyinginstock","valtype":"int","valmax":1000,"valmin":1},{"name":"inventoryqty","shortdesc":"Numberofitemsininventory","longdesc":"Howmanyoftheseitemsarecurrentlypresentintheinventory","valtype":"int","valmax":10000,"valmin":0}]}
     },
     {
         "app": "crux",
@@ -1341,7 +1341,7 @@
         "status": 0,
         "remote_ip": "172.16.0.10",
         "msg": "Inside validateEntity()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1357,7 +1357,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "validating entity attributes",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1373,7 +1373,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "wfinstanceNewRequest after adding additional attributes :",
-        "data": "{\"slice\":2,\"app\":\"retailBANK\",\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"entity_have_to_change\":{\"ageinstock\":\"2\",\"class\":\"inventoryitems\",\"fullname\":\"belampally\",\"inventoryqty\":\"2\",\"mrp\":\"200.00\",\"step\":\"START\",\"stepfailed\":\"false\"},\"workflow\":\"discountcheck\",\"trace\":0,\"parent\":77}"
+        "data": {"slice":2,"app":"retailBANK","entityid":"0eb8da50-aece-11ee-b168-3b192f7cd2b6","entity_have_to_change":{"ageinstock":"2","class":"inventoryitems","fullname":"belampally","inventoryqty":"2","mrp":"200.00","step":"START","stepfailed":"false"},"workflow":"discountcheck","trace":0,"parent":77}
     },
     {
         "app": "crux",
@@ -1389,7 +1389,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "inside addTasks()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1405,7 +1405,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "created wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"create\",\"changes\":[{\"field\":\"row\",\"old_value\":\"\",\"new_value\":{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-02-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}}]}"
+        "data": {"entity":"wfinstance","operation":"create","changes":[{"field":"row","old_value":"","new_value":"{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-02-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}"}]}
     },
     {
         "app": "crux",
@@ -1421,7 +1421,7 @@
         "status": 0,
         "remote_ip": "198.51.100.55",
         "msg": "created wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"create\",\"changes\":[{\"field\":\"row\",\"old_value\":\"\",\"new_value\":{\"id\":2,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"yearendsale\",\"loggedat\":\"2024-01-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}}]}"
+        "data": {"entity":"wfinstance","operation":"create","changes":[{"field":"row","old_value":"","new_value":"{\"id\":2,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"yearendsale\",\"loggedat\":\"2024-01-25T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}"}]}
     },
     {
         "app": "crux",
@@ -1437,7 +1437,7 @@
         "status": 0,
         "remote_ip": "198.51.100.25",
         "msg": "WFInstanceNew||addTasks()||verifying whether step is workflow if it is, then append it to subflow",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1453,7 +1453,7 @@
         "status": 0,
         "remote_ip": "198.51.100.25",
         "msg": "Inside getResponse()",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1469,7 +1469,7 @@
         "status": 0,
         "remote_ip": "198.51.100.25",
         "msg": "response of addTask() :",
-        "data": "{\"tasks\":[{\"discount\":1},{\"yearendsale\":2}],\"nextstep\":\"coupondistribution\",\"loggedat\":\"2024-01-25T12:58:00.102803Z\",\"subflows\":{\"yearendsale\":\"doyearendsalechk\"},\"tracedata\":\"\"}"
+        "data": {"tasks":[{"discount":1},{"yearendsale":2}],"nextstep":"coupondistribution","loggedat":"2024-01-25T12:58:00.102803Z","subflows":{"yearendsale":"doyearendsalechk"},"tracedata":""}
     },
     {
         "app": "crux",
@@ -1485,7 +1485,7 @@
         "status": 0,
         "remote_ip": "198.51.100.25",
         "msg": "GetWFInstanceList request received",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1501,7 +1501,7 @@
         "status": 0,
         "remote_ip": "10.0.0.1",
         "msg": "GetWFInstanceList|parameters from request :",
-        "data": "{\"Slice\":2,\"EntityID\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"App\":\"retailBANK\",\"Workflow\":\"discountcheck\",\"Parent\":77}"
+        "data": {"Slice":2,"EntityID":"0eb8da50-aece-11ee-b168-3b192f7cd2b6","App":"retailBANK","Workflow":"discountcheck","Parent":77}
     },
     {
         "app": "crux",
@@ -1517,7 +1517,7 @@
         "status": 0,
         "remote_ip": "185.199.110.154",
         "msg": "GetWFInstanceList||parentlist form WFInstanceList data:",
-        "data": "[77]"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1533,7 +1533,7 @@
         "status": 0,
         "remote_ip": "10.0.0.1",
         "msg": "GetWFInstanceList||inside for loop : if parentList is Not Nil ",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1549,7 +1549,7 @@
         "status": 0,
         "remote_ip": "10.0.0.1",
         "msg": "GetWFInstanceList||updated ParentList :",
-        "data": "[78]"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1565,7 +1565,7 @@
         "status": 0,
         "remote_ip": "10.0.0.1",
         "msg": "GetWFInstanceList||inside for loop : if parentList is Not Nil ",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1581,7 +1581,7 @@
         "status": 0,
         "remote_ip": "10.0.0.1",
         "msg": "GetWFInstanceList||updated ParentList :",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1597,7 +1597,7 @@
         "status": 0,
         "remote_ip": "10.0.0.1",
         "msg": "Record found finished execution of GetWFInstanceList request",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1613,7 +1613,7 @@
         "status": 0,
         "remote_ip": "10.0.0.1",
         "msg": "GetWFInstanceAbort request received",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1629,7 +1629,7 @@
         "status": 0,
         "remote_ip": "10.0.0.1",
         "msg": "GetWFInstanceAbort||present values :",
-        "data": "{\"EntityId\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"ID\":0}"
+        "data": {"EntityId":"0eb8da50-aece-11ee-b168-3b192f7cd2b6","ID":0}
     },
     {
         "app": "crux",
@@ -1645,7 +1645,7 @@
         "status": 0,
         "remote_ip": "10.0.0.1",
         "msg": "GetWFInstanceAbort||parentlist form WFInstanceListByID data:",
-        "data": "[77]"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1661,7 +1661,7 @@
         "status": 0,
         "remote_ip": "10.0.0.1",
         "msg": "GetWFInstanceAbort||inside for loop : if parentList is Not Nil ",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1677,7 +1677,7 @@
         "status": 0,
         "remote_ip": "10.0.0.1",
         "msg": "GetWFInstanceAbort||updated ParentList :",
-        "data": "[78]"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1693,7 +1693,7 @@
         "status": 0,
         "remote_ip": "88.77.66.55",
         "msg": "GetWFInstanceAbort||inside for loop : if parentList is Not Nil ",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "crux",
@@ -1709,7 +1709,7 @@
         "status": 0,
         "remote_ip": "88.77.66.55",
         "msg": "GetWFInstanceAbort||updated ParentList :",
-        "data": "{}"
+        "data": {}
     },
     {
         "app": "idshield",
@@ -1725,7 +1725,7 @@
         "status": 0,
         "remote_ip": "88.77.66.55",
         "msg": "deleted wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77},\"new_value\":\"\"}]}"
+        "data": {"entity":"wfinstance","operation":"delete","changes":[{"field":"row","old_value":"{\"id\":1,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"discount\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}","new_value":""}]}
     },
     {
         "app": "idshield",
@@ -1741,7 +1741,7 @@
         "status": 0,
         "remote_ip": "88.77.66.55",
         "msg": "deleted wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":2,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"yearendsale\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77},\"new_value\":\"\"}]}"
+        "data": {"entity":"wfinstance","operation":"delete","changes":[{"field":"row","old_value":"{\"id\":2,\"entityid\":\"0eb8da50-aece-11ee-b168-3b192f7cd2b6\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"discountcheck\",\"step\":\"yearendsale\",\"loggedat\":\"2024-01-01T12:58:00.102803Z\",\"doneat\":\"\",\"nextstep\":\"coupondistribution\",\"parent\":77}","new_value":""}]}
     },
     {
         "app": "idshield",
@@ -1757,7 +1757,7 @@
         "status": 0,
         "remote_ip": "88.77.66.55",
         "msg": "deleted wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":77,\"entityid\":\"tempentityid\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"temp\",\"step\":\"tempstep\",\"loggedat\":\"2024-02-05T00:00:00Z\",\"doneat\":\"\",\"nextstep\":\"temp\",\"parent\":78},\"new_value\":\"\"}]}"
+        "data": {"entity":"wfinstance","operation":"delete","changes":[{"field":"row","old_value":"{\"id\":77,\"entityid\":\"tempentityid\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"temp\",\"step\":\"tempstep\",\"loggedat\":\"2024-02-05T00:00:00Z\",\"doneat\":\"\",\"nextstep\":\"temp\",\"parent\":78}","new_value":""}]}
     },
     {
         "app": "idshield",
@@ -1773,7 +1773,7 @@
         "status": 0,
         "remote_ip": "88.77.66.55",
         "msg": "deleted wfinstance ",
-        "data": "{\"entity\":\"wfinstance\",\"operation\":\"delete\",\"changes\":[{\"field\":\"row\",\"old_value\":{\"id\":78,\"entityid\":\"tempentityid\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"temp\",\"step\":\"tempstep\",\"loggedat\":\"2024-02-05T00:00:00Z\",\"doneat\":\"\",\"nextstep\":\"temp\",\"parent\":\"\"},\"new_value\":\"\"}]}"
+        "data": {"entity":"wfinstance","operation":"delete","changes":[{"field":"row","old_value":"{\"id\":78,\"entityid\":\"tempentityid\",\"slice\":2,\"app\":\"retailBANK\",\"class\":\"inventoryitems\",\"workflow\":\"temp\",\"step\":\"tempstep\",\"loggedat\":\"2024-02-05T00:00:00Z\",\"doneat\":\"\",\"nextstep\":\"temp\",\"parent\":\"\"}","new_value":""}]}
     },
     {
         "app": "crux",
@@ -1789,7 +1789,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "record found finished execution of WorkflowList()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -1805,7 +1805,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Starting execution of WorkflowUpdate()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -1817,11 +1817,11 @@
         "who": "kanchan",
         "op": "",
         "class": "ruleset",
-        "instance": "",
+        "instance": "u0001",
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Updated ruleset",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -1837,7 +1837,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Finished execution of WorkflowUpdate()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -1853,7 +1853,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "WorkflowDelete request received",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -1869,7 +1869,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "failed to delete data from db:",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -1885,7 +1885,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Creates a new instance of EtcdStorage with endpoints",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -1901,7 +1901,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -1917,7 +1917,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -1933,7 +1933,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Creates a new instance of rigel",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -1949,7 +1949,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Inside ValidateWFInstaceNewReq()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -1965,7 +1965,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Inside validateWorkflow()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -1981,7 +1981,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether app present in request is valid",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -1997,7 +1997,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether class present in request is valid",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2013,7 +2013,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow active status is valid",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2029,7 +2029,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether workflow internal status is valid",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2045,7 +2045,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFinstanceNew||validateWorkflow()||verifying whether record is already exist in wfinstance table",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2061,7 +2061,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFinstanceNew||validateWFInstanceNewReq()||patternschema :",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2077,7 +2077,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Inside validateEntity()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2093,7 +2093,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "validating entity attributes",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2109,7 +2109,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "wfinstanceNewRequest after adding additional attributes :",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2125,7 +2125,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "inside addTasks()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2141,7 +2141,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "created wfinstance ",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2157,7 +2157,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "created wfinstance ",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2173,7 +2173,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "WFInstanceNew||addTasks()||verifying whether step is workflow if it is, then append it to subflow",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2189,7 +2189,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Inside getResponse()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2205,7 +2205,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "response of addTask() :",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2221,7 +2221,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceList request received",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2237,7 +2237,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceList|parameters from request :",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2253,7 +2253,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceList||parentlist form WFInstanceList data:",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2269,7 +2269,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceList||inside for loop : if parentList is Not Nil ",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2285,7 +2285,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceList||updated ParentList :",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2301,7 +2301,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Record found finished execution of GetWFInstanceList request",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2317,7 +2317,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceAbort request received",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2333,7 +2333,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceAbort||present values :",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2349,7 +2349,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceAbort||parentlist form WFInstanceListByID data:",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2365,7 +2365,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceAbort||inside for loop : if parentList is Not Nil ",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2381,7 +2381,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "GetWFInstanceAbort||updated ParentList :",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2397,7 +2397,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "deleted wfinstance ",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2413,7 +2413,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "deleted wfinstance ",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2429,7 +2429,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "SchemaGet request received",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2445,7 +2445,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "bindSchemaGetResp request received",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2461,7 +2461,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "record found finished execution of SchemaGet()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2477,7 +2477,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "starting execution of SchemaList()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2493,7 +2493,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "finished execution of SchemaList()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2509,7 +2509,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Starting execution of SchemaNew()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2525,7 +2525,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Starting execution of SchemaUpdate()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2541,7 +2541,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Error while Updating schema",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2557,7 +2557,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "SchemaDelete request received",
-        "data": ""
+        "data": {}
     },
     {
         "app": "idshield",
@@ -2573,7 +2573,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "SchemaDelete request received",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2589,7 +2589,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Starting execution of WorkFlowNew()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2605,7 +2605,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "Finished execution of WorkFlowNew()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2621,7 +2621,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "WorkflowGet request received",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2637,14 +2637,14 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "record found finished execution of WorkflowGet()",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
         "system": "merceadm-Latitude-3420",
         "module": "login",
         "type": "A",
-        "pri": "Info",
+        "pri": "Err",
         "when": "2024-02-29T06:32:09.840500804Z",
         "who": "kanchan",
         "op": "",
@@ -2653,7 +2653,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "WorkflowList request received",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2669,7 +2669,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "processRequest request received",
-        "data": ""
+        "data": {}
     },
     {
         "app": "idshield",
@@ -2677,7 +2677,7 @@
         "module": "login",
         "type": "A",
         "pri": "Err",
-        "when": "2024-02-29T06:32:09.840733956Z",
+        "when": "2024-03-02T07:28:00.10259862Z",
         "who": "kanchan",
         "op": "",
         "class": "",
@@ -2685,7 +2685,7 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "user not have root cap",
-        "data": ""
+        "data": {}
     },
     {
         "app": "crux",
@@ -2701,6 +2701,6 @@
         "status": 0,
         "remote_ip": "203.0.113.45",
         "msg": "app not present hence all user 'ruleset' rights:",
-        "data": ""
+        "data": {}
     }
 ]

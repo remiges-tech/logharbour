@@ -65,6 +65,7 @@ type GetLogsParam struct {
 	Priority         *LogPriority
 	SearchAfterTS    *string
 	SearchAfterDocID *string
+	Field            *string
 }
 
 type GetUnusualIPParam struct {
@@ -674,4 +675,136 @@ func rangeQueryForTimestamp(fromTS, toTS *time.Time, nDays *int) (bool, types.Qu
 		}
 	}
 	return false, types.Query{}, nil
+}
+
+// GetChanges retrieves an slice of logEntry from Elasticsearch based on the fields provided in logParam.
+func GetChanges(querytoken string, client *elasticsearch.TypedClient, logParam GetLogsParam) ([]LogEntry, int, error) {
+
+	var queries []types.Query
+	var logEntries []LogEntry
+
+	ok, ranges, err := rangeQueryForTimestamp(logParam.FromTS, logParam.ToTS, logParam.NDays)
+	if ok {
+		queries = append(queries, ranges)
+	}
+	if err != nil {
+		return nil, 0, err
+	}
+
+	if ok, app := termQueryForField(app, logParam.App); ok {
+		queries = append(queries, app)
+	}
+
+	// if logParam.Type != nil {
+	logTypeStr := LogTypeChange
+	if ok, logType := termQueryForField(typeConst, &logTypeStr); ok {
+		queries = append(queries, logType)
+	}
+	// }
+
+	if logParam.Field != nil {
+
+		if ok, field := termQueryForField("data.changes.field", logParam.Field); ok {
+			queries = append(queries, field)
+		}
+	}
+
+	if ok, who := termQueryForField(who, logParam.Who); ok {
+
+		queries = append(queries, who)
+	}
+	if ok, class := termQueryForField(class, logParam.Class); ok {
+
+		queries = append(queries, class)
+	}
+	if ok, instance := termQueryForField(instance, logParam.Instance); ok {
+
+		queries = append(queries, instance)
+	}
+	if ok, op := termQueryForField(op, logParam.Operation); ok {
+
+		queries = append(queries, op)
+	}
+	if ok, remoteIp := termQueryForField(remote_ip, logParam.RemoteIP); ok {
+
+		queries = append(queries, remoteIp)
+	}
+
+	if logParam.Priority != nil {
+		priStr := logParam.Priority.String()
+		priFrom := slices.Index(Priority, priStr)
+		if priFrom > 0 {
+			requiredPri = Priority[priFrom:]
+		}
+		if ok, pri := termQueryForField(pri, nil, requiredPri...); ok {
+			queries = append(queries, pri)
+		}
+	}
+
+	// creating elastic search bool query
+	query := &types.Query{
+		Bool: &types.BoolQuery{
+			Filter: queries,
+		},
+	}
+
+	if len(queries) == 0 {
+		return nil, 0, fmt.Errorf("No Filter param")
+	}
+
+	// sorting record on base of when
+	sortByWhen := types.SortOptions{
+		SortOptions: map[string]types.FieldSort{
+			when: {Order: &sortorder.Desc},
+			// "_doc": {Order: &sortorder.Desc},
+		},
+	}
+
+	//  calling search query when SearchAfterTS and SearchAfterDocID given
+	if logParam.SearchAfterTS != nil && logParam.SearchAfterDocID != nil {
+		res, err = client.Search().Index(Index).Request(&search.Request{
+			Size:        &LOGHARBOUR_GETLOGS_MAXREC,
+			Query:       query,
+			SearchAfter: []types.FieldValue{logParam.SearchAfterTS, logParam.SearchAfterDocID},
+			Sort:        []types.SortCombinations{sortByWhen},
+		}).Do(context.Background())
+		//  calling search query when SearchAfterTS is given
+	} else if logParam.SearchAfterTS != nil && logParam.SearchAfterDocID == nil {
+		res, err = client.Search().Index(Index).Request(&search.Request{
+			Size:        &LOGHARBOUR_GETLOGS_MAXREC,
+			Query:       query,
+			SearchAfter: []types.FieldValue{logParam.SearchAfterTS},
+			Sort:        []types.SortCombinations{sortByWhen},
+		}).Do(context.Background())
+		//  calling search query when is SearchAfterDocID
+	} else if logParam.SearchAfterTS == nil && logParam.SearchAfterDocID != nil {
+		res, err = client.Search().Index(Index).Request(&search.Request{
+			Size:        &LOGHARBOUR_GETLOGS_MAXREC,
+			Query:       query,
+			SearchAfter: []types.FieldValue{logParam.SearchAfterDocID},
+			Sort:        []types.SortCombinations{sortByWhen},
+		}).Do(context.Background())
+	} else {
+		//  calling search query when SearchAfterTS and SearchAfterDocID not given
+		res, err = client.Search().Index(Index).Request(&search.Request{
+			Size:  &LOGHARBOUR_GETLOGS_MAXREC,
+			Query: query,
+			Sort:  []types.SortCombinations{sortByWhen},
+		}).Do(context.Background())
+	}
+	if err != nil {
+		return nil, 0, fmt.Errorf("Error while searching document in es:%v", err)
+	}
+	var logEnter LogEntry
+
+	// Unmarshalling hit.source into LogEntry
+	if res != nil {
+		for _, hit := range res.Hits.Hits {
+			if err := json.Unmarshal([]byte(hit.Source_), &logEnter); err != nil {
+				return nil, 0, fmt.Errorf("error while unmarshalling response:%v", err)
+			}
+			logEntries = append(logEntries, logEnter)
+		}
+	}
+	return logEntries, int(res.Hits.Total.Value), nil
 }
