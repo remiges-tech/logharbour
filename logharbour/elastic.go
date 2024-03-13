@@ -398,6 +398,7 @@ func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string
 			logSet: {
 				Terms: &types.TermsAggregation{
 					Field: some.String(setAttr),
+					Order: map[string]sortorder.SortOrder{"_count": sortorder.SortOrder{"asc"}},
 				},
 			},
 		},
