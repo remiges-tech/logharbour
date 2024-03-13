@@ -30,6 +30,12 @@ type GetSetTestCasesStruct struct {
 	ActualResponse   map[string]int64
 	ExpectedError    bool
 }
+type GetAppsTestCasesStruct struct {
+	Name             string
+	ExpectedResponse []string
+	ActualResponse   []string
+	ExpectedError    bool
+}
 
 type GetUnusualIPTestCaseStruct struct {
 	Name              string
@@ -194,7 +200,6 @@ func getSetTestCase() []GetSetTestCasesStruct {
 			Who:      &who,
 			Class:    &class,
 			Instance: &instance,
-			Op:       new(string),
 			Fromts:   &fromTs,
 			Tots:     &toTs,
 			Ndays:    &days,
@@ -203,11 +208,13 @@ func getSetTestCase() []GetSetTestCasesStruct {
 		},
 		SetAttribute:     setAttr,
 		ExpectedResponse: expectedData,
+		ExpectedError:    false,
 	}, {
 		Name:             "SUCCESS : GetSet() with valid setAttribute",
 		SetAttribute:     "app",
 		GetSetParam:      logharbour.GetSetParam{},
 		ExpectedResponse: expectedDataForApp,
+		ExpectedError:    false,
 	}, {
 		Name:          "ERROR : GetSet() with Invalid SetAttribute ",
 		SetAttribute:  InvalidSetAttr,
@@ -227,6 +234,40 @@ func getSetTestCase() []GetSetTestCasesStruct {
 	},
 	}
 	return getSetTestCase
+}
+
+func TestGetApps(t *testing.T) {
+	testCases := getAppTestCase()
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+
+			logharbour.Index = "logharbour"
+			tc.ActualResponse, err = logharbour.GetApps("", typedClient)
+			if tc.ExpectedError {
+				if err == nil {
+					t.Error("expected error but got nil")
+				}
+			} else {
+				require.NoError(t, err)
+
+			}
+			// Compare the responses
+			if !reflect.DeepEqual(tc.ExpectedResponse, tc.ActualResponse) {
+				t.Errorf("response are not equal. Expected: %v, Actual: %v", tc.ExpectedResponse, tc.ActualResponse)
+			}
+		})
+	}
+
+}
+
+func getAppTestCase() []GetAppsTestCasesStruct {
+	getAppTestCase := []GetAppsTestCasesStruct{{
+		Name:             "SUCCESS : valid response",
+		ExpectedResponse: []string{"crux", "idshield"},
+		ExpectedError:    false,
+	}}
+	return getAppTestCase
+
 }
 
 func TestGetUnusualIP(t *testing.T) {

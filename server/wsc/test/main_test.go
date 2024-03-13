@@ -199,8 +199,8 @@ func registerRoutes(typedClient *es.TypedClient) (*gin.Engine, error) {
 		WithDependency("client", typedClient)
 
 	s.RegisterRoute(http.MethodPost, "/highprilog", wsc.GetHighprilog)
-	s.RegisterRoute(http.MethodPost, "/showActivitylog", wsc.ShowActivityLog)
-	s.RegisterRoute(http.MethodPost, "/show_debuglog", wsc.GetDebugLog)
+	s.RegisterRoute(http.MethodPost, "/activitylog", wsc.ShowActivityLog)
+	s.RegisterRoute(http.MethodPost, "/debuglog", wsc.GetDebugLog)
 	s.RegisterRoute(http.MethodPost, "/getUnusualIP", wsc.GetUnusualIP)
 
 	return r, nil
