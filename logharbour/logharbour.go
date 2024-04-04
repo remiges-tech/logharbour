@@ -356,18 +356,26 @@ func (l *Logger) Sec() *Logger {
 	return l.WithPriority(Sec)
 }
 
-// NewChangeDetail creates a new ChangeDetail instance.
-func NewChangeDetail(field string, oldValue, newValue any) ChangeDetail {
+// NewChangeDetail creates a new ChangeDetail instance from given field, oldValue, and newValue.
+// The oldValue and newValue are any type, and internally converted to their string representations
+// using convertToString() in utils.go. This design allows for flexibility in logging changes without enforcing
+// a strict type constraint on the values being logged. It ensures that regardless of the original value type,
+// the change details are stored as strings, which is required for storing it in logharbour storage.
+func (l *Logger) NewChangeDetail(field string, oldValue, newValue any) ChangeDetail {
 	return ChangeDetail{
 		Field:  field,
-		OldVal: oldValue,
-		NewVal: newValue,
+		OldVal: convertToString(oldValue),
+		NewVal: convertToString(newValue),
 	}
 }
 
-// AddChange adds a new ChangeDetail to a ChangeInfo instance and returns the ChangeInfo.
-func (ci *ChangeInfo) AddChange(field string, oldValue, newValue any) *ChangeInfo {
-	change := NewChangeDetail(field, oldValue, newValue)
+// AddChange adds a new change to the ChangeInfo struct. It accepts a field name and old/new values of any type.
+// Internally, it uses NewChangeDetail to create a ChangeDetail struct, which converts the old/new values to strings.
+// This method simplifies the process of adding changes to a log entry, allowing developers to pass values of any type
+// without worrying about their string conversion. The use of convertToString() ensures that all values are consistently
+// logged as strings, which is required for storing them in logharbour storage.
+func (ci *ChangeInfo) AddChange(l *Logger, field string, oldValue, newValue any) *ChangeInfo {
+	change := l.NewChangeDetail(field, oldValue, newValue)
 	ci.Changes = append(ci.Changes, change)
 	return ci
 }

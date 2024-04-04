@@ -174,8 +174,8 @@ func TestLogDataChange(t *testing.T) {
 	logger := NewLogger(NewLoggerContext(Info), "TestApp", &buf)
 
 	// Create a new ChangeInfo and add a change
-	changeInfo := NewChangeInfo("User", "Update").
-		AddChange("email", "oldEmail@example.com", "newEmail@example.com")
+	changeInfo := NewChangeInfo("User", "Update")
+	changeInfo = changeInfo.AddChange(logger, "email", "oldEmail@example.com", "newEmail@example.com")
 
 	// Log the data change
 	logger.LogDataChange("User updated profile", *changeInfo)
@@ -183,39 +183,44 @@ func TestLogDataChange(t *testing.T) {
 	// Get the logged message
 	loggedMessage := buf.String()
 
-	// Unmarshal the logged message into a map
-	var loggedData map[string]interface{}
-	err := json.Unmarshal([]byte(loggedMessage), &loggedData)
+	// Unmarshal the logged message into a LogEntry struct
+	var loggedEntry LogEntry
+	err := json.Unmarshal([]byte(loggedMessage), &loggedEntry)
 	if err != nil {
 		t.Fatalf("Failed to unmarshal logged message: %v", err)
 	}
 
 	// Check that the logged message contains the expected data
-	if loggedData["msg"] != "User updated profile" {
-		t.Errorf("Expected message 'User updated profile', got '%s'", loggedData["msg"])
+	if loggedEntry.Msg != "User updated profile" {
+		t.Errorf("Expected message 'User updated profile', got '%s'", loggedEntry.Msg)
 	}
 
-	// Extract and assert the ChangeInfo data from the map
-	changeData, ok := loggedData["data"].(map[string]interface{})
+	// Extract and assert the ChangeInfo data from the LogEntry
+	changeData, ok := loggedEntry.Data.(map[string]any) // Type assertion to access ChangeInfo data
 	if !ok {
-		t.Fatalf("Expected ChangeInfo data, got %T", loggedData["data"])
+		t.Fatalf("Expected ChangeInfo data, got %T", loggedEntry.Data)
 	}
 
-	// Extract and assert the Changes from the ChangeInfo data
-	changes, ok := changeData["changes"].([]interface{})
-	if !ok || len(changes) != 1 {
-		t.Fatalf("Expected 1 change, got %d", len(changes))
+	// Check the entity and operation
+	if changeData["entity"] != "User" || changeData["op"] != "Update" {
+		t.Errorf("Expected entity 'User' and operation 'Update', got entity '%s' and operation '%s'", changeData["entity"], changeData["op"])
 	}
 
-	// Extract and assert the ChangeDetail from the Changes
-	changeDetail, ok := changes[0].(map[string]interface{})
+	// Check the changes
+	changes, ok := changeData["changes"].([]any)
+	if !ok || len(changes) == 0 {
+		t.Fatalf("Expected changes, got %T", changeData["changes"])
+	}
+
+	// Assuming we know there's only one change for simplicity
+	firstChange, ok := changes[0].(map[string]any)
 	if !ok {
-		t.Fatalf("Expected ChangeDetail, got %T", changes[0])
+		t.Fatalf("Expected a change detail, got %T", changes[0])
 	}
 
-	// Check the ChangeDetail fields
-	if changeDetail["field"] != "email" || changeDetail["old_value"] != "oldEmail@example.com" || changeDetail["new_value"] != "newEmail@example.com" {
-		t.Errorf("Expected email change from oldEmail@example.com to newEmail@example.com, got %v", changeDetail)
+	// Check the old and new email values
+	if firstChange["field"] != "email" || firstChange["old_value"] != `"oldEmail@example.com"` || firstChange["new_value"] != `"newEmail@example.com"` {
+		t.Errorf("Expected email change from 'oldEmail@example.com' to 'newEmail@example.com', got field '%s', old value '%s', new value '%s'", firstChange["field"], firstChange["old_value"], firstChange["new_value"])
 	}
 }
 
@@ -247,68 +252,18 @@ func Example() {
 	logger.LogActivity("User logged in", map[string]any{"username": "john"})
 
 	// Log a data change entry.
-	// log a data change entry.
-	logger.LogDataChange("User updated profile",
-		*NewChangeInfo("User", "Update").
-			AddChange("email", "oldEmail@example.com", "john@example.com"))
+	changeInfo := NewChangeInfo("User", "Update")
+	changeInfo = changeInfo.AddChange(logger, "email", "oldEmail@example.com", "john@example.com")
+	if err != nil {
+		// Handle the error
+		fmt.Println("Error adding change:", err)
+		return
+	}
+	logger.LogDataChange("User updated profile", *changeInfo)
 
 	// Change logger priority at runtime.
 	lctx.ChangeMinLogPriority(Debug2)
 
 	// Log a debug entry.
 	logger.LogDebug("Debugging user session", map[string]any{"sessionID": "12345"})
-
-	//
-	// {
-	//     "app_name": "MyApp",
-	//     "module": "Module1",
-	//     "priority": "Info",
-	//     "who": "John Doe",
-	//     "status": 1,
-	//     "remote_ip": "192.168.1.1",
-	//     "type": "Activity",
-	//     "message": "User logged in",
-	//     "data": {
-	//         "username": "john"
-	//     }
-	// }
-	// {
-	//     "app_name": "MyApp",
-	//     "module": "Module1",
-	//     "priority": "Info",
-	//     "who": "John Doe",
-	//     "status": 1,
-	//     "remote_ip": "192.168.1.1",
-	//     "type": "Change",
-	//     "message": "User updated profile",
-	//     "data": {
-	//         "entity": "User",
-	//         "operation": "Update",
-	//         "changes": {
-	//             "email": "john@example.com"
-	//         }
-	//     }
-	// }
-	// {
-	//     "app_name": "MyApp",
-	//     "module": "Module1",
-	//     "priority": "Debug2",
-	//     "who": "John Doe",
-	//     "status": 1,
-	//     "remote_ip": "192.168.1.1",
-	//     "type": "Debug",
-	//     "message": "Debugging user session",
-	//     "data": {
-	//         "variables": {
-	//             "sessionID": "12345"
-	//         },
-	//         "fileName": "main2.go",
-	//         "lineNumber": 30,
-	//         "functionName": "main",
-	//         "stackTrace": "...",
-	//         "pid": 1234,
-	//         "runtime": "go1.15.6"
-	//     }
-	// }
-
 }

@@ -140,11 +140,10 @@ func (lt *LogType) UnmarshalJSON(data []byte) error {
 	}
 
 	value, ok := map[string]LogType{
-		"Unknown":  Unknown,
-		"Activity": Activity,
-		"Change":   Change,
-		"Debug":    Debug,
-		// Add other LogType values here
+		LogTypeChange:   Change,
+		LogTypeActivity: Activity,
+		LogTypeDebug:    Debug,
+		LogTypeUnknown:  Unknown,
 	}[s]
 
 	if !ok {
