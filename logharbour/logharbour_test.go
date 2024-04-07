@@ -224,6 +224,69 @@ func TestLogDataChange(t *testing.T) {
 	}
 }
 
+// mockWriter captures writes to it, allowing us to inspect the output of the logger.
+type mockWriter struct {
+	bytes.Buffer
+}
+
+func (mw *mockWriter) Write(p []byte) (n int, err error) {
+	return mw.Buffer.Write(p)
+}
+
+func TestLogDebugWithAnyData(t *testing.T) {
+	// Setup
+	mockW := &mockWriter{}
+	loggerContext := NewLoggerContext(Debug0) // Ensure debug level allows for logging
+	logger := NewLogger(loggerContext, "TestApp", mockW)
+	loggerContext.SetDebugMode(true) // Enable debug mode
+
+	// Sample data of various types
+	testData := []struct {
+		Name             string
+		Data             any
+		ExpectedContains string
+	}{
+		{"String", "test string", `"\"test string\""`},
+		{"Int", 42, `"42"`},
+		{"Bool", true, `"true"`},
+		{"Map", map[string]any{"key": "value"}, `"{\"key\":\"value\"}"`},
+	}
+
+	for _, td := range testData {
+		t.Run(td.Name, func(t *testing.T) {
+			// Act
+			logger.LogDebug("Debug message", td.Data)
+
+			// Assert
+			output := mockW.String()
+			var logEntry LogEntry
+			err := json.Unmarshal([]byte(output), &logEntry)
+			if err != nil {
+				t.Fatalf("Failed to unmarshal logged message: %v", err)
+			}
+
+			dataField, ok := logEntry.Data.(map[string]any)
+			if !ok {
+				t.Fatalf("Expected 'data' field to be a map, got %T", logEntry.Data)
+			}
+
+			dataJSON, err := json.Marshal(dataField["data"])
+			fmt.Println("data field:")
+			fmt.Println(dataField["data"])
+			fmt.Println(dataJSON)
+			if err != nil {
+				t.Fatalf("Failed to marshal 'data' field: %v", err)
+			}
+
+			if string(dataJSON) != td.ExpectedContains {
+				t.Errorf("Expected 'data' field to be %s, got %s", td.ExpectedContains, string(dataJSON))
+			}
+
+			mockW.Reset()
+		})
+	}
+}
+
 // Example of using With prefixed methods to set various fields of the logger.
 func Example() {
 	// Open a file for logging.

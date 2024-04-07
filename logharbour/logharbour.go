@@ -277,11 +277,16 @@ func (l *Logger) LogDebug(message string, data any) {
 		return // Skip logging if debugMode is not enabled
 	}
 	debugInfo := DebugInfo{
-		Pid:     os.Getpid(),
-		Runtime: runtime.Version(),
-		Data:    map[string]any{"context": data},
+		Pid:          os.Getpid(),
+		Runtime:      runtime.Version(),
+		FileName:     "",
+		LineNumber:   0,
+		FunctionName: "",
+		StackTrace:   "",
+		Data:         convertToString(data), // Convert the entire data to a JSON string
 	}
 
+	// Populate file name, line number, function name, and stack trace
 	debugInfo.FileName, debugInfo.LineNumber, debugInfo.FunctionName, debugInfo.StackTrace = GetDebugInfo(2)
 
 	entry := l.newLogEntry(message, debugInfo)
