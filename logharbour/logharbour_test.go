@@ -175,7 +175,7 @@ func TestLogDataChange(t *testing.T) {
 
 	// Create a new ChangeInfo and add a change
 	changeInfo := NewChangeInfo("User", "Update")
-	changeInfo = changeInfo.AddChange(logger, "email", "oldEmail@example.com", "newEmail@example.com")
+	changeInfo = changeInfo.AddChange("email", "oldEmail@example.com", "newEmail@example.com")
 
 	// Log the data change
 	logger.LogDataChange("User updated profile", *changeInfo)
@@ -391,7 +391,7 @@ func Example() {
 
 	// Log a data change entry.
 	changeInfo := NewChangeInfo("User", "Update")
-	changeInfo = changeInfo.AddChange(logger, "email", "oldEmail@example.com", "john@example.com")
+	changeInfo = changeInfo.AddChange("email", "oldEmail@example.com", "john@example.com")
 	if err != nil {
 		// Handle the error
 		fmt.Println("Error adding change:", err)
