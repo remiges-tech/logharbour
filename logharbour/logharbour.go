@@ -266,7 +266,7 @@ func (l *Logger) LogDataChange(message string, data ChangeInfo) {
 
 // LogActivity logs an activity event.
 func (l *Logger) LogActivity(message string, data ActivityInfo) {
-	entry := l.newLogEntry(message, data)
+	entry := l.newLogEntry(message, convertToString(data))
 	entry.Type = Activity
 	l.log(entry)
 }

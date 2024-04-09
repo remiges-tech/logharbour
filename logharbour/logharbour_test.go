@@ -287,6 +287,81 @@ func TestLogDebugWithAnyData(t *testing.T) {
 	}
 }
 
+func TestLogActivity(t *testing.T) {
+	// Setup
+	mockW := &mockWriter{}
+	loggerContext := NewLoggerContext(Info)
+	logger := NewLogger(loggerContext, "TestApp", mockW)
+
+	// Sample activity data (map)
+	activityDataMap := map[string]any{
+		"key1": "value1",
+		"key2": 42,
+		"key3": true,
+	}
+
+	// Sample activity data (string)
+	activityDataString := "Simple activity data"
+
+	// Act
+	logger.LogActivity("Activity message (map)", activityDataMap)
+	logger.LogActivity("Activity message (string)", activityDataString)
+
+	// Assert
+	output := mockW.String()
+	logEntries := strings.Split(output, "\n")
+
+	// Assert for activity data (map)
+	var logEntryMap LogEntry
+	err := json.Unmarshal([]byte(logEntries[0]), &logEntryMap)
+	if err != nil {
+		t.Fatalf("Failed to unmarshal logged message: %v", err)
+	}
+
+	if logEntryMap.Msg != "Activity message (map)" {
+		t.Errorf("Expected message to be 'Activity message (map)', got '%s'", logEntryMap.Msg)
+	}
+
+	if logEntryMap.Type != Activity {
+		t.Errorf("Expected type to be 'Activity', got '%s'", logEntryMap.Type)
+	}
+
+	dataFieldMap, ok := logEntryMap.Data.(string)
+	if !ok {
+		t.Fatalf("Expected 'data' field to be a string, got %T", logEntryMap.Data)
+	}
+
+	expectedDataJSONMap := `{"key1":"value1","key2":42,"key3":true}`
+	if dataFieldMap != expectedDataJSONMap {
+		t.Errorf("Expected 'data' field to be %s, got %s", expectedDataJSONMap, dataFieldMap)
+	}
+
+	// Assert for activity data (string)
+	var logEntryString LogEntry
+	err = json.Unmarshal([]byte(logEntries[1]), &logEntryString)
+	if err != nil {
+		t.Fatalf("Failed to unmarshal logged message: %v", err)
+	}
+
+	if logEntryString.Msg != "Activity message (string)" {
+		t.Errorf("Expected message to be 'Activity message (string)', got '%s'", logEntryString.Msg)
+	}
+
+	if logEntryString.Type != Activity {
+		t.Errorf("Expected type to be 'Activity', got '%s'", logEntryString.Type)
+	}
+
+	dataFieldString, ok := logEntryString.Data.(string)
+	if !ok {
+		t.Fatalf("Expected 'data' field to be a string, got %T", logEntryString.Data)
+	}
+
+	expectedDataString := `"Simple activity data"`
+	if dataFieldString != expectedDataString {
+		t.Errorf("Expected 'data' field to be %s, got %s", expectedDataString, dataFieldString)
+	}
+}
+
 // Example of using With prefixed methods to set various fields of the logger.
 func Example() {
 	// Open a file for logging.
