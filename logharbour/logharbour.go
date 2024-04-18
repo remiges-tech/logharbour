@@ -259,14 +259,29 @@ func (l *Logger) newLogEntry(message string, data any) LogEntry {
 
 // LogDataChange logs a data change event.
 func (l *Logger) LogDataChange(message string, data ChangeInfo) {
-	entry := l.newLogEntry(message, data)
+	clog := ChangeInfo{
+		Entity: data.Entity,
+		Op:     data.Op,
+	}
+	for _, log := range data.Changes {
+		change := NewChangeDetail(log.Field, log.OldVal, log.NewVal)
+		clog.Changes = append(clog.Changes, change)
+	}
+	entry := l.newLogEntry(message, clog)
 	entry.Type = Change
 	l.log(entry)
 }
 
+type Data struct {
+	Data any `json:"data"`
+}
+
 // LogActivity logs an activity event.
 func (l *Logger) LogActivity(message string, data ActivityInfo) {
-	entry := l.newLogEntry(message, convertToString(data))
+	log := Data{
+		Data: convertToString(data),
+	}
+	entry := l.newLogEntry(message, log)
 	entry.Type = Activity
 	l.log(entry)
 }

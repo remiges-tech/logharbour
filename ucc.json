@@ -1,0 +1,1 @@
+[{"attr":"step","vals":{"aof":{},"nomauth":{},"kycvalid":{},"bankaccvalid":{},"getcustdetails":{},"dpandbankaccvalid":{},"sendauthlinktoclient":{}},"valtype":"enum","longdesc":"","shortdesc":""},{"attr":"stepfailed","valtype":"bool","longdesc":"","shortdesc":""},{"attr":"mode","vals":{"demat":{},"physical":{}},"valtype":"enum","longdesc":"","shortdesc":""}]

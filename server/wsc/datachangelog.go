@@ -12,9 +12,9 @@ import (
 // DataChangeReq: is for request of ShowDataChange()
 type DataChangeReq struct {
 	App                  string  `json:"app" validate:"required,alpha,lt=15"`
-	Class                *string `json:"class" validate:"required,alpha,lowercase,lt=15"`
-	Instance             *string `json:"instance" validate:"required,lt=15"`
-	Field                *string `json:"field" validate:"omitempty,alpha,lt=15"`
+	Class                *string `json:"class"`
+	Instance             *string `json:"instance"`
+	Field                *string `json:"field""`
 	Days                 *int    `json:"days" validate:"omitempty,gt=0,lt=1003"`
 	SearchAfterTimestamp *string `json:"search_after_timestamp" validate:"omitempty,datetime=2006-01-02T15:04:05Z"`
 	SearchAfterDocId     *string `json:"search_after_doc_id,omitempty"`

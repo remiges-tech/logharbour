@@ -74,21 +74,24 @@ var createIndexBody = `{
 		"data": {
 		  "type": "object"
 		},
+		"data.data": {
+		  "type": "text"
+		},
 		"data.entity": {
 		  "type": "keyword"
 		},
 		"data.op": {
-			"type": "keyword"
-		  },
+		  "type": "keyword"
+		},
 		"data.changes.field": {
-			"type": "keyword"
-		  },
-		  "data.changes.new_value": {
-			  "type": "text"
-			},
-			"data.changes.old_value": {
-				"type": "text"
-			  }
+		  "type": "keyword"
+		},
+		"data.changes.new_value": {
+		  "type": "text"
+		},
+		"data.changes.old_value": {
+		  "type": "text"
+		}
 	  }
 	}
   }`
@@ -144,8 +147,8 @@ func main() {
 	// rootCmd.PersistentFlags().StringVarP(&esCer, "es-cer", "c", "c0456a9e300eac38c9af6f416c54c55857e2fbc19a2deaa44bb8a582618bcd62", "certificateFingerprint")
 
 	// ANIKET DB DETAILS
-	rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "Yga1QzMVaqzw-UnMBt=n", "Password for Elasticsearch")
-	rootCmd.PersistentFlags().StringVarP(&esCer, "es-cer", "c", "2a0808ed5628b523dec26435eb2761b4e27305a0e7c44f295eea7feabf208a22", "certificateFingerprint")
+	rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "XSTwxC*giO71PGZm5urS", "Password for Elasticsearch")
+	rootCmd.PersistentFlags().StringVarP(&esCer, "es-cer", "c", "4b41377142441840d1099bcde5d294d25b8e7b39daf0a879343e5b552bc17f2c", "certificateFingerprint")
 
 	var insertCmd = &cobra.Command{
 		Use:   "add [logFile]",
