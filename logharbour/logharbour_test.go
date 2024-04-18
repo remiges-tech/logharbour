@@ -174,8 +174,8 @@ func TestLogDataChange(t *testing.T) {
 	logger := NewLogger(NewLoggerContext(Info), "TestApp", &buf)
 
 	// Create a new ChangeInfo and add a change
-	changeInfo := NewChangeInfo("User", "Update").
-		AddChange("email", "oldEmail@example.com", "newEmail@example.com")
+	changeInfo := NewChangeInfo("User", "Update")
+	changeInfo = changeInfo.AddChange("email", "oldEmail@example.com", "newEmail@example.com")
 
 	// Log the data change
 	logger.LogDataChange("User updated profile", *changeInfo)
@@ -183,39 +183,182 @@ func TestLogDataChange(t *testing.T) {
 	// Get the logged message
 	loggedMessage := buf.String()
 
-	// Unmarshal the logged message into a map
-	var loggedData map[string]interface{}
-	err := json.Unmarshal([]byte(loggedMessage), &loggedData)
+	// Unmarshal the logged message into a LogEntry struct
+	var loggedEntry LogEntry
+	err := json.Unmarshal([]byte(loggedMessage), &loggedEntry)
 	if err != nil {
 		t.Fatalf("Failed to unmarshal logged message: %v", err)
 	}
 
 	// Check that the logged message contains the expected data
-	if loggedData["msg"] != "User updated profile" {
-		t.Errorf("Expected message 'User updated profile', got '%s'", loggedData["msg"])
+	if loggedEntry.Msg != "User updated profile" {
+		t.Errorf("Expected message 'User updated profile', got '%s'", loggedEntry.Msg)
 	}
 
-	// Extract and assert the ChangeInfo data from the map
-	changeData, ok := loggedData["data"].(map[string]interface{})
+	// Extract and assert the ChangeInfo data from the LogEntry
+	changeData, ok := loggedEntry.Data.(map[string]any) // Type assertion to access ChangeInfo data
 	if !ok {
-		t.Fatalf("Expected ChangeInfo data, got %T", loggedData["data"])
+		t.Fatalf("Expected ChangeInfo data, got %T", loggedEntry.Data)
 	}
 
-	// Extract and assert the Changes from the ChangeInfo data
-	changes, ok := changeData["changes"].([]interface{})
-	if !ok || len(changes) != 1 {
-		t.Fatalf("Expected 1 change, got %d", len(changes))
+	// Check the entity and operation
+	if changeData["entity"] != "User" || changeData["op"] != "Update" {
+		t.Errorf("Expected entity 'User' and operation 'Update', got entity '%s' and operation '%s'", changeData["entity"], changeData["op"])
 	}
 
-	// Extract and assert the ChangeDetail from the Changes
-	changeDetail, ok := changes[0].(map[string]interface{})
+	// Check the changes
+	changes, ok := changeData["changes"].([]any)
+	if !ok || len(changes) == 0 {
+		t.Fatalf("Expected changes, got %T", changeData["changes"])
+	}
+
+	// Assuming we know there's only one change for simplicity
+	firstChange, ok := changes[0].(map[string]any)
 	if !ok {
-		t.Fatalf("Expected ChangeDetail, got %T", changes[0])
+		t.Fatalf("Expected a change detail, got %T", changes[0])
 	}
 
-	// Check the ChangeDetail fields
-	if changeDetail["field"] != "email" || changeDetail["old_value"] != "oldEmail@example.com" || changeDetail["new_value"] != "newEmail@example.com" {
-		t.Errorf("Expected email change from oldEmail@example.com to newEmail@example.com, got %v", changeDetail)
+	// Check the old and new email values
+	if firstChange["field"] != "email" || firstChange["old_value"] != `"oldEmail@example.com"` || firstChange["new_value"] != `"newEmail@example.com"` {
+		t.Errorf("Expected email change from 'oldEmail@example.com' to 'newEmail@example.com', got field '%s', old value '%s', new value '%s'", firstChange["field"], firstChange["old_value"], firstChange["new_value"])
+	}
+}
+
+// mockWriter captures writes to it, allowing us to inspect the output of the logger.
+type mockWriter struct {
+	bytes.Buffer
+}
+
+func (mw *mockWriter) Write(p []byte) (n int, err error) {
+	return mw.Buffer.Write(p)
+}
+
+func TestLogDebugWithAnyData(t *testing.T) {
+	// Setup
+	mockW := &mockWriter{}
+	loggerContext := NewLoggerContext(Debug0) // Ensure debug level allows for logging
+	logger := NewLogger(loggerContext, "TestApp", mockW)
+	loggerContext.SetDebugMode(true) // Enable debug mode
+
+	// Sample data of various types
+	testData := []struct {
+		Name             string
+		Data             any
+		ExpectedContains string
+	}{
+		{"String", "test string", `"\"test string\""`},
+		{"Int", 42, `"42"`},
+		{"Bool", true, `"true"`},
+		{"Map", map[string]any{"key": "value"}, `"{\"key\":\"value\"}"`},
+	}
+
+	for _, td := range testData {
+		t.Run(td.Name, func(t *testing.T) {
+			// Act
+			logger.LogDebug("Debug message", td.Data)
+
+			// Assert
+			output := mockW.String()
+			var logEntry LogEntry
+			err := json.Unmarshal([]byte(output), &logEntry)
+			if err != nil {
+				t.Fatalf("Failed to unmarshal logged message: %v", err)
+			}
+
+			dataField, ok := logEntry.Data.(map[string]any)
+			if !ok {
+				t.Fatalf("Expected 'data' field to be a map, got %T", logEntry.Data)
+			}
+
+			dataJSON, err := json.Marshal(dataField["data"])
+			fmt.Println("data field:")
+			fmt.Println(dataField["data"])
+			fmt.Println(dataJSON)
+			if err != nil {
+				t.Fatalf("Failed to marshal 'data' field: %v", err)
+			}
+
+			if string(dataJSON) != td.ExpectedContains {
+				t.Errorf("Expected 'data' field to be %s, got %s", td.ExpectedContains, string(dataJSON))
+			}
+
+			mockW.Reset()
+		})
+	}
+}
+
+func TestLogActivity(t *testing.T) {
+	// Setup
+	mockW := &mockWriter{}
+	loggerContext := NewLoggerContext(Info)
+	logger := NewLogger(loggerContext, "TestApp", mockW)
+
+	// Sample activity data (map)
+	activityDataMap := map[string]any{
+		"key1": "value1",
+		"key2": 42,
+		"key3": true,
+	}
+
+	// Sample activity data (string)
+	activityDataString := "Simple activity data"
+
+	// Act
+	logger.LogActivity("Activity message (map)", activityDataMap)
+	logger.LogActivity("Activity message (string)", activityDataString)
+
+	// Assert
+	output := mockW.String()
+	logEntries := strings.Split(output, "\n")
+
+	// Assert for activity data (map)
+	var logEntryMap LogEntry
+	err := json.Unmarshal([]byte(logEntries[0]), &logEntryMap)
+	if err != nil {
+		t.Fatalf("Failed to unmarshal logged message: %v", err)
+	}
+
+	if logEntryMap.Msg != "Activity message (map)" {
+		t.Errorf("Expected message to be 'Activity message (map)', got '%s'", logEntryMap.Msg)
+	}
+
+	if logEntryMap.Type != Activity {
+		t.Errorf("Expected type to be 'Activity', got '%s'", logEntryMap.Type)
+	}
+
+	dataFieldMap, ok := logEntryMap.Data.(string)
+	if !ok {
+		t.Fatalf("Expected 'data' field to be a string, got %T", logEntryMap.Data)
+	}
+
+	expectedDataJSONMap := `{"key1":"value1","key2":42,"key3":true}`
+	if dataFieldMap != expectedDataJSONMap {
+		t.Errorf("Expected 'data' field to be %s, got %s", expectedDataJSONMap, dataFieldMap)
+	}
+
+	// Assert for activity data (string)
+	var logEntryString LogEntry
+	err = json.Unmarshal([]byte(logEntries[1]), &logEntryString)
+	if err != nil {
+		t.Fatalf("Failed to unmarshal logged message: %v", err)
+	}
+
+	if logEntryString.Msg != "Activity message (string)" {
+		t.Errorf("Expected message to be 'Activity message (string)', got '%s'", logEntryString.Msg)
+	}
+
+	if logEntryString.Type != Activity {
+		t.Errorf("Expected type to be 'Activity', got '%s'", logEntryString.Type)
+	}
+
+	dataFieldString, ok := logEntryString.Data.(string)
+	if !ok {
+		t.Fatalf("Expected 'data' field to be a string, got %T", logEntryString.Data)
+	}
+
+	expectedDataString := `"Simple activity data"`
+	if dataFieldString != expectedDataString {
+		t.Errorf("Expected 'data' field to be %s, got %s", expectedDataString, dataFieldString)
 	}
 }
 
@@ -247,68 +390,18 @@ func Example() {
 	logger.LogActivity("User logged in", map[string]any{"username": "john"})
 
 	// Log a data change entry.
-	// log a data change entry.
-	logger.LogDataChange("User updated profile",
-		*NewChangeInfo("User", "Update").
-			AddChange("email", "oldEmail@example.com", "john@example.com"))
+	changeInfo := NewChangeInfo("User", "Update")
+	changeInfo = changeInfo.AddChange("email", "oldEmail@example.com", "john@example.com")
+	if err != nil {
+		// Handle the error
+		fmt.Println("Error adding change:", err)
+		return
+	}
+	logger.LogDataChange("User updated profile", *changeInfo)
 
 	// Change logger priority at runtime.
 	lctx.ChangeMinLogPriority(Debug2)
 
 	// Log a debug entry.
 	logger.LogDebug("Debugging user session", map[string]any{"sessionID": "12345"})
-
-	//
-	// {
-	//     "app_name": "MyApp",
-	//     "module": "Module1",
-	//     "priority": "Info",
-	//     "who": "John Doe",
-	//     "status": 1,
-	//     "remote_ip": "192.168.1.1",
-	//     "type": "Activity",
-	//     "message": "User logged in",
-	//     "data": {
-	//         "username": "john"
-	//     }
-	// }
-	// {
-	//     "app_name": "MyApp",
-	//     "module": "Module1",
-	//     "priority": "Info",
-	//     "who": "John Doe",
-	//     "status": 1,
-	//     "remote_ip": "192.168.1.1",
-	//     "type": "Change",
-	//     "message": "User updated profile",
-	//     "data": {
-	//         "entity": "User",
-	//         "operation": "Update",
-	//         "changes": {
-	//             "email": "john@example.com"
-	//         }
-	//     }
-	// }
-	// {
-	//     "app_name": "MyApp",
-	//     "module": "Module1",
-	//     "priority": "Debug2",
-	//     "who": "John Doe",
-	//     "status": 1,
-	//     "remote_ip": "192.168.1.1",
-	//     "type": "Debug",
-	//     "message": "Debugging user session",
-	//     "data": {
-	//         "variables": {
-	//             "sessionID": "12345"
-	//         },
-	//         "fileName": "main2.go",
-	//         "lineNumber": 30,
-	//         "functionName": "main",
-	//         "stackTrace": "...",
-	//         "pid": 1234,
-	//         "runtime": "go1.15.6"
-	//     }
-	// }
-
 }

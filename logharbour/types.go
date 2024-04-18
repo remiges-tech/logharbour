@@ -209,13 +209,13 @@ type ActivityInfo any
 
 // DebugInfo holds debugging information that can help in software diagnostics.
 type DebugInfo struct {
-	Pid          int            `json:"pid"`
-	Runtime      string         `json:"runtime"`
-	FileName     string         `json:"file"`
-	LineNumber   int            `json:"line"`
-	FunctionName string         `json:"func"`
-	StackTrace   string         `json:"stackTrace"`
-	Data         map[string]any `json:"data"`
+	Pid          int    `json:"pid"`
+	Runtime      string `json:"runtime"`
+	FileName     string `json:"file"`
+	LineNumber   int    `json:"line"`
+	FunctionName string `json:"func"`
+	StackTrace   string `json:"stackTrace"`
+	Data         any    `json:"data"`
 }
 
 // FallbackWriter provides an io.Writer that automatically falls back to a secondary writer if the primary writer fails.

@@ -1,11 +1,29 @@
 package logharbour
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"runtime"
 	"strings"
 )
+
+// convertToString attempts to convert any given value to its JSON string representation.
+// This function is used to ensure that all values stored in ChangeDetail structs are in string format,
+// which is required for its storage in logharbour storage.
+// If the conversion fails, the error is written to os.Stderr to notify of the failure,
+// and a placeholder error message is returned. This approach was chosen to avoid complicating the API
+// with error handling for what is expected to be a rare event. It allows the calling code to proceed,
+// potentially logging the conversion error alongside the intended log message.
+func convertToString(value any) string {
+	bytes, err := json.Marshal(value)
+	if err != nil {
+		// Write the error to os.Stderr
+		fmt.Fprintf(os.Stderr, "Error converting value to string: %v\n", err)
+		return fmt.Sprintf("strconv error: %v", err)
+	}
+	return string(bytes)
+}
 
 // GetSystemName returns the host name of the system.
 func getSystemName() string {
