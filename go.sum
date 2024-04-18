@@ -212,8 +212,8 @@ github.com/prometheus/procfs v0.8.0 h1:ODq8ZFEaYeCaZOJlZZdJA2AbQR98dSHSM1KW/You5
 github.com/prometheus/procfs v0.8.0/go.mod h1:z7EfXMXOkbkqb9IINtpCn86r/to3BnA0uaxHdg830/4=
 github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 h1:N/ElC8H3+5XpJzTSTfLsJV/mx9Q9g7kxmchpfZyxgzM=
 github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
-github.com/remiges-tech/alya v0.8.1-0.20240209053535-9ea01e8b9e09 h1:+fdWPsDwzz8jbgdT6FsZAf5Ldo+R+H3aGkxR8O+m2C4=
-github.com/remiges-tech/alya v0.8.1-0.20240209053535-9ea01e8b9e09/go.mod h1:t3PaUuQ/7VUw8B898Ztn/BkpAdynIi5fAlhGfWqMyiw=
+github.com/remiges-tech/alya v0.10.0 h1:xClcdoxVIl/FzAbzUTk5DCkK7zUIMekGkSeYsxxJIdU=
+github.com/remiges-tech/alya v0.10.0/go.mod h1:BWLmuGtYUBojoaOeLk1FjVbvPpdPCT3o/i9EyUUPIhk=
 github.com/remiges-tech/rigel v0.12.0 h1:gsfvyXP8Lj2PTLFF5SyL6OMMRSrjzfCeiSBipfEsv7I=
 github.com/remiges-tech/rigel v0.12.0/go.mod h1:U2EJT5VlNoneb6NYZd2hw2VaxlEP27gJC+cBwyzUAUA=
 github.com/rogpeppe/go-internal v1.12.0 h1:exVL4IDcn6na9z1rAb56Vxr+CgyK3nn3O+epU5NdKM8=

@@ -134,8 +134,11 @@ func main() {
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/activitylog", wsc.ShowActivityLog)
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/debuglog", wsc.GetDebugLog)
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/datachange", wsc.ShowDataChange)
+	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/unusalip", wsc.GetUnusualIP)
+	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/getset", wsc.GetSet)
+	s.RegisterRouteWithGroup(apiV1Group, http.MethodGet, "/getapps", wsc.GetApps)
 
-	r.Run(":" + appConfig.AppServerPort)
+	err = r.Run(":" + appConfig.AppServerPort)
 	if err != nil {
 		l.LogActivity("Failed to start server", err)
 		log.Fatalf("Failed to start server: %v", err)

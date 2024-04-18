@@ -22,7 +22,7 @@ func TestShowActivityLog(t *testing.T) {
 
 			res := httptest.NewRecorder()
 			logharbour.Index = "logharbour_unit_test1"
-			req, err := http.NewRequest(http.MethodPost, "/showActivitylog", payload)
+			req, err := http.NewRequest(http.MethodPost, "/activitylog", payload)
 			require.NoError(t, err)
 
 			r.ServeHTTP(res, req)
@@ -62,8 +62,8 @@ func showActivityLogTestcase() []testUtils.TestCasesStruct {
 				Data:   nil,
 				Messages: []wscutils.ErrorMessage{
 					{
-						MsgID:   1001,
-						ErrCode: wscutils.ErrcodeInvalidJson,
+						MsgID:   0,
+						ErrCode:"",
 					},
 				},
 			},

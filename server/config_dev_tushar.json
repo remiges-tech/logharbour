@@ -4,6 +4,6 @@
     "app_server_port": "8090",
     "db_user" : "elastic",
     "index_name": "logharbour",
-    "db_password" : "Iu4K4=VsUZEBExLjDu4k",
-    "certificate_fingerprint":"c0456a9e300eac38c9af6f416c54c55857e2fbc19a2deaa44bb8a582618bcd62"
+    "db_password" : "-6NnVzM+S2BiJgPqHTa7",
+    "certificate_fingerprint":"9839b3f616e1f75a951798ca89eb7795c86335621bfb3d7681c8d27beb36b07c"
 }

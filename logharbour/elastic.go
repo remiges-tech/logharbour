@@ -87,6 +87,7 @@ type GetSetParam struct {
 	Ndays    *int         `json:"ndays" validate:"omitempty,number,lt=100"`
 	RemoteIP *string      `json:"remoteIP" validate:"omitempty"`
 	Pri      *LogPriority `json:"pri" validate:"omitempty,oneof=1 2 3 4 5 6 7 8"`
+	setAttr  string       `json:"setAttr"`
 }
 
 // ElasticsearchWriter defines methods for Elasticsearch writer
@@ -379,7 +380,7 @@ func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string
 		return nil, err
 	}
 
-	// Call getQuery fuction which will return a query for valid method parameters
+	// Call getQuery function which will return a query for valid method parameters
 	query, err = getQuery(setParam)
 	if err != nil {
 		return nil, fmt.Errorf("error while calling getQuery : %v ", err)
@@ -423,7 +424,7 @@ func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string
 			if bucketKeyString, ok := bucket.Key.(string); ok {
 				dataMap[bucketKeyString] = bucket.DocCount
 			} else {
-				return nil, fmt.Errorf("The bucket key is not a string")
+				return nil, fmt.Errorf("the bucket key is not a string")
 			}
 		}
 	} else {
@@ -556,6 +557,7 @@ func isValidSetAttribute(setAttr string) (bool, error) {
 		typeConst: empty,
 		op:        empty,
 		instance:  empty,
+		class:     empty,
 		module:    empty,
 		pri:       empty,
 		status:    empty,
