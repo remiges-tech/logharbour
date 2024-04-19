@@ -273,13 +273,13 @@ func (l *Logger) LogDataChange(message string, data ChangeInfo) {
 }
 
 type Data struct {
-	Data any `json:"data"`
+	ActivityLog any `json:"activitylog"`
 }
 
 // LogActivity logs an activity event.
 func (l *Logger) LogActivity(message string, data ActivityInfo) {
 	log := Data{
-		Data: convertToString(data),
+		ActivityLog: convertToString(data),
 	}
 	entry := l.newLogEntry(message, log)
 	entry.Type = Activity

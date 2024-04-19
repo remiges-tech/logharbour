@@ -40,6 +40,7 @@ const (
 	DIALTIMEOUT = 500 * time.Second
 	ACTIVITY    = "A"
 	DEBUG       = "D"
+	field       = "data.changes.field"
 )
 
 var (
@@ -564,6 +565,7 @@ func isValidSetAttribute(setAttr string) (bool, error) {
 		remote_ip: empty,
 		system:    empty,
 		who:       empty,
+		field:     empty,
 	}
 
 	// To validate  setAttr only one of allowedAttributes has been named, and if not, will return an error.
