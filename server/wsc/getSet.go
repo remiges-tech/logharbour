@@ -41,6 +41,10 @@ func GetSet(c *gin.Context, s *service.Service) {
 		return
 	}
 	getSetReq.GetSetParam.App = &getSetReq.App
+
+	if getSetReq.SetAttr == "field" {
+		getSetReq.SetAttr = "data.changes.field"
+	}
 	res, err := logharbour.GetSet(queryToken, es, getSetReq.SetAttr, getSetReq.GetSetParam)
 	if err != nil {
 		errmsg := errorHandler(err)

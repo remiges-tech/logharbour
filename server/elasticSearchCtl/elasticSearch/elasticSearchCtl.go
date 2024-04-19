@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/elastic/go-elasticsearch/v8"
@@ -49,7 +50,7 @@ func CreateElasticIndex(es *elasticsearch.Client, indexName string, indexBody st
 // Function InsertLog bulk insert an array of log entries into an Elasticsearch index using the provided Elasticsearch client.
 func InsertLog(es *elasticsearch.Client, logs []logharbour.LogEntry, indexName string) error {
 
-	for _, log := range logs {
+	for i, log := range logs {
 		dataJson, err := json.Marshal(log)
 		if err != nil {
 			return fmt.Errorf("error while unmarshaling log: %v", err)
@@ -58,10 +59,10 @@ func InsertLog(es *elasticsearch.Client, logs []logharbour.LogEntry, indexName s
 		js := string(dataJson)
 
 		req := esapi.IndexRequest{
-			Index: indexName,
-			// DocumentID: strconv.Itoa(i + 1),
-			Body:    strings.NewReader(js),
-			Refresh: "true",
+			Index:      indexName,
+			DocumentID: strconv.Itoa(i + 1),
+			Body:       strings.NewReader(js),
+			Refresh:    "true",
 		}
 
 		res, err := req.Do(context.Background(), es)

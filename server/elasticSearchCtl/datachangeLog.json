@@ -14,7 +14,7 @@
       "remote_ip": "203.0.113.45",
       "msg": "Creates a new instance of EtcdStorage with endpoints",
       "data": {
-        "data": "\"localhost:2379\""
+        "activitylog":"\"localhost:2379\""
       }
     },
     {
@@ -32,7 +32,7 @@
       "remote_ip": "203.0.113.45",
       "msg": "Creates a new instance of rigel",
       "data": {
-        "data": "{\"Storage\":{\"Client\":{\"Cluster\":{},\"KV\":{},\"Lease\":{},\"Watcher\":{},\"Auth\":{},\"Maintenance\":{},\"Username\":\"\",\"Password\":\"\"}},\"Cache\":{},\"App\":\"crux\",\"Module\":\"WFE\",\"Version\":1,\"Config\":\"devConfig\"}"
+        "activitylog":"{\"Storage\":{\"Client\":{\"Cluster\":{},\"KV\":{},\"Lease\":{},\"Watcher\":{},\"Auth\":{},\"Maintenance\":{},\"Username\":\"\",\"Password\":\"\"}},\"Cache\":{},\"App\":\"crux\",\"Module\":\"WFE\",\"Version\":1,\"Config\":\"devConfig\"}"
       }
     },
     {
@@ -50,7 +50,7 @@
       "remote_ip": "203.0.113.45",
       "msg": "",
       "data": {
-        "data": "\"Retrieves the configuration data from rigel\""
+        "activitylog":"\"Retrieves the configuration data from rigel\""
       }
     },
     {
@@ -68,7 +68,7 @@
       "remote_ip": "203.0.113.45",
       "msg": "",
       "data": {
-        "data": "\"Starting execution of WorkflowUpdate()\""
+        "activitylog":"\"Starting execution of WorkflowUpdate()\""
       }
     },
     {
@@ -112,7 +112,59 @@
       "remote_ip": "203.0.113.45",
       "msg": "",
       "data": {
-        "data": "\"Finished execution of WorkflowUpdate()\""
+        "activitylog":"\"Finished execution of WorkflowUpdate()\""
+      }
+    },
+    {
+      "app": "crux",
+      "system": "DESKTOP-9R6283S",
+      "module": "",
+      "type": "C",
+      "pri": "Info",
+      "when": "2024-04-18T10:56:43.0427498Z",
+      "who": "",
+      "op": "",
+      "class": "ruleset",
+      "instance": "\b",
+      "status": 0,
+      "remote_ip": "203.0.113.45",
+      "msg": "Updated ruleset",
+      "data": {
+        "entity": "ruleset",
+        "op": "Update",
+        "changes": [
+          {
+            "field": "schema",
+            "old_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]",
+            "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+          }
+        ]
+      }
+    },
+    {
+      "app": "crux",
+      "system": "DESKTOP-9R6283S",
+      "module": "",
+      "type": "C",
+      "pri": "Info",
+      "when": "2024-04-18T10:56:43.0427498Z",
+      "who": "",
+      "op": "",
+      "class": "ruleset",
+      "instance": "\b",
+      "status": 0,
+      "remote_ip": "203.0.113.45",
+      "msg": "Updated ruleset",
+      "data": {
+        "entity": "ruleset",
+        "op": "Update",
+        "changes": [
+          {
+            "field": "workflow",
+            "old_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]",
+            "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+          }
+        ]
       }
     }
   ]
