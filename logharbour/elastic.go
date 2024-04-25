@@ -204,6 +204,11 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 
 		queries = append(queries, who)
 	}
+
+	if ok, module := termQueryForField(module, logParam.Module); ok {
+
+		queries = append(queries, module)
+	}
 	if ok, class := termQueryForField(class, logParam.Class); ok {
 
 		queries = append(queries, class)

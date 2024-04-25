@@ -17,6 +17,7 @@ const (
 	ErrCode_InvalidRequest = "invalid_request"
 	ErrCode_InvalidJson    = "invalid_json"
 	ErrCode_DatabaseError  = "database_error"
+	App                    = "app"
 )
 
 var (

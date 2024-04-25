@@ -19,7 +19,7 @@ func GetApps(c *gin.Context, s *service.Service) {
 		return
 	}
 
-	res, err := logharbour.GetSet(queryToken, es, "app", logharbour.GetSetParam{})
+	res, err := logharbour.GetSet(queryToken, es, App, logharbour.GetSetParam{})
 	if err != nil {
 		errmsg := errorHandler(err)
 		l.Debug0().Error(err).Log("error in AppList")
