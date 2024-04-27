@@ -16,6 +16,13 @@ import (
 // with error handling for what is expected to be a rare event. It allows the calling code to proceed,
 // potentially logging the conversion error alongside the intended log message.
 func convertToString(value any) string {
+	// If the value is simple string no need to marshal it
+	// Marshalling string would result in double encoding
+	// where simple string like "hello" becomes "\"hello\""
+	// Also avoiding marshalling would save unnecessary computation
+	if str, ok := value.(string); ok {
+		return str
+	}
 	bytes, err := json.Marshal(value)
 	if err != nil {
 		// Write the error to os.Stderr
