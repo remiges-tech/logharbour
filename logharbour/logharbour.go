@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/segmentio/ksuid"
 )
 
 const DefaultPriority = Info
@@ -201,6 +202,9 @@ func (l *Logger) log(entry LogEntry) {
 	if !l.shouldLog(entry.Pri) {
 		return
 	}
+ 
+	entry.Id = ksuid.New().String()
+
 	if err := l.validator.Struct(entry); err != nil {
 		// Check if the writer is a FallbackWriter
 		if fw, ok := l.writer.(*FallbackWriter); ok {
