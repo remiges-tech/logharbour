@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/remiges-tech/alya/wscutils"
-	"github.com/remiges-tech/logharbour/logharbour"
 	"github.com/remiges-tech/logharbour/server/wsc"
 	"github.com/remiges-tech/logharbour/server/wsc/test/testUtils"
 	"github.com/stretchr/testify/require"
@@ -77,9 +76,8 @@ func GetSetTestcase() []testUtils.TestCasesStruct {
 			Name: "successful",
 			RequestPayload: wscutils.Request{
 				Data: wsc.GetSetReq{
-					App:         "crux",
-					SetAttr:     "class",
-					GetSetParam: logharbour.GetSetParam{},
+					App:     "crux",
+					SetAttr: "class",
 				},
 			},
 			ExpectedHttpCode: http.StatusOK,

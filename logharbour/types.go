@@ -178,9 +178,17 @@ type LogEntry struct {
 	Error      string      `json:"error,omitempty"`     // Error message or error chain related to the log entry, if any.
 	RemoteIP   string      `json:"remote_ip,omitempty"` // IP address of the caller from where the operation is being performed.
 	Msg        string      `json:"msg,omitempty"`       // A descriptive message for the log entry.
-	Data       any         `json:"data,omitempty"`      // The payload of the log entry, can be any type.
+	Data       *LogData    `json:"data,omitempty"`      // The payload of the log entry, can be any type.
 }
 
+type LogData struct {
+	ChangeData   *ChangeInfo `json:"change_data,omitempty"`   // Data change information
+	ActivityData string      `json:"activity_data,omitempty"` // Activity information
+	DebugData    *DebugInfo  `json:"debug_data,omitempty"`    // Debug information
+}
+
+// ChangeDetail holds information about a single field change in a data change.
+// It is used to log changes to a single field in a data entity.
 type ChangeDetail struct {
 	Field  string `json:"field"`
 	OldVal any    `json:"old_value"`

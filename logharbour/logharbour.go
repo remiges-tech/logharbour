@@ -242,7 +242,7 @@ func formatAndWriteEntry(writer io.Writer, entry LogEntry) error {
 }
 
 // newLogEntry creates a new log entry with the specified message and data.
-func (l *Logger) newLogEntry(message string, data any) LogEntry {
+func (l *Logger) newLogEntry(message string, data *LogData) LogEntry {
 	return LogEntry{
 		App:        l.app,
 		System:     l.system,
@@ -263,14 +263,31 @@ func (l *Logger) newLogEntry(message string, data any) LogEntry {
 
 // LogDataChange logs a data change event.
 func (l *Logger) LogDataChange(message string, data ChangeInfo) {
-	entry := l.newLogEntry(message, data)
+	logData := LogData{
+		ChangeData: &data,
+	}
+	entry := l.newLogEntry(message, &logData)
+	for _, change := range data.Changes {
+		change.OldVal = convertToString(change.OldVal)
+		change.NewVal = convertToString(change.NewVal)
+	}
 	entry.Type = Change
 	l.log(entry)
 }
 
 // LogActivity logs an activity event.
 func (l *Logger) LogActivity(message string, data ActivityInfo) {
-	entry := l.newLogEntry(message, convertToString(data))
+	var logData LogData
+	var entry LogEntry
+	if data != nil {
+		activityData := convertToString(data)
+		logData = LogData{
+			ActivityData: activityData,
+		}
+		entry = l.newLogEntry(message, &logData)
+	} else {
+		entry = l.newLogEntry(message, nil)
+	}
 	entry.Type = Activity
 	l.log(entry)
 }
@@ -291,9 +308,15 @@ func (l *Logger) LogDebug(message string, data any) {
 	}
 
 	// Populate file name, line number, function name, and stack trace
+	// skip = 0 means GetDebugInfo itself
+	// skip = 1 means the caller of GetDebugInfo i.e. LogDebug
+	// skip = 2 means the caller of LogDebug i.e. the function that called LogDebug which we will add to DebugInfo
 	debugInfo.FileName, debugInfo.LineNumber, debugInfo.FunctionName, debugInfo.StackTrace = GetDebugInfo(2)
 
-	entry := l.newLogEntry(message, debugInfo)
+	logData := LogData{
+		DebugData: &debugInfo,
+	}
+	entry := l.newLogEntry(message, &logData)
 	entry.Type = Debug
 	l.log(entry)
 }

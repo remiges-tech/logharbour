@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"time"
 
@@ -42,17 +44,47 @@ func main() {
 	// Initialize a counter for the serial number
 	var serialNumber int
 
-	for range ticker.C {
+	// Sample data for generating log entries
+	users := []string{"john", "jane", "alice", "bob"}
+	activities := []string{"logged in", "logged out", "created post", "liked post", "commented on post"}
+	changeTypes := []string{"update", "delete", "create"}
+	fields := []string{"email", "username", "password", "bio"}
+
+	for i := 0; i < 100_000_000; i++ {
 		// Increment the serial number
 		serialNumber++
 
-		// Add the serial number to the log data
-		data := map[string]interface{}{
-			"username":     "john",
-			"serialNumber": serialNumber,
+		// Generate random values for log entries
+		user := users[rand.Intn(len(users))]
+		activity := activities[rand.Intn(len(activities))]
+		changeType := changeTypes[rand.Intn(len(changeTypes))]
+		field := fields[rand.Intn(len(fields))]
+		oldValue := fmt.Sprintf("%s@example.com", user)
+		newValue := fmt.Sprintf("%s@yahoo.com", user)
+
+		// Log a data change
+		if rand.Float32() < 0.3 {
+			changeInfo := logharbour.NewChangeInfo(user, changeType)
+			changeDetail := logharbour.NewChangeDetail(field, oldValue, newValue)
+			changeInfo.Changes = append(changeInfo.Changes, changeDetail)
+			logger.LogDataChange(fmt.Sprintf("User %s %s", user, changeType), *changeInfo)
 		}
 
-		logger.LogActivity("User logged in", data)
+		// Log an activity
+		if rand.Float32() < 0.5 {
+			logger.LogActivity(fmt.Sprintf("User %s %s", user, activity), true)
+		}
+
+		// Enable debug mode and log a debug message
+		if rand.Float32() < 0.2 {
+			lctx.SetDebugMode(true)
+			logger.LogDebug("Debug message", map[string]interface{}{
+				"user":         user,
+				"serialNumber": serialNumber,
+			})
+		}
+		// slee for random time between 1 and 5 seconds
+		// time.Sleep(time.Duration(rand.Intn(4)+1) * time.Second)
 	}
 
 	// Close the Kafka writer when done

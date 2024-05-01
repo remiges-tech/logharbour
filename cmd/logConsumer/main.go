@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -86,11 +87,23 @@ func main() {
 			// log debug
 			// log.Printf("Received message from topic %s: %s", message.Topic, string(message.Value))
 			// err := esClient.Write(*esIndex, string(message.Key), string(message.Value)) // Use the esIndex variable here
-			err := retryOperation(func() error {
-				return esClient.Write(*esIndex, string(message.Key), string(message.Value))
+			var logEntry map[string]interface{}
+			err := json.Unmarshal(message.Value, &logEntry)
+			if err != nil {
+				log.Printf("Failed to unmarshal log message: %v", err)
+				continue
+			}
+
+			id, ok := logEntry["id"].(string)
+			if !ok {
+				log.Printf("Missing or invalid 'id' field in log message")
+				continue
+			}
+			err = retryOperation(func() error {
+				return esClient.Write(*esIndex, id, string(message.Value))
 			}, 10, 1*time.Second) // Adjust maxAttempts and initialBackoff as needed
 			if err != nil {
-				log.Printf("Failed to write message to Elasticsearch: %v", err)
+				log.Printf("Failed to write message %v to Elasticsearch: %v", message.Value, err)
 				return err
 			}
 		}

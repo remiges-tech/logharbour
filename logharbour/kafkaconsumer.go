@@ -74,7 +74,7 @@ func (kc *kafkaConsumer) getPartitions() ([]int32, error) {
 // It also starts a goroutine to process the messages from the partition.
 // This allows for messages from multiple partitions to be processed simultaneously.
 func (kc *kafkaConsumer) consumePartition(partition int32, batchSize int, errs chan error) error {
-	pc, err := kc.consumer.ConsumePartition(kc.topic, partition, sarama.OffsetNewest)
+	pc, err := kc.consumer.ConsumePartition(kc.topic, partition, sarama.OffsetOldest)
 	if err != nil {
 		return err
 	}
