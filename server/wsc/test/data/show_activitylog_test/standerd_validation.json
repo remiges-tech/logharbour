@@ -1,0 +1,26 @@
+{
+    "status": "error",
+    "data": null,
+    "messages": [
+      {
+        "msgid": 103,
+        "errcode": "alphabet",
+        "field": "App"
+      },
+      {
+        "msgid": 100,
+        "errcode": "validation_error",
+        "field": "Who"
+      },
+      {
+        "msgid": 103,
+        "errcode": "alphabet",
+        "field": "Class"
+      },
+      {
+        "msgid": 101,
+        "errcode": "required",
+        "field": "Days"
+      }
+    ]
+  }

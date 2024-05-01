@@ -163,6 +163,7 @@ const (
 
 // LogEntry encapsulates all the relevant information for a log message.
 type LogEntry struct {
+	Id         string      `json:"id"`                  // id of the log
 	App        string      `json:"app"`                 // Name of the application.
 	System     string      `json:"system"`              // System where the application is running.
 	Module     string      `json:"module"`              // The module or subsystem within the application
