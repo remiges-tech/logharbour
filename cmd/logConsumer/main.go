@@ -82,6 +82,11 @@ func main() {
 		log.Fatalf("Error creating the Elasticsearch client: %s", err)
 	}
 
+	err = setupElasticsearchIndex(esClient, *esIndex)
+	if err != nil {
+		log.Fatalf("Error setting up Elasticsearch index: %s", err)
+	}
+
 	handler := func(messages []*sarama.ConsumerMessage) error {
 		for _, message := range messages {
 			// log debug
@@ -136,4 +141,33 @@ func createElasticsearchClient(addresses string) (*logharbour.ElasticsearchClien
 
 func createKafkaConsumer(brokers, topic string, handler logharbour.MessageHandler) (logharbour.Consumer, error) {
 	return logharbour.NewConsumer(strings.Split(brokers, ","), topic, handler)
+}
+
+func indexExists(client *logharbour.ElasticsearchClient, indexName string) (bool, error) {
+	exists, err := client.IndexExists(indexName)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}
+
+func createIndexWithMapping(client *logharbour.ElasticsearchClient, indexName string) error {
+	err := client.CreateIndex(indexName, esLogsMapping)
+	if err != nil {
+		return fmt.Errorf("failed to create index: %v", err)
+	}
+	return nil
+}
+
+func setupElasticsearchIndex(client *logharbour.ElasticsearchClient, indexName string) error {
+	exists, err := indexExists(client, indexName)
+	if err != nil {
+		return fmt.Errorf("error checking if index exists: %v", err)
+	}
+	if !exists {
+		if err := createIndexWithMapping(client, indexName); err != nil {
+			return err
+		}
+	}
+	return nil
 }

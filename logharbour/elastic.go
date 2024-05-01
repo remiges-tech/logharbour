@@ -3,6 +3,7 @@ package logharbour
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"strings"
 
@@ -48,6 +49,25 @@ func (ec *ElasticsearchClient) Write(index string, documentID string, body strin
 	}
 
 	return nil
+}
+
+func (ec *ElasticsearchClient) CreateIndex(indexName, mapping string) error {
+	res, err := ec.client.Indices.Create(indexName, ec.client.Indices.Create.WithBody(strings.NewReader(mapping)))
+	if err != nil {
+		return err
+	}
+	if res.IsError() {
+		return fmt.Errorf("error creating index: %s", res.String())
+	}
+	return nil
+}
+
+func (ec *ElasticsearchClient) IndexExists(indexName string) (bool, error) {
+	res, err := ec.client.Indices.Exists([]string{indexName})
+	if err != nil {
+		return false, err
+	}
+	return res.StatusCode == 200, nil
 }
 
 // Write sends a document to Elasticsearch with retry logic.
