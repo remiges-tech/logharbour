@@ -28,7 +28,7 @@ func main() {
 	// Load error code and msg's
 	errorCodeSetup()
 
-	err := config.LoadConfigFromFile("./config_dev_kanchan.json", &appConfig)
+	err := config.LoadConfigFromFile("./config_dev.json", &appConfig)
 	if err != nil {
 		log.Fatalf("Error loading config: %v", err)
 	}
