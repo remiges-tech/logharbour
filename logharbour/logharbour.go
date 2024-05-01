@@ -296,7 +296,7 @@ func (l *Logger) LogDebug(message string, data any) {
 
 // Log logs a generic message as an activity event.
 func (l *Logger) Log(message string) {
-	l.LogActivity(message, "")
+	l.LogActivity(message, nil)
 }
 
 // SetDebugMode sets the debug mode for all loggers sharing this context.
