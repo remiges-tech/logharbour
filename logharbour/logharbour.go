@@ -263,14 +263,15 @@ func (l *Logger) newLogEntry(message string, data *LogData) LogEntry {
 
 // LogDataChange logs a data change event.
 func (l *Logger) LogDataChange(message string, data ChangeInfo) {
+	for i := range data.Changes {
+		data.Changes[i].OldVal = convertToString(data.Changes[i].OldVal)
+		data.Changes[i].NewVal = convertToString(data.Changes[i].NewVal)
+	}
+
 	logData := LogData{
 		ChangeData: &data,
 	}
 	entry := l.newLogEntry(message, &logData)
-	for _, change := range data.Changes {
-		change.OldVal = convertToString(change.OldVal)
-		change.NewVal = convertToString(change.NewVal)
-	}
 	entry.Type = Change
 	l.log(entry)
 }
