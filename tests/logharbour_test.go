@@ -105,7 +105,7 @@ func TestLoggerContext_SetDebugMode(t *testing.T) {
 		go func() {
 			defer wg.Done()
 			lc.SetDebugMode(true)
-			if !lc.IsDebugMode() {
+			if !lc.IsDebugModeSet() {
 				t.Errorf("Expected debug mode to be true")
 			}
 		}()
@@ -113,7 +113,7 @@ func TestLoggerContext_SetDebugMode(t *testing.T) {
 	wg.Wait()
 
 	// Final check to ensure debugMode is true after all goroutines have run
-	if !lc.IsDebugMode() {
+	if !lc.IsDebugModeSet() {
 		t.Errorf("Expected final debug mode to be true")
 	}
 }

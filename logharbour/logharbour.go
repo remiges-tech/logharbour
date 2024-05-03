@@ -295,7 +295,7 @@ func (l *Logger) LogActivity(message string, data ActivityInfo) {
 
 // LogDebug logs a debug event.
 func (l *Logger) LogDebug(message string, data any) {
-	if !l.context.IsDebugMode() {
+	if !l.context.IsDebugModeSet() {
 		return // Skip logging if debugMode is not enabled
 	}
 	debugInfo := DebugInfo{
@@ -337,8 +337,8 @@ func (lc *LoggerContext) SetDebugMode(enable bool) {
 	atomic.StoreInt32(&lc.debugMode, val) // Atomically update debugMode
 }
 
-// IsDebugMode checks if debug mode is enabled atomically.
-func (lc *LoggerContext) IsDebugMode() bool {
+// IsDebugModeSet checks if debug mode is enabled in a thread-safe manner.
+func (lc *LoggerContext) IsDebugModeSet() bool {
 	return atomic.LoadInt32(&lc.debugMode) == 1 // Atomically read debugMode
 }
 
