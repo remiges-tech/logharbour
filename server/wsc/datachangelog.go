@@ -12,6 +12,7 @@ import (
 // DataChangeReq: is for request of ShowDataChange()
 type DataChangeReq struct {
 	App                  string  `json:"app" validate:"required,alpha,lt=15"`
+	Who                  string  `json:"who" validate:"required,alpha,lt=15"`
 	Class                *string `json:"class"`
 	Instance             *string `json:"instance"`
 	Field                *string `json:"field""`
@@ -55,6 +56,7 @@ func ShowDataChange(c *gin.Context, s *service.Service) {
 	// response := logharbour.Change
 	searchQuery, recordCount, err := logharbour.GetChanges("", esClient, logharbour.GetLogsParam{
 		App:              &request.App,
+		Who:              &request.Who,
 		Class:            request.Class,
 		Instance:         request.Instance,
 		Field:            request.Field,
