@@ -29,6 +29,9 @@ var createIndexBody = `{
 	},
 	"mappings": {
 	  "properties": {
+		"id": {
+		  "type": "keyword"
+		},
 		"app": {
 		  "type": "keyword"
 		},
@@ -72,29 +75,51 @@ var createIndexBody = `{
 		  "type": "keyword"
 		},
 		"data": {
-		  "type": "object"
-		},
-		"data.data": {
-		  "type": "text"
-		},
-		"data.entity": {
-		  "type": "keyword"
-		},
-		"data.op": {
-		  "type": "keyword"
-		},
-		"data.changes.field": {
-		  "type": "keyword"
-		},
-		"data.changes.new_value": {
-		  "type": "text"
-		},
-		"data.changes.old_value": {
-		  "type": "text"
+		  "type": "object",
+		  "properties": {
+			"entity": {
+			  "type": "keyword"
+			},
+			"op": {
+			  "type": "keyword"
+			},
+			"activity_data": {
+			  "type": "text"
+			},
+			"debug_data": {
+			  "type": "object"
+			},
+			"change_data": {
+			  "type": "object",
+			  "properties": {
+				"entity": {
+				  "type": "keyword"
+				},
+				"op": {
+				  "type": "keyword"
+				},
+				"changes": {
+				  "type": "object",
+				  "properties": {
+					"field": {
+					  "type": "keyword"
+					},
+					"new_value": {
+					  "type": "text"
+					},
+					"old_value": {
+					  "type": "text"
+					}
+				  }
+				}
+			  }
+			}
+		  }
 		}
 	  }
 	}
-  }`
+  }
+  `
 
 //   {
 // 	"type": "object",
@@ -140,15 +165,19 @@ func main() {
 			return nil
 		},
 	}
-	rootCmd.PersistentFlags().StringVarP(&address, "address", "a", "https://localhost:9200", "URL for Elasticsearch")
+	rootCmd.PersistentFlags().StringVarP(&address, "address", "a", "https://127.0.0.1:9200", "URL for Elasticsearch")
 	rootCmd.PersistentFlags().StringVarP(&username, "username", "u", "elastic", "Username for Elasticsearch")
 	// TUSHAR DB DETAILS
 	// rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "Iu4K4=VsUZEBExLjDu4k", "Password for Elasticsearch")
 	// rootCmd.PersistentFlags().StringVarP(&esCer, "es-cer", "c", "c0456a9e300eac38c9af6f416c54c55857e2fbc19a2deaa44bb8a582618bcd62", "certificateFingerprint")
 
-	// ANIKET DB DETAILS
-	rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "XSTwxC*giO71PGZm5urS", "Password for Elasticsearch")
-	rootCmd.PersistentFlags().StringVarP(&esCer, "es-cer", "c", "4b41377142441840d1099bcde5d294d25b8e7b39daf0a879343e5b552bc17f2c", "certificateFingerprint")
+	// // ANIKET DB DETAILS
+	// rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "XSTwxC*giO71PGZm5urS", "Password for Elasticsearch")
+	// rootCmd.PersistentFlags().StringVarP(&esCer, "es-cer", "c", "4b41377142441840d1099bcde5d294d25b8e7b39daf0a879343e5b552bc17f2c", "certificateFingerprint")
+
+	// KANCHAN DB DETAILS
+	rootCmd.PersistentFlags().StringVarP(&password, "password", "p", "9jjWQryjHca-9flzDcKU", "Password for Elasticsearch")
+	rootCmd.PersistentFlags().StringVarP(&esCer, "es-cer", "c", "3395adb7832f24e043ea7101b7f821bd97786fc808c335ba439a3681585119fc", "certificateFingerprint")
 
 	var insertCmd = &cobra.Command{
 		Use:   "add [logFile]",

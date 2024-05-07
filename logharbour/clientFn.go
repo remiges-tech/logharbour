@@ -36,7 +36,7 @@ const (
 	DIALTIMEOUT = 500 * time.Second
 	ACTIVITY    = "A"
 	DEBUG       = "D"
-	field       = "data.changes.field"
+	field       = "data.change_data.changes.field"
 )
 
 var (
@@ -111,7 +111,9 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 			queries = append(queries, logType)
 		}
 	}
-
+	if ok, module := termQueryForField(module, logParam.Module); ok {
+		queries = append(queries, module)
+	}
 	if ok, who := termQueryForField(who, logParam.Who); ok {
 
 		queries = append(queries, who)
@@ -283,7 +285,7 @@ func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string
 
 	var (
 		query   *types.Query
-		zero    = 0
+		size    = 1000
 		dataMap = make(map[string]int64)
 	)
 
@@ -308,7 +310,7 @@ func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string
 	// This will return a set of unique values for an attribute based on method parameters
 	res, err := client.Search().Index(Index).Request(&search.Request{
 		Query: query,
-		Size:  &zero,
+		Size:  &size,
 		Aggregations: map[string]types.Aggregations{
 			logSet: {
 				Terms: &types.TermsAggregation{
