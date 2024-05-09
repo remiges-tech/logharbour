@@ -84,7 +84,6 @@ type GetSetParam struct {
 	Ndays    *int         `json:"ndays" validate:"omitempty,number,lt=100"`
 	RemoteIP *string      `json:"remoteIP" validate:"omitempty"`
 	Pri      *LogPriority `json:"pri" validate:"omitempty,oneof=1 2 3 4 5 6 7 8"`
-	setAttr  string       `json:"setAttr"`
 }
 
 // GetLogs retrieves an slice of logEntry from Elasticsearch based on the fields provided in logParam.
@@ -284,9 +283,10 @@ func GetLocalIPAddress() (string, error) {
 func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string, setParam GetSetParam) (map[string]int64, error) {
 
 	var (
-		query   *types.Query
-		size    = 1000
-		dataMap = make(map[string]int64)
+		query           *types.Query
+		dataMap         = make(map[string]int64)
+		aggResponseSize = 1000
+		logSize         = 0
 	)
 
 	// Validate setAttr
@@ -310,11 +310,12 @@ func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string
 	// This will return a set of unique values for an attribute based on method parameters
 	res, err := client.Search().Index(Index).Request(&search.Request{
 		Query: query,
-		Size:  &size,
+		Size:  &logSize,
 		Aggregations: map[string]types.Aggregations{
 			logSet: {
 				Terms: &types.TermsAggregation{
 					Field: some.String(setAttr),
+					Size:  &aggResponseSize,
 					Order: map[string]sortorder.SortOrder{"_count": sortorder.SortOrder{"asc"}},
 				},
 			},
@@ -622,7 +623,7 @@ func GetChanges(querytoken string, client *elasticsearch.TypedClient, logParam G
 
 	if logParam.Field != nil {
 
-		if ok, field := termQueryForField("data.changes.field", logParam.Field); ok {
+		if ok, field := termQueryForField("data.change_data.changes.field", logParam.Field); ok {
 			queries = append(queries, field)
 		}
 	}
