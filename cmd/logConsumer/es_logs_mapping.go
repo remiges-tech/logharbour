@@ -33,11 +33,11 @@ const esLogsMapping = `{
       "class": {
         "type": "keyword"
       },
-      "instanceId": {
+      "instance": {
         "type": "keyword"
       },
       "status": {
-        "type": "boolean"
+        "type": "integer"
       },
       "error": {
         "type": "text"
