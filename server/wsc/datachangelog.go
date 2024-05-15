@@ -15,7 +15,7 @@ type DataChangeReq struct {
 	Who                  *string `json:"who"`
 	Class                *string `json:"class"`
 	Instance             *string `json:"instance"`
-	Field                *string `json:"field""`
+	Field                *string `json:"field"`
 	Days                 *int    `json:"days" validate:"omitempty,gt=0,lt=1003"`
 	SearchAfterTimestamp *string `json:"search_after_timestamp" validate:"omitempty,datetime=2006-01-02T15:04:05Z"`
 	SearchAfterDocId     *string `json:"search_after_doc_id,omitempty"`
@@ -28,7 +28,7 @@ func ShowDataChange(c *gin.Context, s *service.Service) {
 	var (
 		request     DataChangeReq
 		recordCount int
-		// searchQuery []logharbour.LogEntry
+		searchQuery []logharbour.LogEntry
 	)
 
 	// step 1: json request binding with a struct
@@ -54,7 +54,7 @@ func ShowDataChange(c *gin.Context, s *service.Service) {
 	}
 
 	// response := logharbour.Change
-	searchQuery, recordCount, err := logharbour.GetChanges("", esClient, logharbour.GetLogsParam{
+	searchQuery, recordCount, err = logharbour.GetChanges("", esClient, logharbour.GetLogsParam{
 		App:              &request.App,
 		Who:              request.Who,
 		Class:            request.Class,

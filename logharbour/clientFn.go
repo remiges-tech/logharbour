@@ -153,7 +153,7 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 	}
 
 	if len(queries) == 0 {
-		return nil, 0, fmt.Errorf("No Filter param")
+		return nil, 0, fmt.Errorf("no Filter param")
 	}
 
 	// sorting record on base of when
@@ -199,11 +199,12 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 	if err != nil {
 		return nil, 0, fmt.Errorf("Error while searching document in es:%v", err)
 	}
-	var logEnter LogEntry
+
 
 	// Unmarshalling hit.source into LogEntry
 	if res != nil {
 		for _, hit := range res.Hits.Hits {
+			var logEnter LogEntry
 			if err := json.Unmarshal([]byte(hit.Source_), &logEnter); err != nil {
 				return nil, 0, fmt.Errorf("error while unmarshalling response:%v", err)
 			}
@@ -668,7 +669,7 @@ func GetChanges(querytoken string, client *elasticsearch.TypedClient, logParam G
 	}
 
 	if len(queries) == 0 {
-		return nil, 0, fmt.Errorf("No Filter param")
+		return nil, 0, fmt.Errorf("no Filter param")
 	}
 
 	// sorting record on base of when
