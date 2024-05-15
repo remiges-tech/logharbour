@@ -204,11 +204,11 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 	// Unmarshalling hit.source into LogEntry
 	if res != nil {
 		for _, hit := range res.Hits.Hits {
-			var logEnter LogEntry
-			if err := json.Unmarshal([]byte(hit.Source_), &logEnter); err != nil {
+			var logEntery LogEntry
+			if err := json.Unmarshal([]byte(hit.Source_), &logEntery); err != nil {
 				return nil, 0, fmt.Errorf("error while unmarshalling response:%v", err)
 			}
-			logEntries = append(logEntries, logEnter)
+			logEntries = append(logEntries, logEntery)
 		}
 	}
 	return logEntries, int(res.Hits.Total.Value), nil

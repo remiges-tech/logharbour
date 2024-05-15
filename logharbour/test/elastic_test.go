@@ -7,7 +7,8 @@ import (
 	"time"
 
 	"github.com/remiges-tech/logharbour/logharbour"
-	elasticsearchctl "github.com/remiges-tech/logharbour/server/elasticSearchCtl/elasticSearch"
+	estestutils "github.com/remiges-tech/logharbour/logharbour/test"
+
 	"github.com/stretchr/testify/require"
 )
 
@@ -55,7 +56,7 @@ func TestGetLogs(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 
 			if tc.TestJsonFile != "" {
-				tc.ExpectedLogEntries, err = elasticsearchctl.ReadLogFromFile(tc.TestJsonFile)
+				tc.ExpectedLogEntries, err = estestutils.ReadLogFromFile(tc.TestJsonFile)
 				if err != nil {
 					fmt.Printf("error converting data from log file:%v\n", err)
 				}
