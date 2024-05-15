@@ -1,6 +1,6 @@
-package main
+package logharbour
 
-const esLogsMapping = `{
+const ESLogsMapping = `{
   "mappings": {
     "properties": {
       "id": {

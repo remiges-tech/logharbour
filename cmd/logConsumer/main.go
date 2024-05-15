@@ -152,7 +152,7 @@ func indexExists(client *logharbour.ElasticsearchClient, indexName string) (bool
 }
 
 func createIndexWithMapping(client *logharbour.ElasticsearchClient, indexName string) error {
-	err := client.CreateIndex(indexName, esLogsMapping)
+	err := client.CreateIndex(indexName, logharbour.ESLogsMapping)
 	if err != nil {
 		return fmt.Errorf("failed to create index: %v", err)
 	}
