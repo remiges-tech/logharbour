@@ -1,6 +1,6 @@
-package main
+package logharbour
 
-const esLogsMapping = `{
+const ESLogsMapping = `{
   "mappings": {
     "properties": {
       "id": {
@@ -33,11 +33,11 @@ const esLogsMapping = `{
       "class": {
         "type": "keyword"
       },
-      "instanceId": {
+      "instance": {
         "type": "keyword"
       },
       "status": {
-        "type": "boolean"
+        "type": "integer"
       },
       "error": {
         "type": "text"

@@ -14,83 +14,14 @@ import (
 	"github.com/remiges-tech/alya/service"
 	"github.com/remiges-tech/alya/wscutils"
 	"github.com/remiges-tech/logharbour/logharbour"
-	elasticsearchctl "github.com/remiges-tech/logharbour/server/elasticSearchCtl/elasticSearch"
+	estestutils "github.com/remiges-tech/logharbour/logharbour/test"
 	"github.com/remiges-tech/logharbour/server/wsc"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/elasticsearch"
 )
 
 var (
-	indexBody = `{
-		"settings": {
-		  "number_of_shards": 1,
-		  "number_of_replicas": 0
-		},
-		"mappings": {
-		  "properties": {
-			"app": {
-			  "type": "keyword"
-			},
-			"system": {
-			  "type": "keyword"
-			},
-			"module": {
-			  "type": "keyword"
-			},
-			"type": {
-			  "type": "keyword"
-			},
-			"pri": {
-			  "type": "keyword"
-			},
-			"when": {
-			  "type": "date"
-			},
-			"who": {
-			  "type": "keyword"
-			},
-			"op": {
-			  "type": "keyword"
-			},
-			"class": {
-			  "type": "keyword"
-			},
-			"instance": {
-			  "type": "keyword"
-			},
-			"status": {
-			  "type": "integer"
-			},
-			"error": {
-			  "type": "keyword"
-			},
-			"remote_ip": {
-			  "type": "ip"
-			},
-			"msg": {
-			  "type": "keyword"
-			},
-			"data": {
-			  "type": "object"
-			},
-			"data.entity": {
-			  "type": "keyword"
-			},
-			"data.op": {
-				"type": "keyword"
-			  },
-			"data.changes.field": {
-				"type": "keyword"
-			  },
-			  "data.changes.new_value": {
-				  "type": "text"
-				},
-				"data.changes.old_value": {
-					"type": "text"
-				  }
-		  }
-		}
-	  }`
+	indexBody = logharbour.ESLogsMapping
 	typedClient      *es.TypedClient
 	r                *gin.Engine
 	seedDataFilePath = "../test/seed_data.json"
@@ -158,16 +89,16 @@ func TestMain(m *testing.M) {
 
 func fillElasticWithData(esClient *es.Client, indexName, indexBody, filepath string) error {
 
-	if err := elasticsearchctl.CreateElasticIndex(esClient, indexName, indexBody); err != nil {
+	if err := estestutils.CreateElasticIndex(esClient, indexName, indexBody); err != nil {
 		return fmt.Errorf("error while creating elastic search index: %v", err)
 	}
 
-	logEntries, err := elasticsearchctl.ReadLogFromFile(filepath)
+	logEntries, err := estestutils.ReadLogFromFile(filepath)
 	if err != nil {
 		return fmt.Errorf("error converting data from log file:%v", err)
 	}
 
-	if err := elasticsearchctl.InsertLog(esClient, logEntries, indexName); err != nil {
+	if err := estestutils.InsertLog(esClient, logEntries, indexName); err != nil {
 		return fmt.Errorf("error while inserting data in elastic search: %v", err.Error())
 	}
 

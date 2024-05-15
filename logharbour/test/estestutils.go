@@ -1,4 +1,4 @@
-package elasticsearchctl
+package logharbour
 
 import (
 	"context"

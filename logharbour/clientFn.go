@@ -36,7 +36,7 @@ const (
 	DIALTIMEOUT = 500 * time.Second
 	ACTIVITY    = "A"
 	DEBUG       = "D"
-	field       = "data.changes.field"
+	field       = "data.change_data.changes.field"
 )
 
 var (
@@ -84,7 +84,6 @@ type GetSetParam struct {
 	Ndays    *int         `json:"ndays" validate:"omitempty,number,lt=100"`
 	RemoteIP *string      `json:"remoteIP" validate:"omitempty"`
 	Pri      *LogPriority `json:"pri" validate:"omitempty,oneof=1 2 3 4 5 6 7 8"`
-	setAttr  string       `json:"setAttr"`
 }
 
 // GetLogs retrieves an slice of logEntry from Elasticsearch based on the fields provided in logParam.
@@ -111,7 +110,9 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 			queries = append(queries, logType)
 		}
 	}
-
+	if ok, module := termQueryForField(module, logParam.Module); ok {
+		queries = append(queries, module)
+	}
 	if ok, who := termQueryForField(who, logParam.Who); ok {
 
 		queries = append(queries, who)
@@ -152,7 +153,7 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 	}
 
 	if len(queries) == 0 {
-		return nil, 0, fmt.Errorf("No Filter param")
+		return nil, 0, fmt.Errorf("no Filter param")
 	}
 
 	// sorting record on base of when
@@ -198,15 +199,16 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 	if err != nil {
 		return nil, 0, fmt.Errorf("Error while searching document in es:%v", err)
 	}
-	var logEnter LogEntry
+
 
 	// Unmarshalling hit.source into LogEntry
 	if res != nil {
 		for _, hit := range res.Hits.Hits {
-			if err := json.Unmarshal([]byte(hit.Source_), &logEnter); err != nil {
+			var logEntery LogEntry
+			if err := json.Unmarshal([]byte(hit.Source_), &logEntery); err != nil {
 				return nil, 0, fmt.Errorf("error while unmarshalling response:%v", err)
 			}
-			logEntries = append(logEntries, logEnter)
+			logEntries = append(logEntries, logEntery)
 		}
 	}
 	return logEntries, int(res.Hits.Total.Value), nil
@@ -282,9 +284,10 @@ func GetLocalIPAddress() (string, error) {
 func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string, setParam GetSetParam) (map[string]int64, error) {
 
 	var (
-		query   *types.Query
-		zero    = 0
-		dataMap = make(map[string]int64)
+		query           *types.Query
+		dataMap         = make(map[string]int64)
+		aggResponseSize = 1000
+		logSize         = 0
 	)
 
 	// Validate setAttr
@@ -308,11 +311,12 @@ func GetSet(queryToken string, client *elasticsearch.TypedClient, setAttr string
 	// This will return a set of unique values for an attribute based on method parameters
 	res, err := client.Search().Index(Index).Request(&search.Request{
 		Query: query,
-		Size:  &zero,
+		Size:  &logSize,
 		Aggregations: map[string]types.Aggregations{
 			logSet: {
 				Terms: &types.TermsAggregation{
 					Field: some.String(setAttr),
+					Size:  &aggResponseSize,
 					Order: map[string]sortorder.SortOrder{"_count": sortorder.SortOrder{"asc"}},
 				},
 			},
@@ -620,7 +624,7 @@ func GetChanges(querytoken string, client *elasticsearch.TypedClient, logParam G
 
 	if logParam.Field != nil {
 
-		if ok, field := termQueryForField("data.changes.field", logParam.Field); ok {
+		if ok, field := termQueryForField("data.change_data.changes.field", logParam.Field); ok {
 			queries = append(queries, field)
 		}
 	}
@@ -665,7 +669,7 @@ func GetChanges(querytoken string, client *elasticsearch.TypedClient, logParam G
 	}
 
 	if len(queries) == 0 {
-		return nil, 0, fmt.Errorf("No Filter param")
+		return nil, 0, fmt.Errorf("no Filter param")
 	}
 
 	// sorting record on base of when

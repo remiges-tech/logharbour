@@ -28,7 +28,7 @@ type GetSetReq struct {
 
 func GetSet(c *gin.Context, s *service.Service) {
 	l := s.LogHarbour
-	l.Debug0().Log("starting execution of GetList()")
+	l.Debug0().Log("starting execution of GetSet()")
 	var getSetReq GetSetReq
 
 	err := wscutils.BindJSON(c, &getSetReq)
@@ -47,7 +47,7 @@ func GetSet(c *gin.Context, s *service.Service) {
 
 	es, ok := s.Dependencies["client"].(*elasticsearch.TypedClient)
 	if !ok {
-		l.Debug0().Log("Error while getting elasticsearch instance from service Dependencies")
+		l.Debug0().Log("error while getting elasticsearch instance from service Dependencies")
 		wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(MsgId_InternalErr, ErrCode_DatabaseError))
 		return
 	}
@@ -66,12 +66,12 @@ func GetSet(c *gin.Context, s *service.Service) {
 		Pri:      getSetReq.Pri,
 	}
 	if getSetReq.SetAttr == "field" {
-		getSetReq.SetAttr = "data.changes.field"
+		getSetReq.SetAttr = "data.change_data.changes.field"
 	}
 	res, err := logharbour.GetSet(queryToken, es, getSetReq.SetAttr, getsetParam)
 	if err != nil {
 		errmsg := errorHandler(err)
-		l.Debug0().Error(err).Log("error in GetLogs")
+		l.Debug0().Error(err).Log("error in GetSet web service call")
 		wscutils.SendErrorResponse(c, wscutils.NewResponse(wscutils.ErrorStatus, nil, []wscutils.ErrorMessage{errmsg}))
 		return
 	}
