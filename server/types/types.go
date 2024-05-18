@@ -14,6 +14,7 @@ type AppConfig struct {
 	KeycloakURL            string `json:"keycloak_url"`
 	KeycloakClientID       string `json:"keycloak_client_id"`
 	CertificateFingerprint string `json:"certificate_fingerprint"`
+	GeoLiteDbPath          string  `json:"geolite_db_path"`
 }
 
 

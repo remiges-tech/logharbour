@@ -9,6 +9,7 @@ import (
 	"github.com/elastic/elastic-transport-go/v8/elastictransport"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/gin-gonic/gin"
+	"github.com/oschwald/geoip2-golang"
 	"github.com/remiges-tech/alya/config"
 	"github.com/remiges-tech/alya/service"
 	"github.com/remiges-tech/alya/wscutils"
@@ -110,6 +111,7 @@ func main() {
 		// show request query logger
 		Logger: &elastictransport.TextLogger{Output: log.Writer(), EnableRequestBody: true},
 	}
+	//elasticsearch client
 	client, err := elasticsearch.NewTypedClient(dbConfig)
 	if err != nil {
 		log.Fatalf("Failed to create db connection: %v", err)
@@ -117,10 +119,21 @@ func main() {
 		return
 	}
 
+	// GeoLite2-City database
+	geoLiteCityDb, err := geoip2.Open(appConfig.GeoLiteDbPath)
+	if err != nil {
+		log.Fatalf("Failed to create GeoLite2-City db connection: %v", err)
+		wscutils.NewErrorResponse(502, "error establishing a GeoLite2-City database connection")
+		return
+	}
+	defer geoLiteCityDb.Close()
+
 	// router
 	r := gin.Default()
 
-	// r.Use(corsMiddleware())
+	//	r.Use(corsMiddleware())
+
+	apiV1Group := r.Group("/api/v1/")
 
 	// services
 	s := service.NewService(r).
@@ -128,15 +141,20 @@ func main() {
 		WithDependency("client", client).
 		WithDependency("index", "logharbour")
 
-	apiV1Group := r.Group("/api/v1/")
-
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/highprilog", wsc.GetHighprilog)
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/activitylog", wsc.ShowActivityLog)
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/debuglog", wsc.GetDebugLog)
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/datachange", wsc.ShowDataChange)
-	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/unusalip", wsc.GetUnusualIP)
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/getset", wsc.GetSet)
 	s.RegisterRouteWithGroup(apiV1Group, http.MethodGet, "/getapps", wsc.GetApps)
+
+	// creating a seprate service for getting list of unusualIPS with geoLiteCityDb dependency
+	unusualIPServ := service.NewService(r).
+		WithLogHarbour(l).
+		WithDependency("client", client).
+		WithDependency("index", "logharbour").WithDependency("geoLiteCityDb", geoLiteCityDb)
+
+	unusualIPServ.RegisterRouteWithGroup(apiV1Group, http.MethodPost, "/getunusualips", wsc.GetUnusualIPs)
 
 	err = r.Run(":" + appConfig.AppServerPort)
 	if err != nil {
