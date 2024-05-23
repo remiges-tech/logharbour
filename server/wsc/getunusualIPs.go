@@ -77,7 +77,7 @@ func GetUnusualIPs(c *gin.Context, s *service.Service) {
 		wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(response))
 		return
 	}
-	l.Debug0().Log("starting execution of GetUnusualIPs()")
+	l.Debug0().Log("finished execution of GetUnusualIPs()")
 	wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse("No unusual IP"))
 
 }

@@ -19,26 +19,26 @@ import (
 )
 
 const (
-	when        = "when"
-	app         = "app"
-	module      = "module"
-	typeConst   = "type"
-	who         = "who"
-	status      = "status"
-	system      = "system"
-	class       = "class"
-	instance    = "instance"
-	op          = "op"
-	remote_ip   = "remote_ip"
-	pri         = "pri"
-	id          = "id" // document id
-	layout      = "2006-01-02T15:04:05Z"
-	logSet      = "logset"
-	DIALTIMEOUT = 500 * time.Second
-	ACTIVITY    = "A"
-	DEBUG       = "D"
-	field       = "data.change_data.changes.field"
-	EN = "en"
+	when           = "when"
+	app            = "app"
+	module         = "module"
+	typeConst      = "type"
+	who            = "who"
+	status         = "status"
+	system         = "system"
+	class          = "class"
+	instance       = "instance"
+	op             = "op"
+	remote_ip      = "remote_ip"
+	pri            = "pri"
+	id             = "id" // document id
+	layout         = "2006-01-02T15:04:05Z"
+	logSet         = "logset"
+	DIALTIMEOUT    = 500 * time.Second
+	ACTIVITY       = "A"
+	DEBUG          = "D"
+	field          = "data.change_data.changes.field"
+	DEFAULT_LOCALE = "en"
 )
 
 var (
@@ -88,7 +88,7 @@ type GetSetParam struct {
 	Pri      *LogPriority `json:"pri" validate:"omitempty,oneof=1 2 3 4 5 6 7 8"`
 }
 type IPLocation struct {
-	Ipaddress string  `json:"ipaddr" validate:"required"`
+	IPAddress string  `json:"ipaddr" validate:"required"`
 	City      string  `json:"city"`
 	Country   string  `json:"country"`
 	Latitude  float64 `json:"lat"`
@@ -768,7 +768,7 @@ func getIPLocation(ipAddress string, geoLiteDb *geoip2.Reader) IPLocation {
 	record, err := geoLiteDb.City(IP)
 	if err != nil {
 		IPLocationDetails = IPLocation{
-			Ipaddress: "0.0.0.0",
+			IPAddress: "0.0.0.0",
 			City:      "",
 			Country:   "",
 			Latitude:  0,
@@ -778,9 +778,9 @@ func getIPLocation(ipAddress string, geoLiteDb *geoip2.Reader) IPLocation {
 	}
 
 	IPLocationDetails = IPLocation{
-		Ipaddress: ipAddress,
-		City:      record.City.Names[EN],
-		Country:   record.Country.Names[EN],
+		IPAddress: ipAddress,
+		City:      record.City.Names[DEFAULT_LOCALE],
+		Country:   record.Country.Names[DEFAULT_LOCALE],
 		Latitude:  record.Location.Latitude,
 		Longitude: record.Location.Longitude,
 	}
