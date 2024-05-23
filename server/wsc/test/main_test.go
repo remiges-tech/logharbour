@@ -26,7 +26,7 @@ var (
 	indexBody        = logharbour.ESLogsMapping
 	typedClient      *es.TypedClient
 	r                *gin.Engine
-	seedDataFilePath = "../test/seed_data.json"
+	seedDataFilePath = "../../../logharbour/test/testData/testData.json"
 	indexName        = "logharbour"
 	timeout          = 1000 * time.Second
 )
