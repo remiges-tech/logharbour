@@ -2,6 +2,7 @@ package wsc_test
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,22 +12,23 @@ import (
 
 	es "github.com/elastic/go-elasticsearch/v8"
 	"github.com/gin-gonic/gin"
+	"github.com/oschwald/geoip2-golang"
 	"github.com/remiges-tech/alya/service"
 	"github.com/remiges-tech/alya/wscutils"
 	"github.com/remiges-tech/logharbour/logharbour"
 	estestutils "github.com/remiges-tech/logharbour/logharbour/test"
 	"github.com/remiges-tech/logharbour/server/wsc"
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/modules/elasticsearch"
+	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 var (
-	indexBody = logharbour.ESLogsMapping
+	indexBody        = logharbour.ESLogsMapping
 	typedClient      *es.TypedClient
 	r                *gin.Engine
 	seedDataFilePath = "../test/seed_data.json"
 	indexName        = "logharbour"
-	timeout          = 100 * time.Second
+	timeout          = 1000 * time.Second
 )
 
 func TestMain(m *testing.M) {
@@ -35,12 +37,19 @@ func TestMain(m *testing.M) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	// creates an instance of the Elasticsearch container
-	elasticsearchContainer, err := elasticsearch.RunContainer(
-		ctx,
-		testcontainers.WithImage("docker.elastic.co/elasticsearch/elasticsearch:8.9.0"),
-		elasticsearch.WithPassword("elastic"),
-	)
+	// Define container request for Elasticsearch.
+	// we are using bitnami elasticsearch for testing purpose so authentication details are not required
+	req := testcontainers.ContainerRequest{
+		Image:        "bitnami/elasticsearch:latest",
+		ExposedPorts: []string{"9200/tcp"},
+		WaitingFor:   wait.ForHTTP("/").WithPort("9200").WithStartupTimeout(timeout),
+	}
+
+	// Create and start the Elasticsearch container
+	elasticsearchContainer, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+		ContainerRequest: req,
+		Started:          true,
+	})
 	if err != nil {
 		log.Fatalf("failed to start container: %s", err)
 	}
@@ -50,14 +59,26 @@ func TestMain(m *testing.M) {
 			log.Fatalf("failed to terminate container: %s", err)
 		}
 	}()
+	// Get the host and port of the running container
+	host, err := elasticsearchContainer.Host(ctx)
+	if err != nil {
+		log.Fatalf("failed to get container host: %s", err)
+	}
+
+	port, err := elasticsearchContainer.MappedPort(ctx, "9200")
+	if err != nil {
+		log.Fatalf("failed to get mapped port: %s", err)
+	}
 
 	cfg := es.Config{
 		Addresses: []string{
-			elasticsearchContainer.Settings.Address,
+			fmt.Sprintf("http://%s:%s", host, port.Port()),
 		},
-		Username: "elastic",
-		Password: elasticsearchContainer.Settings.Password,
-		CACert:   elasticsearchContainer.Settings.CACert,
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true, // Disable SSL verification
+			},
+		},
 	}
 
 	// NewTypedClient create a new elasticsearch client with the configuration from cfg
@@ -73,7 +94,7 @@ func TestMain(m *testing.M) {
 	}
 
 	if err := fillElasticWithData(esClient, indexName, indexBody, seedDataFilePath); err != nil {
-		log.Fatalf("error while creating elastic search index: %v", err)
+		log.Fatalf("elasticdata error while creating elastic search index: %v", err)
 	}
 
 	// Register routes.
@@ -90,7 +111,7 @@ func TestMain(m *testing.M) {
 func fillElasticWithData(esClient *es.Client, indexName, indexBody, filepath string) error {
 
 	if err := estestutils.CreateElasticIndex(esClient, indexName, indexBody); err != nil {
-		return fmt.Errorf("error while creating elastic search index: %v", err)
+		return fmt.Errorf(" error while creating elastic search index: %v", err)
 	}
 
 	logEntries, err := estestutils.ReadLogFromFile(filepath)
@@ -108,6 +129,15 @@ func fillElasticWithData(esClient *es.Client, indexName, indexBody, filepath str
 
 // registerRoutes register and runs.
 func registerRoutes(typedClient *es.TypedClient) (*gin.Engine, error) {
+
+	geoLiteDbPath := "../../../logharbour/GeoLite2-City.mmdb" // path of  mmdb file
+	// GeoLite2-City database
+	geoLiteCityDb, err := geoip2.Open(geoLiteDbPath)
+	if err != nil {
+		log.Fatalf("Failed to create GeoLite2-City db connection: %v", err)
+	}
+	defer geoLiteCityDb.Close()
+
 	// router
 	gin.SetMode(gin.TestMode)
 	r := gin.Default()
@@ -147,11 +177,15 @@ func registerRoutes(typedClient *es.TypedClient) (*gin.Engine, error) {
 	s.RegisterRoute(http.MethodPost, "/highprilog", wsc.GetHighprilog)
 	s.RegisterRoute(http.MethodPost, "/activitylog", wsc.ShowActivityLog)
 	s.RegisterRoute(http.MethodPost, "/debuglog", wsc.GetDebugLog)
-	s.RegisterRoute(http.MethodPost, "/getUnusualIP", wsc.GetUnusualIP)
 	s.RegisterRoute(http.MethodPost, "/datachange", wsc.ShowDataChange)
 	s.RegisterRoute(http.MethodGet, "/getapps", wsc.GetApps)
 	s.RegisterRoute(http.MethodPost, "/getset", wsc.GetSet)
+	// creating a seprate service for getting list of unusualIPS with geoLiteCityDb dependency
+	unusualIPServ := service.NewService(r).
+		WithLogHarbour(l).
+		WithDependency("client", typedClient).
+		WithDependency("index", "logharbour").WithDependency("geoLiteCityDb", geoLiteCityDb)
 
+	unusualIPServ.RegisterRoute(http.MethodPost, "/getunusualips", wsc.GetUnusualIPs)
 	return r, nil
-
 }

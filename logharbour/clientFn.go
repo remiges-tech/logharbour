@@ -15,28 +15,30 @@ import (
 	"github.com/elastic/go-elasticsearch/v8/typedapi/some"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/sortorder"
+	"github.com/oschwald/geoip2-golang"
 )
 
 const (
-	when        = "when"
-	app         = "app"
-	module      = "module"
-	typeConst   = "type"
-	who         = "who"
-	status      = "status"
-	system      = "system"
-	class       = "class"
-	instance    = "instance"
-	op          = "op"
-	remote_ip   = "remote_ip"
-	pri         = "pri"
-	id          = "id" // document id
-	layout      = "2006-01-02T15:04:05Z"
-	logSet      = "logset"
-	DIALTIMEOUT = 500 * time.Second
-	ACTIVITY    = "A"
-	DEBUG       = "D"
-	field       = "data.change_data.changes.field"
+	when           = "when"
+	app            = "app"
+	module         = "module"
+	typeConst      = "type"
+	who            = "who"
+	status         = "status"
+	system         = "system"
+	class          = "class"
+	instance       = "instance"
+	op             = "op"
+	remote_ip      = "remote_ip"
+	pri            = "pri"
+	id             = "id" // document id
+	layout         = "2006-01-02T15:04:05Z"
+	logSet         = "logset"
+	DIALTIMEOUT    = 500 * time.Second
+	ACTIVITY       = "A"
+	DEBUG          = "D"
+	field          = "data.change_data.changes.field"
+	DEFAULT_LOCALE = "en"
 )
 
 var (
@@ -84,6 +86,13 @@ type GetSetParam struct {
 	Ndays    *int         `json:"ndays" validate:"omitempty,number,lt=100"`
 	RemoteIP *string      `json:"remoteIP" validate:"omitempty"`
 	Pri      *LogPriority `json:"pri" validate:"omitempty,oneof=1 2 3 4 5 6 7 8"`
+}
+type IPLocation struct {
+	IPAddress string  `json:"ipaddr" validate:"required"`
+	City      string  `json:"city"`
+	Country   string  `json:"country"`
+	Latitude  float64 `json:"lat"`
+	Longitude float64 `json:"long"`
 }
 
 // GetLogs retrieves an slice of logEntry from Elasticsearch based on the fields provided in logParam.
@@ -200,7 +209,6 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 		return nil, 0, fmt.Errorf("Error while searching document in es:%v", err)
 	}
 
-
 	// Unmarshalling hit.source into LogEntry
 	if res != nil {
 		for _, hit := range res.Hits.Hits {
@@ -242,14 +250,11 @@ func GetUnusualIP(queryToken string, client *elasticsearch.TypedClient, unusualP
 
 	localIp, err := GetLocalIPAddress()
 	if err != nil {
-		println("Error:", err)
 		return nil, err
 	}
-	println("Local IP address:", localIp)
 
 	if percentThreshold > 1 {
 		for ip, count := range aggregatedIPs {
-			fmt.Printf("IP: %s, Count: %d\n", ip, count)
 			if count <= int64(percentThreshold) {
 				if ip != localIp {
 					unusualIPs = append(unusualIPs, ip)
@@ -727,4 +732,58 @@ func GetChanges(querytoken string, client *elasticsearch.TypedClient, logParam G
 		}
 	}
 	return logEntries, int(res.Hits.Total.Value), nil
+}
+
+// This function gives a list of unusual IPS with it's geographical location details
+func ListUnusualIPs(queryToken string, client *elasticsearch.TypedClient, geoLiteDb *geoip2.Reader, unusualPercent float64, logParam GetUnusualIPParam) ([]IPLocation, error) {
+	unusualIPList := []IPLocation{}
+
+	// calling GetUnusualIP() to get all unsualIPS based on app and ndays
+	unusualIPs, err := GetUnusualIP(queryToken, client, unusualPercent, GetUnusualIPParam{App: logParam.App, NDays: logParam.NDays})
+	if err != nil {
+		return nil, err
+	}
+	// getting IPLocation details for each IP address
+	for _, ip := range unusualIPs {
+		iplocation := getIPLocation(ip, geoLiteDb)
+		unusualIPList = append(unusualIPList, iplocation)
+
+	}
+
+	return unusualIPList, nil
+
+}
+
+// This function is used to retrieves the geographical location details of a given IP address using a GeoLite database.
+func getIPLocation(ipAddress string, geoLiteDb *geoip2.Reader) IPLocation {
+
+	var (
+		IPLocationDetails IPLocation
+		IP                net.IP
+	)
+	// parse IP address
+	IP = net.ParseIP(ipAddress)
+
+	// searching city details based on IP address
+	record, err := geoLiteDb.City(IP)
+	if err != nil {
+		IPLocationDetails = IPLocation{
+			IPAddress: "0.0.0.0",
+			City:      "",
+			Country:   "",
+			Latitude:  0,
+			Longitude: 0,
+		}
+		return IPLocationDetails
+	}
+
+	IPLocationDetails = IPLocation{
+		IPAddress: ipAddress,
+		City:      record.City.Names[DEFAULT_LOCALE],
+		Country:   record.Country.Names[DEFAULT_LOCALE],
+		Latitude:  record.Location.Latitude,
+		Longitude: record.Location.Longitude,
+	}
+
+	return IPLocationDetails
 }
