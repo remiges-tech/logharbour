@@ -22,7 +22,7 @@ func main() {
 	// log a data change entry.
 	// log a data change entry.
 	logger.LogDataChange("User updated profile",
-		*logharbour.NewChangeInfo("User", "Update").
+		logharbour.NewChangeInfo("User", "Update").
 			AddChange("email", "oldEmail@example.com", "john@example.com"))
 
 	// log a debug entry.

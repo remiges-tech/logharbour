@@ -407,15 +407,15 @@ func NewChangeDetail(field string, oldValue, newValue any) ChangeDetail {
 // This method simplifies the process of adding changes to a log entry, allowing developers to pass values of any type
 // without worrying about their string conversion. The use of convertToString() ensures that all values are consistently
 // logged as strings, which is required for storing them in logharbour storage.
-func (ci *ChangeInfo) AddChange(field string, oldValue, newValue any) *ChangeInfo {
+func (ci ChangeInfo) AddChange(field string, oldValue, newValue any) ChangeInfo {
 	change := NewChangeDetail(field, oldValue, newValue)
 	ci.Changes = append(ci.Changes, change)
 	return ci
 }
 
 // NewChangeInfo creates a new ChangeInfo instance.
-func NewChangeInfo(entity, operation string) *ChangeInfo {
-	return &ChangeInfo{
+func NewChangeInfo(entity, operation string) ChangeInfo {
+	return ChangeInfo{
 		Entity:  entity,
 		Op:      operation,
 		Changes: []ChangeDetail{},
