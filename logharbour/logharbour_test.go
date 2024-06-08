@@ -196,31 +196,24 @@ func TestLogDataChange(t *testing.T) {
 	}
 
 	// Extract and assert the ChangeInfo data from the LogEntry
-	changeData, ok := loggedEntry.Data.(map[string]any) // Type assertion to access ChangeInfo data
-	if !ok {
-		t.Fatalf("Expected ChangeInfo data, got %T", loggedEntry.Data)
-	}
+	changeData := loggedEntry.Data.ChangeData // Access ChangeInfo data directly
 
 	// Check the entity and operation
-	if changeData["entity"] != "User" || changeData["op"] != "Update" {
-		t.Errorf("Expected entity 'User' and operation 'Update', got entity '%s' and operation '%s'", changeData["entity"], changeData["op"])
+	if changeData.Entity != "User" || changeData.Op != "Update" {
+		t.Errorf("Expected entity 'User' and operation 'Update', got entity '%s' and operation '%s'", changeData.Entity, changeData.Op)
 	}
 
 	// Check the changes
-	changes, ok := changeData["changes"].([]any)
-	if !ok || len(changes) == 0 {
-		t.Fatalf("Expected changes, got %T", changeData["changes"])
+	if len(changeData.Changes) == 0 {
+		t.Fatalf("Expected changes, got %d", len(changeData.Changes))
 	}
 
 	// Assuming we know there's only one change for simplicity
-	firstChange, ok := changes[0].(map[string]any)
-	if !ok {
-		t.Fatalf("Expected a change detail, got %T", changes[0])
-	}
+	firstChange := changeData.Changes[0]
 
 	// Check the old and new email values
-	if firstChange["field"] != "email" || firstChange["old_value"] != `"oldEmail@example.com"` || firstChange["new_value"] != `"newEmail@example.com"` {
-		t.Errorf("Expected email change from 'oldEmail@example.com' to 'newEmail@example.com', got field '%s', old value '%s', new value '%s'", firstChange["field"], firstChange["old_value"], firstChange["new_value"])
+	if firstChange.Field != "email" || firstChange.OldVal != "oldEmail@example.com" || firstChange.NewVal != "newEmail@example.com" {
+		t.Errorf("Expected email change from 'oldEmail@example.com' to 'newEmail@example.com', got field '%s', old value '%s', new value '%s'", firstChange.Field, firstChange.OldVal, firstChange.NewVal)
 	}
 }
 
@@ -246,10 +239,10 @@ func TestLogDebugWithAnyData(t *testing.T) {
 		Data             any
 		ExpectedContains string
 	}{
-		{"String", "test string", `"\"test string\""`},
-		{"Int", 42, `"42"`},
-		{"Bool", true, `"true"`},
-		{"Map", map[string]any{"key": "value"}, `"{\"key\":\"value\"}"`},
+		{"String", "test string", "test string"}, // Adjusted expected value
+		{"Int", 42, "42"},                        // Adjusted expected value
+		{"Bool", true, "true"},                   // Adjusted expected value
+		{"Map", map[string]any{"key": "value"}, `{"key":"value"}`},
 	}
 
 	for _, td := range testData {
@@ -265,21 +258,15 @@ func TestLogDebugWithAnyData(t *testing.T) {
 				t.Fatalf("Failed to unmarshal logged message: %v", err)
 			}
 
-			dataField, ok := logEntry.Data.(map[string]any)
-			if !ok {
-				t.Fatalf("Expected 'data' field to be a map, got %T", logEntry.Data)
+			// Access DebugData field directly
+			dataField := logEntry.Data.DebugData
+			if dataField == nil {
+				t.Fatalf("Expected 'DebugData' field to be non-nil")
 			}
 
-			dataJSON, err := json.Marshal(dataField["data"])
-			fmt.Println("data field:")
-			fmt.Println(dataField["data"])
-			fmt.Println(dataJSON)
-			if err != nil {
-				t.Fatalf("Failed to marshal 'data' field: %v", err)
-			}
-
-			if string(dataJSON) != td.ExpectedContains {
-				t.Errorf("Expected 'data' field to be %s, got %s", td.ExpectedContains, string(dataJSON))
+			// Compare the actual data with the expected data
+			if fmt.Sprintf("%v", dataField.Data) != td.ExpectedContains {
+				t.Errorf("Expected 'data' field to be %s, got %v", td.ExpectedContains, dataField.Data)
 			}
 
 			mockW.Reset()
@@ -326,14 +313,14 @@ func TestLogActivity(t *testing.T) {
 		t.Errorf("Expected type to be 'Activity', got '%s'", logEntryMap.Type)
 	}
 
-	dataFieldMap, ok := logEntryMap.Data.(string)
-	if !ok {
-		t.Fatalf("Expected 'data' field to be a string, got %T", logEntryMap.Data)
+	dataFieldMap := logEntryMap.Data.ActivityData
+	if dataFieldMap == "" {
+		t.Fatalf("Expected 'ActivityData' field to be non-empty")
 	}
 
 	expectedDataJSONMap := `{"key1":"value1","key2":42,"key3":true}`
 	if dataFieldMap != expectedDataJSONMap {
-		t.Errorf("Expected 'data' field to be %s, got %s", expectedDataJSONMap, dataFieldMap)
+		t.Errorf("Expected 'ActivityData' field to be %s, got %s", expectedDataJSONMap, dataFieldMap)
 	}
 
 	// Assert for activity data (string)
@@ -351,14 +338,14 @@ func TestLogActivity(t *testing.T) {
 		t.Errorf("Expected type to be 'Activity', got '%s'", logEntryString.Type)
 	}
 
-	dataFieldString, ok := logEntryString.Data.(string)
-	if !ok {
-		t.Fatalf("Expected 'data' field to be a string, got %T", logEntryString.Data)
+	dataFieldString := logEntryString.Data.ActivityData
+	if dataFieldString == "" {
+		t.Fatalf("Expected 'ActivityData' field to be non-empty")
 	}
 
-	expectedDataString := `"Simple activity data"`
+	expectedDataString := "Simple activity data" // Compare directly as a plain string
 	if dataFieldString != expectedDataString {
-		t.Errorf("Expected 'data' field to be %s, got %s", expectedDataString, dataFieldString)
+		t.Errorf("Expected 'ActivityData' field to be %s, got %s", expectedDataString, dataFieldString)
 	}
 }
 
@@ -404,4 +391,23 @@ func Example() {
 
 	// Log a debug entry.
 	logger.LogDebug("Debugging user session", map[string]any{"sessionID": "12345"})
+}
+
+func TestLogger_Logf(t *testing.T) {
+	var buf bytes.Buffer
+	context := NewLoggerContext(Info)
+	logger := NewLogger(context, "TestApp", &buf)
+
+	logger.Logf("This is a formatted log message with value: %d", 42)
+
+	var logEntry LogEntry
+	err := json.Unmarshal(buf.Bytes(), &logEntry)
+	if err != nil {
+		t.Fatalf("Failed to unmarshal logged message: %v", err)
+	}
+
+	expectedMsg := "This is a formatted log message with value: 42"
+	if logEntry.Msg != expectedMsg {
+		t.Errorf("expected msg to be %q, got %q", expectedMsg, logEntry.Msg)
+	}
 }
