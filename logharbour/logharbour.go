@@ -421,3 +421,27 @@ func NewChangeInfo(entity, operation string) *ChangeInfo {
 		Changes: []ChangeDetail{},
 	}
 }
+
+// Logf is a variant of Log that takes a formatted message
+func (l *Logger) Logf(format string, args ...any) {
+	message := fmt.Sprintf(format, args...)
+	l.Log(message)
+}
+
+// LogActivityf is a variant of LogActivity that takes a formatted message
+func (l *Logger) LogActivityf(data ActivityInfo, format string, args ...any) {
+	message := fmt.Sprintf(format, args...)
+	l.LogActivity(message, data)
+}
+
+// LogDataChangef is a variant of LogDataChange that takes a formatted message
+func (l *Logger) LogDataChangef(data ChangeInfo, format string, args ...any) {
+	message := fmt.Sprintf(format, args...)
+	l.LogDataChange(message, data)
+}
+
+// LogDebugf is a variant of LogDebug that takes a formatted message
+func (l *Logger) LogDebugf(data any, format string, args ...any) {
+	message := fmt.Sprintf(format, args...)
+	l.LogDebug(message, data)
+}
