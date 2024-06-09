@@ -67,7 +67,7 @@ func main() {
 			changeInfo := logharbour.NewChangeInfo(user, changeType)
 			changeDetail := logharbour.NewChangeDetail(field, oldValue, newValue)
 			changeInfo.Changes = append(changeInfo.Changes, changeDetail)
-			logger.LogDataChange(fmt.Sprintf("User %s %s", user, changeType), changeInfo)
+			logger.LogDataChange(fmt.Sprintf("User %s %s", user, changeType), *changeInfo)
 		}
 
 		// Log an activity

@@ -178,7 +178,7 @@ func TestLogDataChange(t *testing.T) {
 	changeInfo = changeInfo.AddChange("email", "oldEmail@example.com", "newEmail@example.com")
 
 	// Log the data change
-	logger.LogDataChange("User updated profile", changeInfo)
+	logger.LogDataChange("User updated profile", *changeInfo)
 
 	// Get the logged message
 	loggedMessage := buf.String()
@@ -384,7 +384,7 @@ func Example() {
 		fmt.Println("Error adding change:", err)
 		return
 	}
-	logger.LogDataChange("User updated profile", changeInfo)
+	logger.LogDataChange("User updated profile", *changeInfo)
 
 	// Change logger priority at runtime.
 	lctx.ChangeMinLogPriority(Debug2)
