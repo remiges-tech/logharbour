@@ -18,18 +18,12 @@ func GetApps(c *gin.Context, s *service.Service) {
 		wscutils.SendErrorResponse(c, wscutils.NewErrorResponse(MsgId_InternalErr, ErrCode_DatabaseError))
 		return
 	}
-
-	res, err := logharbour.GetSet(queryToken, es, App, logharbour.GetSetParam{})
+	apps, err := logharbour.GetApps(queryToken, es)
 	if err != nil {
 		errmsg := errorHandler(err)
 		l.Debug0().Error(err).Log("error in AppList")
 		wscutils.SendErrorResponse(c, wscutils.NewResponse(wscutils.ErrorStatus, nil, []wscutils.ErrorMessage{errmsg}))
 		return
-	}
-
-	var apps []string
-	for app := range res {
-		apps = append(apps, app)
 	}
 	wscutils.SendSuccessResponse(c, wscutils.NewSuccessResponse(apps))
 }

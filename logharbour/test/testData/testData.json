@@ -2563,6 +2563,2569 @@
         "data": {
             "activity_data": "localhost:2379"
         }
+    },
+    {
+        "id": "101",
+        "app": "crux",
+        "system": "kanchanb",
+        "module": "AMC",
+        "type": "D",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.915Z",
+        "who": "Gideon",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "2eb6:8d0f:e34d:699b:0b24:b2ac:aa6d:c11a",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 0,
+                "runtime": "",
+                "file": "debuglogchange.go",
+                "line": 24,
+                "func": "getSet()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "102",
+        "app": "rigel",
+        "system": "adarshs",
+        "module": "UCC",
+        "type": "A",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.915Z",
+        "who": "Tanya",
+        "op": "UPDATE",
+        "class": "config",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "250.210.161.171",
+        "msg": "Updated Successfully",
+        "data": {
+            "activity_data": "localhost:2379"
+        }
+    },
+    {
+        "id": "103",
+        "app": "amazon",
+        "system": "sufiyaans",
+        "module": "Logout",
+        "type": "C",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.916Z",
+        "who": "Eulah",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "e6a1:a1d1:daa4:eab3:fa9a:281b:cde4:eefe",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "104",
+        "app": "amazon",
+        "system": "kaveri.broadside.co",
+        "module": "Login",
+        "type": "D",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.916Z",
+        "who": "Jed",
+        "op": "DELETE",
+        "class": "ruleset",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "250.47.205.228",
+        "msg": "Deleted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 1,
+                "runtime": "",
+                "file": "clientFn.go",
+                "line": 432,
+                "func": "getQuery()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "105",
+        "app": "logharbour",
+        "system": "tusharb",
+        "module": "Logout",
+        "type": "D",
+        "pri": "Debug0",
+        "when": "2024-05-06T15:21:48.916Z",
+        "who": "Bert",
+        "op": "DELETE",
+        "class": "app",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "8152:e693:359a:67be:a71e:c2c9:060e:aa97",
+        "msg": "Deleted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 3,
+                "runtime": "",
+                "file": "pagination.component.ts",
+                "line": 62,
+                "func": "next()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "106",
+        "app": "rigel",
+        "system": "anikets",
+        "module": "UCC",
+        "type": "A",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.916Z",
+        "who": "Faustino",
+        "op": "INSERT",
+        "class": "schema",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "0285:4fda:baad:ac70:7467:da9d:e88a:fddc",
+        "msg": "Inserted Successfully",
+        "data": {
+            "activity_data": "Starting execution of WorkflowUpdate()"
+        }
+    },
+    {
+        "id": "107",
+        "app": "amazon",
+        "system": "kaveri.broadside.co",
+        "module": "UCC",
+        "type": "D",
+        "pri": "Debug0",
+        "when": "2024-05-06T15:21:48.916Z",
+        "who": "Rachel",
+        "op": "UPDATE",
+        "class": "schema",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "200.227.151.125",
+        "msg": "Updated Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 2,
+                "runtime": "",
+                "file": "utils.go",
+                "line": 19,
+                "func": "convertToString()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "108",
+        "app": "crux",
+        "system": "kaveri.broadside.co",
+        "module": "AMC",
+        "type": "A",
+        "pri": "Debug0",
+        "when": "2024-05-06T15:21:48.917Z",
+        "who": "Alexa",
+        "op": "UPDATE",
+        "class": "schema",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "eccb:0dfb:5fad:fff9:75aa:ace1:541f:c546",
+        "msg": "Updated Successfully",
+        "data": {
+            "activity_data": "&quot;Finished execution of WorkflowUpdate()&quot;"
+        }
+    },
+    {
+        "id": "109",
+        "app": "logharbour",
+        "system": "sufiyaans",
+        "module": "Logout",
+        "type": "A",
+        "pri": "Err",
+        "when": "2024-05-06T15:21:48.917Z",
+        "who": "Evelyn",
+        "op": "DELETE",
+        "class": "ruleset",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "181.134.109.133",
+        "msg": "Deleted Successfully",
+        "data": {
+            "activity_data": "Starting execution of WorkflowUpdate()"
+        }
+    },
+    {
+        "id": "110",
+        "app": "crux",
+        "system": "narmada.broadside.co",
+        "module": "Logout",
+        "type": "C",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.917Z",
+        "who": "Arely",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "de71:12e4:eaee:ff0d:f5cb:a0a2:991d:aecc",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "111",
+        "app": "flipkart",
+        "system": "adarshs",
+        "module": "Login",
+        "type": "A",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.917Z",
+        "who": "Lindsey",
+        "op": "DELETE",
+        "class": "app",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "220.199.234.188",
+        "msg": "Deleted Successfully",
+        "data": {
+            "activity_data": "Starting execution of WorkflowUpdate()"
+        }
+    },
+    {
+        "id": "112",
+        "app": "flipkart",
+        "system": "sufiyaans",
+        "module": "UCC",
+        "type": "C",
+        "pri": "Debug0",
+        "when": "2024-05-06T15:21:48.918Z",
+        "who": "Ada",
+        "op": "INSERT",
+        "class": "schema",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "101.38.209.52",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "113",
+        "app": "logharbour",
+        "system": "kaveri.broadside.co",
+        "module": "AMC",
+        "type": "D",
+        "pri": "Info",
+        "when": "2024-05-06T15:21:48.918Z",
+        "who": "Deanna",
+        "op": "UPDATE",
+        "class": "schema",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "89.93.147.138",
+        "msg": "Updated Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 1,
+                "runtime": "",
+                "file": "clientFn.go",
+                "line": 432,
+                "func": "getQuery()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "114",
+        "app": "crux",
+        "system": "sufiyaans",
+        "module": "Logout",
+        "type": "C",
+        "pri": "Crit",
+        "when": "2024-05-06T15:21:48.918Z",
+        "who": "Christophe",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "227.173.246.160",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "115",
+        "app": "amazon",
+        "system": "adarshs",
+        "module": "UCC",
+        "type": "A",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.918Z",
+        "who": "Suzanne",
+        "op": "UPDATE",
+        "class": "config",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "61.177.18.13",
+        "msg": "Updated Successfully",
+        "data": {
+            "activity_data": "localhost:2379"
+        }
+    },
+    {
+        "id": "116",
+        "app": "logharbour",
+        "system": "anikets",
+        "module": "AMC",
+        "type": "D",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.918Z",
+        "who": "Jameson",
+        "op": "UPDATE",
+        "class": "config",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "88.112.102.54",
+        "msg": "Updated Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 2,
+                "runtime": "",
+                "file": "utils.go",
+                "line": 19,
+                "func": "convertToString()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "117",
+        "app": "crux",
+        "system": "tusharb",
+        "module": "AMC",
+        "type": "C",
+        "pri": "Debug0",
+        "when": "2024-05-06T15:21:48.919Z",
+        "who": "Deven",
+        "op": "UPDATE",
+        "class": "app",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "77.135.184.205",
+        "msg": "Updated Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "UPDATE",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}]}]",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}]}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "118",
+        "app": "flipkart",
+        "system": "anikets",
+        "module": "Logout",
+        "type": "C",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.919Z",
+        "who": "Leslie",
+        "op": "INSERT",
+        "class": "schema",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "053e:2cb6:d593:0a0a:bc80:b2be:eea8:2fed",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "119",
+        "app": "logharbour",
+        "system": "tusharb",
+        "module": "AMC",
+        "type": "A",
+        "pri": "Info",
+        "when": "2024-05-06T15:21:48.919Z",
+        "who": "Reba",
+        "op": "INSERT",
+        "class": "app",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "22.163.202.2",
+        "msg": "Inserted Successfully",
+        "data": {
+            "activity_data": "localhost:2379"
+        }
+    },
+    {
+        "id": "120",
+        "app": "flipkart",
+        "system": "adarshs",
+        "module": "Login",
+        "type": "C",
+        "pri": "Err",
+        "when": "2024-05-06T15:21:48.919Z",
+        "who": "Cletus",
+        "op": "UPDATE",
+        "class": "config",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "194.28.235.204",
+        "msg": "Updated Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "UPDATE",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}]}]",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}]}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "121",
+        "app": "amazon",
+        "system": "sufiyaans",
+        "module": "UCC",
+        "type": "C",
+        "pri": "Info",
+        "when": "2024-05-06T15:21:48.919Z",
+        "who": "Daisha",
+        "op": "UPDATE",
+        "class": "ruleset",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "d97c:1ff8:7beb:7dbb:cd7f:c650:f2ea:3701",
+        "msg": "Updated Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "UPDATE",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}]}]",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}]}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "122",
+        "app": "amazon",
+        "system": "sufiyaans",
+        "module": "Login",
+        "type": "C",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.920Z",
+        "who": "Madyson",
+        "op": "DELETE",
+        "class": "ruleset",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "c7ce:78f1:d418:d91f:ecbf:aea7:fcde:beef",
+        "msg": "Deleted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "DELETE",
+                "changes": [
+                    {
+                        "field": "schema",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]",
+                        "new_value": ""
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "123",
+        "app": "logharbour",
+        "system": "anikets",
+        "module": "Login",
+        "type": "C",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.920Z",
+        "who": "Queenie",
+        "op": "DELETE",
+        "class": "config",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "6ee2:411f:e549:0c1a:6ceb:390f:57bf:2e91",
+        "msg": "Deleted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "DELETE",
+                "changes": [
+                    {
+                        "field": "schema",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]",
+                        "new_value": ""
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "124",
+        "app": "flipkart",
+        "system": "kaveri.broadside.co",
+        "module": "Login",
+        "type": "C",
+        "pri": "Info",
+        "when": "2024-05-06T15:21:48.920Z",
+        "who": "Luella",
+        "op": "UPDATE",
+        "class": "app",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "18de:0dfb:f125:b7c9:34ec:fcff:ff1a:ed2b",
+        "msg": "Updated Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "UPDATE",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}]}]",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}]}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "125",
+        "app": "rigel",
+        "system": "kanchanb",
+        "module": "Login",
+        "type": "C",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.920Z",
+        "who": "Chloe",
+        "op": "INSERT",
+        "class": "config",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "1fae:b2ba:81eb:c2ad:fb5b:ff7c:6f60:1752",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "126",
+        "app": "logharbour",
+        "system": "kanchanb",
+        "module": "AMC",
+        "type": "D",
+        "pri": "Err",
+        "when": "2024-05-06T15:21:48.920Z",
+        "who": "Rigoberto",
+        "op": "INSERT",
+        "class": "app",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "d0af:61c9:7a23:7be2:ca1e:44ab:7d68:0774",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 0,
+                "runtime": "",
+                "file": "debuglogchange.go",
+                "line": 24,
+                "func": "getSet()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "127",
+        "app": "starmf",
+        "system": "sufiyaans",
+        "module": "UCC",
+        "type": "C",
+        "pri": "Err",
+        "when": "2024-05-06T15:21:48.921Z",
+        "who": "Dennis",
+        "op": "DELETE",
+        "class": "schema",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "71.34.12.118",
+        "msg": "Deleted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "DELETE",
+                "changes": [
+                    {
+                        "field": "schema",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]",
+                        "new_value": ""
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "128",
+        "app": "crux",
+        "system": "kaveri.broadside.co",
+        "module": "Logout",
+        "type": "D",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.921Z",
+        "who": "Jon",
+        "op": "DELETE",
+        "class": "app",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "cec3:a8e0:c215:7da4:9dff:42db:eee4:ef1f",
+        "msg": "Deleted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 2,
+                "runtime": "",
+                "file": "utils.go",
+                "line": 19,
+                "func": "convertToString()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "129",
+        "app": "starmf",
+        "system": "kanchanb",
+        "module": "AMC",
+        "type": "C",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.921Z",
+        "who": "Betsy",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "3a87:482d:a52d:8ba0:cddc:e16c:abd9:1762",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "130",
+        "app": "starmf",
+        "system": "narmada.broadside.co",
+        "module": "Logout",
+        "type": "A",
+        "pri": "Crit",
+        "when": "2024-05-06T15:21:48.921Z",
+        "who": "Precious",
+        "op": "UPDATE",
+        "class": "app",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "107.234.177.79",
+        "msg": "Updated Successfully",
+        "data": {
+            "activity_data": "&quot;Finished execution of WorkflowUpdate()&quot;"
+        }
+    },
+    {
+        "id": "131",
+        "app": "flipkart",
+        "system": "anikets",
+        "module": "UCC",
+        "type": "A",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.922Z",
+        "who": "Luz",
+        "op": "UPDATE",
+        "class": "schema",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "bcea:f9e5:ec0e:514e:2601:a17f:b15d:5c4e",
+        "msg": "Updated Successfully",
+        "data": {
+            "activity_data": "Starting execution of WorkflowUpdate()"
+        }
+    },
+    {
+        "id": "132",
+        "app": "crux",
+        "system": "tusharb",
+        "module": "Login",
+        "type": "A",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.922Z",
+        "who": "Oliver",
+        "op": "UPDATE",
+        "class": "config",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "6aed:baca:c1db:207f:0bfc:0ac2:ce64:edef",
+        "msg": "Updated Successfully",
+        "data": {
+            "activity_data": "localhost:2379"
+        }
+    },
+    {
+        "id": "133",
+        "app": "crux",
+        "system": "adarshs",
+        "module": "UCC",
+        "type": "C",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.922Z",
+        "who": "Abigale",
+        "op": "INSERT",
+        "class": "app",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "b7f5:6d0b:2eae:ac1f:22d4:dfbe:1c53:dad6",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "134",
+        "app": "crux",
+        "system": "kanchanb",
+        "module": "AMC",
+        "type": "C",
+        "pri": "Err",
+        "when": "2024-05-06T15:21:48.922Z",
+        "who": "Blaise",
+        "op": "INSERT",
+        "class": "app",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "136.123.109.87",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "135",
+        "app": "starmf",
+        "system": "narmada.broadside.co",
+        "module": "UCC",
+        "type": "D",
+        "pri": "Crit",
+        "when": "2024-05-06T15:21:48.922Z",
+        "who": "Rodrick",
+        "op": "INSERT",
+        "class": "app",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "23.84.90.201",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 3,
+                "runtime": "",
+                "file": "pagination.component.ts",
+                "line": 62,
+                "func": "next()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "136",
+        "app": "flipkart",
+        "system": "tusharb",
+        "module": "UCC",
+        "type": "A",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.923Z",
+        "who": "Viviane",
+        "op": "UPDATE",
+        "class": "app",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "1aa1:ce7e:c680:2caf:85d2:1839:7dde:275b",
+        "msg": "Updated Successfully",
+        "data": {
+            "activity_data": "&quot;Finished execution of WorkflowUpdate()&quot;"
+        }
+    },
+    {
+        "id": "137",
+        "app": "amazon",
+        "system": "adarshs",
+        "module": "AMC",
+        "type": "C",
+        "pri": "Err",
+        "when": "2024-05-06T15:21:48.923Z",
+        "who": "Rosanna",
+        "op": "INSERT",
+        "class": "app",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "158.217.206.203",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "138",
+        "app": "rigel",
+        "system": "kanchanb",
+        "module": "UCC",
+        "type": "D",
+        "pri": "Debug0",
+        "when": "2024-05-06T15:21:48.923Z",
+        "who": "Noe",
+        "op": "INSERT",
+        "class": "config",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "170.7.72.184",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 0,
+                "runtime": "",
+                "file": "debuglogchange.go",
+                "line": 24,
+                "func": "getSet()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "139",
+        "app": "logharbour",
+        "system": "kaveri.broadside.co",
+        "module": "AMC",
+        "type": "C",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.923Z",
+        "who": "Sallie",
+        "op": "INSERT",
+        "class": "config",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "76.209.91.197",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "140",
+        "app": "amazon",
+        "system": "tusharb",
+        "module": "Logout",
+        "type": "C",
+        "pri": "Err",
+        "when": "2024-05-06T15:21:48.924Z",
+        "who": "Heaven",
+        "op": "UPDATE",
+        "class": "app",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "26.108.230.165",
+        "msg": "Updated Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "UPDATE",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}]}]",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}]}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "141",
+        "app": "rigel",
+        "system": "kaveri.broadside.co",
+        "module": "AMC",
+        "type": "D",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.924Z",
+        "who": "Herminia",
+        "op": "UPDATE",
+        "class": "ruleset",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "103.241.216.65",
+        "msg": "Updated Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 3,
+                "runtime": "",
+                "file": "pagination.component.ts",
+                "line": 62,
+                "func": "next()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "142",
+        "app": "rigel",
+        "system": "tusharb",
+        "module": "Login",
+        "type": "C",
+        "pri": "Debug0",
+        "when": "2024-05-06T15:21:48.924Z",
+        "who": "Kenny",
+        "op": "INSERT",
+        "class": "app",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "c972:b0d9:e1ce:a993:eb02:aa82:5aa3:b1da",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "143",
+        "app": "logharbour",
+        "system": "anikets",
+        "module": "AMC",
+        "type": "C",
+        "pri": "Info",
+        "when": "2024-05-06T15:21:48.924Z",
+        "who": "Summer",
+        "op": "UPDATE",
+        "class": "schema",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "252.202.230.214",
+        "msg": "Updated Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "UPDATE",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}]}]",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}]}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "144",
+        "app": "rigel",
+        "system": "kaveri.broadside.co",
+        "module": "UCC",
+        "type": "D",
+        "pri": "Debug0",
+        "when": "2024-05-06T15:21:48.925Z",
+        "who": "Roberta",
+        "op": "UPDATE",
+        "class": "schema",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "0.236.219.249",
+        "msg": "Updated Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 3,
+                "runtime": "",
+                "file": "pagination.component.ts",
+                "line": 62,
+                "func": "next()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "145",
+        "app": "logharbour",
+        "system": "sufiyaans",
+        "module": "Login",
+        "type": "D",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.925Z",
+        "who": "Helena",
+        "op": "DELETE",
+        "class": "app",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "234.110.221.83",
+        "msg": "Deleted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 1,
+                "runtime": "",
+                "file": "clientFn.go",
+                "line": 432,
+                "func": "getQuery()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "146",
+        "app": "amazon",
+        "system": "sufiyaans",
+        "module": "UCC",
+        "type": "C",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.925Z",
+        "who": "Kobe",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "3fc8:70bf:61e6:22cd:fac2:b1fb:feba:f9f7",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "147",
+        "app": "crux",
+        "system": "anikets",
+        "module": "Login",
+        "type": "C",
+        "pri": "Debug0",
+        "when": "2024-05-06T15:21:48.926Z",
+        "who": "Alfredo",
+        "op": "DELETE",
+        "class": "config",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "c9b5:8e86:8b1b:40b7:c9f5:64e5:85f6:20db",
+        "msg": "Deleted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "DELETE",
+                "changes": [
+                    {
+                        "field": "schema",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]",
+                        "new_value": ""
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "148",
+        "app": "amazon",
+        "system": "kaveri.broadside.co",
+        "module": "Logout",
+        "type": "C",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.926Z",
+        "who": "Tressie",
+        "op": "DELETE",
+        "class": "ruleset",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "131.85.141.102",
+        "msg": "Deleted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "DELETE",
+                "changes": [
+                    {
+                        "field": "schema",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]",
+                        "new_value": ""
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "149",
+        "app": "crux",
+        "system": "tusharb",
+        "module": "AMC",
+        "type": "D",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.926Z",
+        "who": "Beatrice",
+        "op": "DELETE",
+        "class": "schema",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "214.155.125.61",
+        "msg": "Deleted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 1,
+                "runtime": "",
+                "file": "clientFn.go",
+                "line": 432,
+                "func": "getQuery()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "150",
+        "app": "rigel",
+        "system": "sufiyaans",
+        "module": "UCC",
+        "type": "C",
+        "pri": "Err",
+        "when": "2024-05-06T15:21:48.926Z",
+        "who": "Nyah",
+        "op": "UPDATE",
+        "class": "config",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "18.101.144.176",
+        "msg": "Updated Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "UPDATE",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}]}]",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}]}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "151",
+        "app": "logharbour",
+        "system": "adarshs",
+        "module": "UCC",
+        "type": "D",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.926Z",
+        "who": "Pearl",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "98ba:27dc:6380:f5da:c9ff:ad39:a02e:0536",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 0,
+                "runtime": "",
+                "file": "debuglogchange.go",
+                "line": 24,
+                "func": "getSet()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "152",
+        "app": "starmf",
+        "system": "narmada.broadside.co",
+        "module": "Login",
+        "type": "A",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.928Z",
+        "who": "Rollin",
+        "op": "DELETE",
+        "class": "ruleset",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "f7ec:e265:e67e:cdaf:ce3b:f8e7:f4da:7a6b",
+        "msg": "Deleted Successfully",
+        "data": {
+            "activity_data": "&quot;Finished execution of WorkflowUpdate()&quot;"
+        }
+    },
+    {
+        "id": "153",
+        "app": "crux",
+        "system": "anikets",
+        "module": "AMC",
+        "type": "A",
+        "pri": "Debug0",
+        "when": "2024-05-06T15:21:48.928Z",
+        "who": "Cali",
+        "op": "UPDATE",
+        "class": "schema",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "44.132.32.18",
+        "msg": "Updated Successfully",
+        "data": {
+            "activity_data": "localhost:2379"
+        }
+    },
+    {
+        "id": "154",
+        "app": "amazon",
+        "system": "narmada.broadside.co",
+        "module": "AMC",
+        "type": "D",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.928Z",
+        "who": "Gillian",
+        "op": "UPDATE",
+        "class": "app",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "c406:20b0:5ff0:9c9c:49cc:0c6c:9b7e:2e9e",
+        "msg": "Updated Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 1,
+                "runtime": "",
+                "file": "clientFn.go",
+                "line": 432,
+                "func": "getQuery()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "155",
+        "app": "starmf",
+        "system": "adarshs",
+        "module": "Login",
+        "type": "D",
+        "pri": "Info",
+        "when": "2024-05-06T15:21:48.928Z",
+        "who": "Lucinda",
+        "op": "DELETE",
+        "class": "config",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "31.130.239.24",
+        "msg": "Deleted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 3,
+                "runtime": "",
+                "file": "pagination.component.ts",
+                "line": 62,
+                "func": "next()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "156",
+        "app": "crux",
+        "system": "adarshs",
+        "module": "UCC",
+        "type": "D",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.928Z",
+        "who": "Isai",
+        "op": "DELETE",
+        "class": "config",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "10a8:ceef:d0b9:eb58:f2e1:27ea:28bd:57ae",
+        "msg": "Deleted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 3,
+                "runtime": "",
+                "file": "pagination.component.ts",
+                "line": 62,
+                "func": "next()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "157",
+        "app": "rigel",
+        "system": "sufiyaans",
+        "module": "Logout",
+        "type": "D",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.928Z",
+        "who": "Maximillian",
+        "op": "INSERT",
+        "class": "schema",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "229.251.65.251",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 1,
+                "runtime": "",
+                "file": "clientFn.go",
+                "line": 432,
+                "func": "getQuery()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "158",
+        "app": "crux",
+        "system": "tusharb",
+        "module": "AMC",
+        "type": "A",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.928Z",
+        "who": "Mia",
+        "op": "DELETE",
+        "class": "app",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "107.114.4.52",
+        "msg": "Deleted Successfully",
+        "data": {
+            "activity_data": "&quot;Finished execution of WorkflowUpdate()&quot;"
+        }
+    },
+    {
+        "id": "159",
+        "app": "starmf",
+        "system": "adarshs",
+        "module": "UCC",
+        "type": "C",
+        "pri": "Crit",
+        "when": "2024-05-06T15:21:48.929Z",
+        "who": "Cassandra",
+        "op": "DELETE",
+        "class": "app",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "d80a:ccc2:e938:fce0:3eee:2dfc:bd8f:4afa",
+        "msg": "Deleted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "DELETE",
+                "changes": [
+                    {
+                        "field": "schema",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]",
+                        "new_value": ""
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "160",
+        "app": "amazon",
+        "system": "kanchanb",
+        "module": "UCC",
+        "type": "A",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.929Z",
+        "who": "Malika",
+        "op": "UPDATE",
+        "class": "ruleset",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "144.124.153.230",
+        "msg": "Updated Successfully",
+        "data": {
+            "activity_data": "Starting execution of WorkflowUpdate()"
+        }
+    },
+    {
+        "id": "161",
+        "app": "starmf",
+        "system": "kaveri.broadside.co",
+        "module": "Login",
+        "type": "D",
+        "pri": "Err",
+        "when": "2024-05-06T15:21:48.929Z",
+        "who": "Edison",
+        "op": "INSERT",
+        "class": "schema",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "b33c:eac5:25e7:714c:3eeb:5c53:df6c:abad",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 3,
+                "runtime": "",
+                "file": "pagination.component.ts",
+                "line": 62,
+                "func": "next()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "162",
+        "app": "crux",
+        "system": "sufiyaans",
+        "module": "AMC",
+        "type": "D",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.930Z",
+        "who": "Emie",
+        "op": "DELETE",
+        "class": "ruleset",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "227.117.193.75",
+        "msg": "Deleted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 0,
+                "runtime": "",
+                "file": "debuglogchange.go",
+                "line": 24,
+                "func": "getSet()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "163",
+        "app": "flipkart",
+        "system": "kanchanb",
+        "module": "Logout",
+        "type": "A",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.930Z",
+        "who": "Halie",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "906d:0e31:ae0a:bba1:f4ca:79eb:53fa:e790",
+        "msg": "Inserted Successfully",
+        "data": {
+            "activity_data": "&quot;Finished execution of WorkflowUpdate()&quot;"
+        }
+    },
+    {
+        "id": "164",
+        "app": "flipkart",
+        "system": "anikets",
+        "module": "AMC",
+        "type": "D",
+        "pri": "Debug0",
+        "when": "2024-05-06T15:21:48.930Z",
+        "who": "Stella",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "c686:eae5:db7c:5358:ff7d:a648:ceb5:dddf",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 0,
+                "runtime": "",
+                "file": "debuglogchange.go",
+                "line": 24,
+                "func": "getSet()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "165",
+        "app": "rigel",
+        "system": "sufiyaans",
+        "module": "Logout",
+        "type": "A",
+        "pri": "Crit",
+        "when": "2024-05-06T15:21:48.930Z",
+        "who": "Bridgette",
+        "op": "UPDATE",
+        "class": "config",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "46.26.193.194",
+        "msg": "Updated Successfully",
+        "data": {
+            "activity_data": "&quot;Finished execution of WorkflowUpdate()&quot;"
+        }
+    },
+    {
+        "id": "166",
+        "app": "starmf",
+        "system": "tusharb",
+        "module": "Login",
+        "type": "D",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.930Z",
+        "who": "Patsy",
+        "op": "UPDATE",
+        "class": "schema",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "150.125.249.182",
+        "msg": "Updated Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 1,
+                "runtime": "",
+                "file": "clientFn.go",
+                "line": 432,
+                "func": "getQuery()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "167",
+        "app": "crux",
+        "system": "anikets",
+        "module": "Logout",
+        "type": "C",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.931Z",
+        "who": "Samanta",
+        "op": "UPDATE",
+        "class": "config",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "40.94.104.152",
+        "msg": "Updated Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "UPDATE",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}]}]",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}]}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "168",
+        "app": "flipkart",
+        "system": "adarshs",
+        "module": "Login",
+        "type": "D",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.931Z",
+        "who": "Luella",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "33.193.38.178",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 3,
+                "runtime": "",
+                "file": "pagination.component.ts",
+                "line": 62,
+                "func": "next()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "169",
+        "app": "rigel",
+        "system": "kaveri.broadside.co",
+        "module": "Logout",
+        "type": "A",
+        "pri": "Crit",
+        "when": "2024-05-06T15:21:48.931Z",
+        "who": "Laura",
+        "op": "DELETE",
+        "class": "ruleset",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "223.206.243.44",
+        "msg": "Deleted Successfully",
+        "data": {
+            "activity_data": "localhost:2379"
+        }
+    },
+    {
+        "id": "170",
+        "app": "starmf",
+        "system": "narmada.broadside.co",
+        "module": "Logout",
+        "type": "D",
+        "pri": "Info",
+        "when": "2024-05-06T15:21:48.931Z",
+        "who": "Mathilde",
+        "op": "DELETE",
+        "class": "config",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "55.107.177.20",
+        "msg": "Deleted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 0,
+                "runtime": "",
+                "file": "debuglogchange.go",
+                "line": 24,
+                "func": "getSet()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "171",
+        "app": "crux",
+        "system": "kaveri.broadside.co",
+        "module": "Login",
+        "type": "D",
+        "pri": "Info",
+        "when": "2024-05-06T15:21:48.932Z",
+        "who": "Meggie",
+        "op": "INSERT",
+        "class": "config",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "59.64.200.226",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 2,
+                "runtime": "",
+                "file": "utils.go",
+                "line": 19,
+                "func": "convertToString()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "172",
+        "app": "crux",
+        "system": "narmada.broadside.co",
+        "module": "AMC",
+        "type": "D",
+        "pri": "Crit",
+        "when": "2024-05-06T15:21:48.932Z",
+        "who": "Carolanne",
+        "op": "INSERT",
+        "class": "schema",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "f2ab:b5b8:df38:83a3:e42b:eabe:4daf:2923",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 1,
+                "runtime": "",
+                "file": "clientFn.go",
+                "line": 432,
+                "func": "getQuery()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "173",
+        "app": "starmf",
+        "system": "kaveri.broadside.co",
+        "module": "UCC",
+        "type": "D",
+        "pri": "Info",
+        "when": "2024-05-06T15:21:48.932Z",
+        "who": "Cornell",
+        "op": "INSERT",
+        "class": "app",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "71.155.48.60",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 1,
+                "runtime": "",
+                "file": "clientFn.go",
+                "line": 432,
+                "func": "getQuery()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "174",
+        "app": "flipkart",
+        "system": "kaveri.broadside.co",
+        "module": "Login",
+        "type": "D",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.932Z",
+        "who": "Ransom",
+        "op": "DELETE",
+        "class": "config",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "9eb5:2ee1:74ea:a8ed:ebff:ac94:fcd8:76dd",
+        "msg": "Deleted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 2,
+                "runtime": "",
+                "file": "utils.go",
+                "line": 19,
+                "func": "convertToString()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "175",
+        "app": "amazon",
+        "system": "kanchanb",
+        "module": "Logout",
+        "type": "C",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.933Z",
+        "who": "Burnice",
+        "op": "DELETE",
+        "class": "app",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "31.127.120.180",
+        "msg": "Deleted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "DELETE",
+                "changes": [
+                    {
+                        "field": "schema",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]",
+                        "new_value": ""
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "176",
+        "app": "rigel",
+        "system": "kaveri.broadside.co",
+        "module": "UCC",
+        "type": "C",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.933Z",
+        "who": "Victor",
+        "op": "DELETE",
+        "class": "app",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "1.246.5.78",
+        "msg": "Deleted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "DELETE",
+                "changes": [
+                    {
+                        "field": "schema",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]",
+                        "new_value": ""
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "177",
+        "app": "starmf",
+        "system": "kaveri.broadside.co",
+        "module": "UCC",
+        "type": "D",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.933Z",
+        "who": "Cristal",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "163.43.120.140",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 0,
+                "runtime": "",
+                "file": "debuglogchange.go",
+                "line": 24,
+                "func": "getSet()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "178",
+        "app": "crux",
+        "system": "anikets",
+        "module": "Logout",
+        "type": "A",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.934Z",
+        "who": "Zakary",
+        "op": "UPDATE",
+        "class": "ruleset",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "42a0:ce5c:c79d:2a28:bc8c:ddbc:fb0c:0deb",
+        "msg": "Updated Successfully",
+        "data": {
+            "activity_data": "localhost:2379"
+        }
+    },
+    {
+        "id": "179",
+        "app": "logharbour",
+        "system": "adarshs",
+        "module": "Login",
+        "type": "A",
+        "pri": "Crit",
+        "when": "2024-05-06T15:21:48.934Z",
+        "who": "Benedict",
+        "op": "UPDATE",
+        "class": "schema",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "153.93.36.52",
+        "msg": "Updated Successfully",
+        "data": {
+            "activity_data": "localhost:2379"
+        }
+    },
+    {
+        "id": "180",
+        "app": "amazon",
+        "system": "narmada.broadside.co",
+        "module": "UCC",
+        "type": "C",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.935Z",
+        "who": "Efrain",
+        "op": "INSERT",
+        "class": "schema",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "114.29.161.245",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "181",
+        "app": "amazon",
+        "system": "anikets",
+        "module": "Login",
+        "type": "C",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.935Z",
+        "who": "Hilma",
+        "op": "DELETE",
+        "class": "app",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "38.197.198.129",
+        "msg": "Deleted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "DELETE",
+                "changes": [
+                    {
+                        "field": "schema",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]",
+                        "new_value": ""
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "182",
+        "app": "logharbour",
+        "system": "anikets",
+        "module": "Logout",
+        "type": "A",
+        "pri": "Info",
+        "when": "2024-05-06T15:21:48.935Z",
+        "who": "Jamarcus",
+        "op": "DELETE",
+        "class": "ruleset",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "134.252.28.75",
+        "msg": "Deleted Successfully",
+        "data": {
+            "activity_data": "&quot;Finished execution of WorkflowUpdate()&quot;"
+        }
+    },
+    {
+        "id": "183",
+        "app": "amazon",
+        "system": "kanchanb",
+        "module": "Login",
+        "type": "A",
+        "pri": "Info",
+        "when": "2024-05-06T15:21:48.936Z",
+        "who": "Dino",
+        "op": "INSERT",
+        "class": "schema",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "c8ff:5fce:4cc3:b42c:1d51:7dcb:4c71:170e",
+        "msg": "Inserted Successfully",
+        "data": {
+            "activity_data": "&quot;Finished execution of WorkflowUpdate()&quot;"
+        }
+    },
+    {
+        "id": "184",
+        "app": "logharbour",
+        "system": "adarshs",
+        "module": "AMC",
+        "type": "C",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.936Z",
+        "who": "Lulu",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "223.207.137.116",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "185",
+        "app": "flipkart",
+        "system": "anikets",
+        "module": "AMC",
+        "type": "C",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.936Z",
+        "who": "Elfrieda",
+        "op": "DELETE",
+        "class": "app",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "130.152.91.135",
+        "msg": "Deleted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "DELETE",
+                "changes": [
+                    {
+                        "field": "schema",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]",
+                        "new_value": ""
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "186",
+        "app": "rigel",
+        "system": "sufiyaans",
+        "module": "Login",
+        "type": "D",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.936Z",
+        "who": "Angel",
+        "op": "DELETE",
+        "class": "schema",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "620b:da21:7e43:dabb:570a:6feb:e21b:dfbb",
+        "msg": "Deleted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 3,
+                "runtime": "",
+                "file": "pagination.component.ts",
+                "line": 62,
+                "func": "next()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "187",
+        "app": "flipkart",
+        "system": "narmada.broadside.co",
+        "module": "Logout",
+        "type": "D",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.937Z",
+        "who": "Savion",
+        "op": "INSERT",
+        "class": "app",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "0124:71e4:961e:977a:9de4:080b:ee0e:bfcf",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 1,
+                "runtime": "",
+                "file": "clientFn.go",
+                "line": 432,
+                "func": "getQuery()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "188",
+        "app": "rigel",
+        "system": "adarshs",
+        "module": "UCC",
+        "type": "A",
+        "pri": "Err",
+        "when": "2024-05-06T15:21:48.937Z",
+        "who": "Cali",
+        "op": "DELETE",
+        "class": "ruleset",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "211.190.247.248",
+        "msg": "Deleted Successfully",
+        "data": {
+            "activity_data": "Starting execution of WorkflowUpdate()"
+        }
+    },
+    {
+        "id": "189",
+        "app": "flipkart",
+        "system": "tusharb",
+        "module": "AMC",
+        "type": "D",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.938Z",
+        "who": "Major",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "113.241.98.169",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 0,
+                "runtime": "",
+                "file": "debuglogchange.go",
+                "line": 24,
+                "func": "getSet()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "190",
+        "app": "rigel",
+        "system": "anikets",
+        "module": "AMC",
+        "type": "A",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.938Z",
+        "who": "Caesar",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "0d4f:839e:6cce:c0d3:32c3:f9ff:b684:fcc0",
+        "msg": "Inserted Successfully",
+        "data": {
+            "activity_data": "Starting execution of WorkflowUpdate()"
+        }
+    },
+    {
+        "id": "191",
+        "app": "rigel",
+        "system": "tusharb",
+        "module": "Logout",
+        "type": "D",
+        "pri": "Debug0",
+        "when": "2024-05-06T15:21:48.938Z",
+        "who": "Scottie",
+        "op": "INSERT",
+        "class": "schema",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "ac8a:eced:dfcc:2d07:396e:e48f:fea1:e3a7",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 2,
+                "runtime": "",
+                "file": "utils.go",
+                "line": 19,
+                "func": "convertToString()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "192",
+        "app": "logharbour",
+        "system": "narmada.broadside.co",
+        "module": "UCC",
+        "type": "D",
+        "pri": "Debug0",
+        "when": "2024-05-06T15:21:48.939Z",
+        "who": "Tatyana",
+        "op": "DELETE",
+        "class": "ruleset",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "00bb:988b:5dfc:dd8c:ddb5:b6bb:acde:b709",
+        "msg": "Deleted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 2,
+                "runtime": "",
+                "file": "utils.go",
+                "line": 19,
+                "func": "convertToString()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "193",
+        "app": "rigel",
+        "system": "anikets",
+        "module": "Login",
+        "type": "C",
+        "pri": "Err",
+        "when": "2024-05-06T15:21:48.939Z",
+        "who": "Annabell",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "faf2:c243:ffb3:cfcd:ac2e:c50a:1359:038e",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "194",
+        "app": "amazon",
+        "system": "anikets",
+        "module": "AMC",
+        "type": "D",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.939Z",
+        "who": "Haleigh",
+        "op": "INSERT",
+        "class": "config",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "122.17.134.143",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 1,
+                "runtime": "",
+                "file": "clientFn.go",
+                "line": 432,
+                "func": "getQuery()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "195",
+        "app": "rigel",
+        "system": "kanchanb",
+        "module": "UCC",
+        "type": "D",
+        "pri": "Crit",
+        "when": "2024-05-06T15:21:48.939Z",
+        "who": "Johnny",
+        "op": "UPDATE",
+        "class": "app",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "33.9.138.160",
+        "msg": "Updated Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 1,
+                "runtime": "",
+                "file": "clientFn.go",
+                "line": 432,
+                "func": "getQuery()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "196",
+        "app": "flipkart",
+        "system": "tusharb",
+        "module": "AMC",
+        "type": "C",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.940Z",
+        "who": "Ben",
+        "op": "INSERT",
+        "class": "schema",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "236.190.26.88",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "197",
+        "app": "flipkart",
+        "system": "kanchanb",
+        "module": "Login",
+        "type": "D",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.940Z",
+        "who": "Ted",
+        "op": "UPDATE",
+        "class": "ruleset",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "cbaf:ca1e:eb47:abfc:62fa:cb00:cb87:0544",
+        "msg": "Updated Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 0,
+                "runtime": "",
+                "file": "debuglogchange.go",
+                "line": 24,
+                "func": "getSet()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
+    },
+    {
+        "id": "198",
+        "app": "starmf",
+        "system": "kanchanb",
+        "module": "Login",
+        "type": "A",
+        "pri": "Crit",
+        "when": "2024-05-06T15:21:48.940Z",
+        "who": "Keaton",
+        "op": "INSERT",
+        "class": "ruleset",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "203.25.117.108",
+        "msg": "Inserted Successfully",
+        "data": {
+            "activity_data": "Starting execution of WorkflowUpdate()"
+        }
+    },
+    {
+        "id": "199",
+        "app": "amazon",
+        "system": "sufiyaans",
+        "module": "AMC",
+        "type": "A",
+        "pri": "Info",
+        "when": "2024-05-06T15:21:48.940Z",
+        "who": "Jaylin",
+        "op": "DELETE",
+        "class": "ruleset",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "253.193.213.205",
+        "msg": "Deleted Successfully",
+        "data": {
+            "activity_data": "&quot;Finished execution of WorkflowUpdate()&quot;"
+        }
+    },
+    {
+        "id": "200",
+        "app": "flipkart",
+        "system": "kaveri.broadside.co",
+        "module": "AMC",
+        "type": "C",
+        "pri": "Crit",
+        "when": "2024-05-06T15:21:48.941Z",
+        "who": "Winona",
+        "op": "INSERT",
+        "class": "config",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "926e:f263:fece:2f26:0a6e:da16:3008:3e2e",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
     }
-
 ]
