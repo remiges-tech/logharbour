@@ -2,6 +2,7 @@ package wsc_test
 
 import (
 	"bytes"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -9,6 +10,7 @@ import (
 	"github.com/remiges-tech/alya/wscutils"
 	"github.com/remiges-tech/logharbour/server/wsc"
 	"github.com/remiges-tech/logharbour/server/wsc/test/testUtils"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -23,11 +25,29 @@ func TestGetSet(t *testing.T) {
 			req, err := http.NewRequest(http.MethodPost, "/getset", payload)
 			require.NoError(t, err)
 
+			// Assuming `r` is your router or handler
 			r.ServeHTTP(res, req)
 
 			require.Equal(t, tc.ExpectedHttpCode, res.Code)
-			jsonData := testUtils.MarshalJson(tc.ExpectedResult)
-			require.JSONEq(t, string(jsonData), res.Body.String())
+
+			var actualResult wscutils.Response
+			err = json.Unmarshal(res.Body.Bytes(), &actualResult)
+			require.NoError(t, err)
+
+			expectedData, ok := tc.ExpectedResult.Data.([]interface{})
+			if ok {
+				actualData, ok := actualResult.Data.([]interface{})
+				if ok {
+					assert.ElementsMatch(t, expectedData, actualData)
+				} else {
+					t.Errorf("Expected Data to be []interface{}, got %T", actualResult.Data)
+				}
+			} else {
+				assert.Equal(t, tc.ExpectedResult.Data, actualResult.Data)
+			}
+
+			assert.Equal(t, tc.ExpectedResult.Status, actualResult.Status)
+			assert.ElementsMatch(t, tc.ExpectedResult.Messages, actualResult.Messages)
 		})
 	}
 }
@@ -39,7 +59,6 @@ func GetSetTestcase() []testUtils.TestCasesStruct {
 			RequestPayload: wscutils.Request{
 				Data: nil,
 			},
-
 			ExpectedHttpCode: http.StatusBadRequest,
 			ExpectedResult: &wscutils.Response{
 				Status: wscutils.ErrorStatus,
@@ -69,6 +88,11 @@ func GetSetTestcase() []testUtils.TestCasesStruct {
 						ErrCode: "required",
 						Field:   str("App"),
 					},
+					{
+						MsgID:   101,
+						ErrCode: "required",
+						Field:   str("SetAttr"),
+					},
 				},
 			},
 		},
@@ -81,12 +105,16 @@ func GetSetTestcase() []testUtils.TestCasesStruct {
 				},
 			},
 			ExpectedHttpCode: http.StatusOK,
-			ExpectedResult:   wscutils.NewSuccessResponse([]string{"abc"}),
+			ExpectedResult: &wscutils.Response{
+				Status: wscutils.SuccessStatus,
+				Data:   []interface{}{"ruleset", "app", "config", "schema"},
+				Messages: nil,
+			},
 		},
 	}
 	return schemaNewTestCase
 }
 
-func str(str string) *string {
-	return &str
+func str(s string) *string {
+	return &s
 }

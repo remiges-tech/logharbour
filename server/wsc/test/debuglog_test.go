@@ -40,9 +40,9 @@ func TestShowDebugLogs(t *testing.T) {
 }
 
 func showDebugLogTestCase() []testUtils.TestCasesStruct {
-	app := "crux"
-	module := "login"
-	days := 20
+	app := "starmf"
+	module := "Logout"
+	days := 100
 	invalidApp := "cr12@"
 	debugTestCases := []testUtils.TestCasesStruct{{
 		Name: "SUCCESS : with valid parameters ",

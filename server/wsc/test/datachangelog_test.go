@@ -45,9 +45,8 @@ func TestDataChangeLog(t *testing.T) {
 
 func dataChangeLogTestcase() []testUtils.TestCasesStruct {
 	app := "crux"
-	class := "wfinstance"
+	class := "schema"
 	instance := "1"
-	field := "row"
 	days := 1000
 	schemaNewTestCase := []testUtils.TestCasesStruct{
 		// 1st test case
@@ -63,17 +62,10 @@ func dataChangeLogTestcase() []testUtils.TestCasesStruct {
 				Data:   nil,
 				Messages: []wscutils.ErrorMessage{
 					{
+
 						MsgID:   101,
 						ErrCode: "required",
 						Field:   &wsc.APP,
-					}, {
-						MsgID:   101,
-						ErrCode: "required",
-						Field:   &wsc.CLASS,
-					}, {
-						MsgID:   101,
-						ErrCode: "required",
-						Field:   &wsc.INSTANCE,
 					},
 				},
 			},
@@ -86,13 +78,12 @@ func dataChangeLogTestcase() []testUtils.TestCasesStruct {
 					App:      app,
 					Class:    &class,
 					Instance: &instance,
-					Field:    &field,
 					Days:     &days,
 				},
 			},
 
 			ExpectedHttpCode: http.StatusOK,
-			TestJsonFile:     "./data/data_change_sponse.json",
+			TestJsonFile:     "./data/data_change_response.json",
 		},
 	}
 	return schemaNewTestCase

@@ -1,0 +1,36 @@
+{
+    "status": "success",
+    "data": {
+        "logs": [
+            {
+                "id": "52",
+                "app": "crux",
+                "system": "anikets",
+                "module": "AMC",
+                "type": "C",
+                "pri": "Debug0",
+                "when": "2024-05-06T15:21:48.893Z",
+                "who": "Darrin",
+                "op": "UPDATE",
+                "class": "schema",
+                "instance": "1",
+                "remote_ip": "162.240.62.164",
+                "msg": "Updated Successfully",
+                "data": {
+                    "change_data": {
+                        "entity": "ruleset",
+                        "op": "UPDATE",
+                        "changes": [
+                            {
+                                "field": "ruleset",
+                                "old_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}]}]",
+                                "new_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}]}]"
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    },
+    "messages": null
+}
