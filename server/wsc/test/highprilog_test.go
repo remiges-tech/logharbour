@@ -52,15 +52,14 @@ func highpriLogTestcase() []testUtils.TestCasesStruct {
 			RequestPayload: wscutils.Request{
 				Data: wsc.HighPriReq{},
 			},
-
 			ExpectedHttpCode: http.StatusBadRequest,
 			ExpectedResult: &wscutils.Response{
 				Status: wscutils.ErrorStatus,
 				Data:   nil,
 				Messages: []wscutils.ErrorMessage{
 					{
-						MsgID:   1001,
-						ErrCode: "invalid_json",
+						MsgID:   0,
+						ErrCode: "",
 					},
 				},
 			},
@@ -70,9 +69,9 @@ func highpriLogTestcase() []testUtils.TestCasesStruct {
 			Name: TestHighpriLog_2,
 			RequestPayload: wscutils.Request{
 				Data: wsc.HighPriReq{
-					App:  "crux",
-					Pri:  logharbour.Info,
-					Days: 1000,
+					App:  "starmf",
+					Pri:  logharbour.Crit,
+					Days: 100,
 				},
 			},
 

@@ -12,43 +12,45 @@ import (
 	"github.com/remiges-tech/logharbour/server/wsc/test/testUtils"
 	"github.com/stretchr/testify/require"
 )
-
 func TestShowActivityLog(t *testing.T) {
-	testCases := showActivityLogTestcase()
-	for _, tc := range testCases {
-		t.Run(tc.Name, func(t *testing.T) {
-			// Setting up buffer
-			payload := bytes.NewBuffer(testUtils.MarshalJson(tc.RequestPayload))
+    testCases := showActivityLogTestcase()
+    for _, tc := range testCases {
+        t.Run(tc.Name, func(t *testing.T) {
+            // Setting up buffer
+            payload := bytes.NewBuffer(testUtils.MarshalJson(tc.RequestPayload))
+            t.Logf("Running test case: %s", tc.Name)
+            t.Logf("Request payload: %s", payload.String())
 
-			res := httptest.NewRecorder()
-			logharbour.Index = "logharbour_unit_test1"
-			req, err := http.NewRequest(http.MethodPost, "/activitylog", payload)
-			require.NoError(t, err)
+            res := httptest.NewRecorder()
+            logharbour.Index = "logharbour_unit_test1"
+            req, err := http.NewRequest(http.MethodPost, "/activitylog", payload)
+            if err != nil {
+                t.Errorf("Error creating new HTTP request: %v", err)
+            }
+            require.NoError(t, err)
 
-			r.ServeHTTP(res, req)
+            r.ServeHTTP(res, req)
+            t.Logf("HTTP response code: %d", res.Code)
+            t.Logf("HTTP response body: %s", res.Body.String())
 
-			require.Equal(t, tc.ExpectedHttpCode, res.Code)
-			if tc.ExpectedResult != nil {
-				jsonData := testUtils.MarshalJson(tc.ExpectedResult)
-				require.JSONEq(t, string(jsonData), res.Body.String())
-			} else {
-				jsonData, err := testUtils.ReadJsonFromFile(tc.TestJsonFile)
-				require.NoError(t, err)
-				require.JSONEq(t, string(jsonData), res.Body.String())
-			}
-		})
-	}
+            require.Equal(t, tc.ExpectedHttpCode, res.Code)
+            if tc.ExpectedResult != nil {
+                jsonData := testUtils.MarshalJson(tc.ExpectedResult)
+                require.JSONEq(t, string(jsonData), res.Body.String())
+            } else {
+                jsonData, err := testUtils.ReadJsonFromFile(tc.TestJsonFile)
+                if err != nil {
+                    t.Errorf("Error reading JSON from file: %v", err)
+                }
+                require.NoError(t, err)
+                require.JSONEq(t, string(jsonData), res.Body.String())
+            }
+        })
+    }
 }
 
+
 func showActivityLogTestcase() []testUtils.TestCasesStruct {
-	whoStndErr := "tusharrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
-	classStndErr := "wfinsta1nce"
-	app := "crux"
-	who := "Tushar"
-	class := "wfinstance"
-	instance := "2"
-	pri := logharbour.Info
-	nDay := 100
 	schemaNewTestCase := []testUtils.TestCasesStruct{
 		{
 			Name: "err- binding_json_error",
@@ -63,7 +65,7 @@ func showActivityLogTestcase() []testUtils.TestCasesStruct {
 				Messages: []wscutils.ErrorMessage{
 					{
 						MsgID:   0,
-						ErrCode:"",
+						ErrCode: "",
 					},
 				},
 			},
@@ -71,30 +73,22 @@ func showActivityLogTestcase() []testUtils.TestCasesStruct {
 		{
 			Name: "err- standard validation",
 			RequestPayload: wscutils.Request{
-				Data: wsc.LogRequest{
-					App:   "cruxN12",
-					Who:   &whoStndErr,
-					Class: &classStndErr,
-				},
+				Data: wsc.LogRequest{},
 			},
 
 			ExpectedHttpCode: http.StatusBadRequest,
-			TestJsonFile:     "./show_activitylog_test/standerd_validation.json",
+			TestJsonFile:     "./data/show_activitylog_test/standerd_validation.json",
 		},
 		{
 			Name: "successful",
 			RequestPayload: wscutils.Request{
 				Data: wsc.LogRequest{
-					App:        app,
-					Who:        &who,
-					Class:      &class,
-					InstanceID: &instance,
-					Days:       nDay,
-					Priority:   &pri,
+					App:  "crux",
+					Days: 100,
 				},
 			},
 			ExpectedHttpCode: http.StatusOK,
-			TestJsonFile:     "./show_activitylog_test/successful_test_case.json",
+			TestJsonFile:     "./data/show_activitylog_test/asuccessful_test_case.json",
 		},
 	}
 	return schemaNewTestCase

@@ -81,6 +81,7 @@ func ShowActivityLog(c *gin.Context, s *service.Service) {
 		SearchAfterDocID: req.SearchAfterDocID,
 	})
 	if err != nil {
+		fmt.Println("error>>>>>>>>>>>>>>>>>>",err)
 		errmsg := errorHandler(err)
 		l.Debug0().Error(err).Log("error in GetLogs")
 		wscutils.SendErrorResponse(c, wscutils.NewResponse(wscutils.ErrorStatus, nil, []wscutils.ErrorMessage{errmsg}))

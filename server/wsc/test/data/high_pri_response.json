@@ -3,84 +3,120 @@
     "data": {
         "logs": [
             {
-                "app": "crux",
-                "system": "merceadm-Latitude-3420",
-                "module": "",
+                "id": "198",
+                "app": "starmf",
+                "system": "kanchanb",
+                "module": "Login",
                 "type": "A",
-                "pri": "Info",
-                "when": "2024-02-29T07:28:00.099424231Z",
-                "who": "Tushar",
-                "op": "",
-                "class": "wfinstance",
-                "instance": "2",
-                "status": 0,
-                "remote_ip": "192.168.1.100",
-                "msg": "GetWFinstanceNew request received",
-                "data": {}
-            },
-            {
-                "app": "crux",
-                "system": "merceadm-Latitude-3420",
-                "module": "",
-                "type": "A",
-                "pri": "Info",
-                "when": "2024-02-29T07:28:00.099424231Z",
-                "who": "Tushar",
-                "op": "",
-                "class": "wfinstance",
-                "instance": "",
-                "status": 0,
-                "remote_ip": "192.168.1.100",
-                "msg": "GetWFinstanceNew request received",
-                "data": {}
-            },
-            {
-                "app": "crux",
-                "system": "merceadm-Latitude-3420",
-                "module": "",
-                "type": "A",
-                "pri": "Info",
-                "when": "2024-02-29T07:28:00.099424231Z",
-                "who": "Tushar",
-                "op": "",
-                "class": "wfinstance",
-                "instance": "",
-                "status": 0,
-                "remote_ip": "192.168.1.100",
-                "msg": "GetWFinstanceNew request received",
-                "data": {}
-            },
-            {
-                "app": "crux",
-                "system": "merceadm-Latitude-3420",
-                "module": "login",
-                "type": "D",
-                "pri": "Info",
-                "when": "2024-02-29T06:32:18.376147788Z",
-                "who": "kanchan",
-                "op": "",
-                "class": "",
-                "instance": "1",
-                "status": 0,
-                "remote_ip": "203.0.113.45",
-                "msg": "WorkflowDelete request received",
-                "data": {}
-            },
-            {
-                "app": "crux",
-                "system": "merceadm-Latitude-3420",
-                "module": "login",
-                "type": "C",
-                "pri": "Info",
-                "when": "2024-02-29T06:32:13.333280114Z",
-                "who": "kanchan",
-                "op": "",
+                "pri": "Crit",
+                "when": "2024-05-06T15:21:48.94Z",
+                "who": "Keaton",
+                "op": "INSERT",
                 "class": "ruleset",
-                "instance": "u0001",
-                "status": 0,
-                "remote_ip": "203.0.113.45",
-                "msg": "Updated ruleset",
-                "data": {}
+                "instance": "3",
+                "remote_ip": "203.25.117.108",
+                "msg": "Inserted Successfully",
+                "data": {
+                    "activity_data": "Starting execution of WorkflowUpdate()"
+                }
+            },
+            {
+                "id": "159",
+                "app": "starmf",
+                "system": "adarshs",
+                "module": "UCC",
+                "type": "C",
+                "pri": "Crit",
+                "when": "2024-05-06T15:21:48.929Z",
+                "who": "Cassandra",
+                "op": "DELETE",
+                "class": "app",
+                "instance": "2",
+                "remote_ip": "d80a:ccc2:e938:fce0:3eee:2dfc:bd8f:4afa",
+                "msg": "Deleted Successfully",
+                "data": {
+                    "change_data": {
+                        "entity": "ruleset",
+                        "op": "DELETE",
+                        "changes": [
+                            {
+                                "field": "schema",
+                                "old_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]",
+                                "new_value": ""
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "id": "135",
+                "app": "starmf",
+                "system": "narmada.broadside.co",
+                "module": "UCC",
+                "type": "D",
+                "pri": "Crit",
+                "when": "2024-05-06T15:21:48.922Z",
+                "who": "Rodrick",
+                "op": "INSERT",
+                "class": "app",
+                "instance": "3",
+                "remote_ip": "23.84.90.201",
+                "msg": "Inserted Successfully",
+                "data": {
+                    "debug_data": {
+                        "pid": 3,
+                        "runtime": "",
+                        "file": "pagination.component.ts",
+                        "line": 62,
+                        "func": "next()",
+                        "stackTrace": "",
+                        "data": ""
+                    }
+                }
+            },
+            {
+                "id": "130",
+                "app": "starmf",
+                "system": "narmada.broadside.co",
+                "module": "Logout",
+                "type": "A",
+                "pri": "Crit",
+                "when": "2024-05-06T15:21:48.921Z",
+                "who": "Precious",
+                "op": "UPDATE",
+                "class": "app",
+                "instance": "4",
+                "remote_ip": "107.234.177.79",
+                "msg": "Updated Successfully",
+                "data": {
+                    "activity_data": "&quot;Finished execution of WorkflowUpdate()&quot;"
+                }
+            },
+            {
+                "id": "92",
+                "app": "starmf",
+                "system": "kaveri.broadside.co",
+                "module": "AMC",
+                "type": "D",
+                "pri": "Crit",
+                "when": "2024-05-06T15:21:48.912Z",
+                "who": "Nikita",
+                "op": "INSERT",
+                "class": "ruleset",
+                "instance": "2",
+                "remote_ip": "80.252.56.229",
+                "msg": "Inserted Successfully",
+                "data": {
+                    "debug_data": {
+                        "pid": 1,
+                        "runtime": "",
+                        "file": "clientFn.go",
+                        "line": 432,
+                        "func": "getQuery()",
+                        "stackTrace": "",
+                        "data": ""
+                    }
+                }
             }
         ]
     },

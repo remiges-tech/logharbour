@@ -41,6 +41,7 @@ func TestGetUnusualIPs(t *testing.T) {
 
 func GetUnusualIPsTestcase() []testUtils.TestCasesStruct {
 	GetUnusualIPsTestcase := []testUtils.TestCasesStruct{
+
 		{
 			Name: "err- binding_json_error",
 			RequestPayload: wscutils.Request{
@@ -72,8 +73,8 @@ func GetUnusualIPsTestcase() []testUtils.TestCasesStruct {
 			RequestPayload: wscutils.Request{
 				Data: wsc.GetUnusualIpParam{
 					App:            "crux",
-					Days:           50,
-					UnusualPercent: 20,
+					Days:           100,
+					UnusualPercent: 10,
 				},
 			},
 			ExpectedHttpCode: http.StatusOK,
