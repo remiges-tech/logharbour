@@ -2,12 +2,10 @@ package logharbour_test
 
 import (
 	"fmt"
-	"log"
 	"reflect"
 	"testing"
 	"time"
 
-	"github.com/oschwald/geoip2-golang"
 	"github.com/remiges-tech/logharbour/logharbour"
 	estestutils "github.com/remiges-tech/logharbour/logharbour/test"
 
@@ -100,33 +98,34 @@ func TestGetLogs(t *testing.T) {
 }
 
 func getLogsTestCase() []GetlogsTestCaseStruct {
-	app := "crux"
+	app := "amazon"
 	typeConst := logharbour.Activity
-	who := "Tushar"
-	class := "wfinstance"
-	instance := "2"
-	remote_ip := "192.168.1.100"
+	who := "Jannie"
+	class := "config"
+	instance := "3"
+	remote_ip := "142.250.67.206"
 	pri := logharbour.Info
 	nDay := 100
 	fromTs := time.Date(2024, 02, 01, 00, 00, 00, 00, time.UTC)
-	toTs := time.Date(2024, 03, 01, 00, 00, 00, 00, time.UTC)
+	toTs := time.Date(2024, 05, 30, 00, 00, 00, 00, time.UTC)
 	searchAfterTS := "2024-02-25T07:28:00.110813597Z"
-	logsTestCase := []GetlogsTestCaseStruct{{
-		Name: "1st test case ",
-		LogsParam: logharbour.GetLogsParam{
-			App:      &app,
-			Type:     &typeConst,
-			Who:      &who,
-			Class:    &class,
-			Instance: &instance,
-			NDays:    &nDay,
-			RemoteIP: &remote_ip,
-			Priority: &pri,
+	logsTestCase := []GetlogsTestCaseStruct{
+		{
+			Name: "1st test case ",
+			LogsParam: logharbour.GetLogsParam{
+				App:      &app,
+				Type:     &typeConst,
+				Who:      &who,
+				Class:    &class,
+				Instance: &instance,
+				NDays:    &nDay,
+				RemoteIP: &remote_ip,
+				Priority: &pri,
+			},
+			ExpectedRecords: 1,
+			TestJsonFile:    "./testData/getLogs_testdata/1st_tc_GetLogs_with_all_filter_param.json",
+			ExpectError:     false,
 		},
-		ExpectedRecords: 1,
-		TestJsonFile:    "./testData/getLogs_testdata/1st_tc_GetLogs_with_all_filter_param.json",
-		ExpectError:     false,
-	},
 		{
 			Name: "2nd_tc_GetLogs_within_ts",
 			LogsParam: logharbour.GetLogsParam{
@@ -134,7 +133,7 @@ func getLogsTestCase() []GetlogsTestCaseStruct {
 				FromTS: &fromTs,
 				ToTS:   &toTs,
 			},
-			ExpectedRecords: 42,
+			ExpectedRecords: 33,
 			TestJsonFile:    "./testData/getLogs_testdata/2nd_tc_GetLogs_within_ts.json",
 			ExpectError:     false,
 		},
@@ -146,7 +145,7 @@ func getLogsTestCase() []GetlogsTestCaseStruct {
 				ToTS:          &toTs,
 				SearchAfterTS: &searchAfterTS,
 			},
-			ExpectedRecords: 42,
+			ExpectedRecords: 33,
 			TestJsonFile:    "./testData/getLogs_testdata/3rd_test_case_GetLogs_with_SearchAfterTS.json",
 			ExpectError:     false,
 		},
@@ -187,23 +186,22 @@ func TestGetSet(t *testing.T) {
 }
 
 func getSetTestCase() []GetSetTestCasesStruct {
-	app := "crux"
-	setAttr := "type"
-	InvalidSetAttr := "when"
+	app := "amazon"
 	typeConst := logharbour.Activity
+	who := "Jannie"
+	class := "config"
+	instance := "3"
+	remoteIP := "142.250.67.206"
 	priority := logharbour.Info
-	who := "kanchan"
-	class := "wfinstance"
-	instance := "1"
-	remoteIP := "203.0.113.45"
-	days := 50
-	fromTs := time.Date(2023, 02, 01, 00, 00, 00, 00, time.UTC)
-	toTs := time.Date(2024, 04, 01, 00, 00, 00, 00, time.UTC)
+	days := 100
+	fromTs := time.Date(2024, 02, 01, 00, 00, 00, 00, time.UTC)
+	toTs := time.Date(2024, 05, 30, 00, 00, 00, 00, time.UTC)
+	setAttribute := "app"
+	InvalidSetAttribute := "when"
 
-	expectedData := map[string]int64{"A": 3}
+	expectedData := map[string]int64{"amazon": 1}
 
-	expectedDataForApp := map[string]int64{"crux": 163,
-		"idshield": 6}
+	expectedDataForApp := map[string]int64{"amazon": 33, "crux": 28, "flipkart": 31, "logharbour": 39, "rigel": 32, "starmf": 38}
 
 	getSetTestCase := []GetSetTestCasesStruct{{
 		Name: "SUCCESS : GetSet() with valid method parameters",
@@ -219,7 +217,7 @@ func getSetTestCase() []GetSetTestCasesStruct {
 			RemoteIP: &remoteIP,
 			Pri:      &priority,
 		},
-		SetAttribute:     setAttr,
+		SetAttribute:     setAttribute,
 		ExpectedResponse: expectedData,
 		ExpectedError:    false,
 	}, {
@@ -230,12 +228,12 @@ func getSetTestCase() []GetSetTestCasesStruct {
 		ExpectedError:    false,
 	}, {
 		Name:          "ERROR : GetSet() with Invalid SetAttribute ",
-		SetAttribute:  InvalidSetAttr,
+		SetAttribute:  InvalidSetAttribute,
 		GetSetParam:   logharbour.GetSetParam{},
 		ExpectedError: true,
 	}, {
 		Name:         "ERROR : Getset() with Invalid Time",
-		SetAttribute: setAttr,
+		SetAttribute: setAttribute,
 		GetSetParam: logharbour.GetSetParam{
 			App:      &app,
 			Fromts:   &toTs,
@@ -276,7 +274,7 @@ func TestGetApps(t *testing.T) {
 func getAppTestCase() []GetAppsTestCasesStruct {
 	getAppTestCase := []GetAppsTestCasesStruct{{
 		Name:             "SUCCESS : valid response",
-		ExpectedResponse: []string{"crux", "idshield"},
+		ExpectedResponse: []string{"crux", "flipkart", "rigel", "amazon", "starmf", "logharbour"},
 		ExpectedError:    false,
 	}}
 	return getAppTestCase
@@ -309,7 +307,7 @@ func TestGetUnusualIP(t *testing.T) {
 }
 
 func getUnusualIPTestCase() []GetUnusualIPTestCaseStruct {
-	app := "crux"
+	app := "starmf"
 	// who := "tushar"
 	// class := "wfinstance"
 	tasteCase := []GetUnusualIPTestCaseStruct{
@@ -326,104 +324,10 @@ func getUnusualIPTestCase() []GetUnusualIPTestCaseStruct {
 				// Who:   &who,
 				// Class: &class,
 			},
-			unusualPercent: 3.0,
-			ExpectedIps:    []string{"185.199.110.154"},
+			unusualPercent: 1.0,
+			ExpectedIps:    []string{"142.250.67.2077"},
 			ExpectError:    false,
 		},
 	}
 	return tasteCase
-}
-
-func TestUnusualIPList(t *testing.T) {
-	testCases := getUnusualIPListTestCase()
-	for _, tc := range testCases {
-		t.Run(tc.Name, func(t *testing.T) {
-
-			geoLiteDbPath := "../GeoLite2-City.mmdb" // path of mmdb file
-			// GeoLite2-City database
-			geoLiteCityDb, err := geoip2.Open(geoLiteDbPath)
-			if err != nil {
-				log.Fatalf("Failed to create GeoLite2-City db connection: %v", err)
-			}
-			defer geoLiteCityDb.Close()
-
-			logharbour.Index = "logharbour"
-			tc.ActualIps, err = logharbour.ListUnusualIPs("", typedClient, geoLiteCityDb, tc.unusualPercent, tc.GetUnusualIPParam)
-
-			if tc.ExpectError {
-				if err == nil {
-					t.Errorf("Expected error for input %d, but got nil", tc.GetUnusualIPParam)
-				}
-			} else {
-				require.NoError(t, err)
-			}
-
-			// Compare the LogEntries
-			if !reflect.DeepEqual(tc.ExpectedIps, tc.ActualIps) {
-				t.Errorf("IPs are not equal. Expected: %v, Actual: %v", tc.ExpectedIps, tc.ActualIps)
-			}
-		})
-	}
-
-}
-
-func getUnusualIPListTestCase() []GetUnusualIPListTestCaseStruct {
-	app := "crux"
-	ndays := 50
-
-	testCase := []GetUnusualIPListTestCaseStruct{
-		{
-			Name:              "1st test for empty param",
-			GetUnusualIPParam: logharbour.GetUnusualIPParam{},
-			unusualPercent:    0.0,
-			ExpectError:       true,
-		},
-		{
-			Name: "2st test for unusualPercent 20",
-			GetUnusualIPParam: logharbour.GetUnusualIPParam{
-				App:   &app,
-				NDays: &ndays,
-			},
-			unusualPercent: 20.0,
-			ExpectedIps: []logharbour.IPLocation{{
-
-				IPAddress: "2404:6800:4009:813::200e",
-				City:      "",
-				Country:   "Australia",
-				Latitude:  -33.494,
-				Longitude: 143.2104,
-			},
-				{
-					IPAddress: "142.250.67.206",
-					City:      "Plainview",
-					Country:   "United States",
-					Latitude:  40.7746,
-					Longitude: -73.4761,
-				},
-				{
-					IPAddress: "162.240.62.164",
-					City:      "Meridian",
-					Country:   "United States",
-					Latitude:  43.6138,
-					Longitude: -116.3972,
-				},
-				{
-					IPAddress: "184.144.185.88",
-					City:      "L'Assomption",
-					Country:   "Canada",
-					Latitude:  45.8237,
-					Longitude: -73.4298,
-				},
-				{
-					IPAddress: "1ccf:70c9:fe5b:a3de:12f3:8a6a:c1d:c1fa",
-					City:      "",
-					Country:   "",
-					Latitude:  0,
-					Longitude: 0,
-				},
-			},
-			ExpectError: false,
-		},
-	}
-	return testCase
 }

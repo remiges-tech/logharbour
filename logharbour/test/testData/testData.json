@@ -5127,5 +5127,34 @@
                 ]
             }
         }
+    },
+    {
+        "id": "201",
+        "app": "starmf",
+        "system": "adarshs",
+        "module": "AMC",
+        "type": "C",
+        "pri": "Debug0",
+        "when": "2024-05-06T15:21:48.886Z",
+        "who": "Arnold",
+        "op": "UPDATE",
+        "class": "config",
+        "instance": "3",
+        "status": 0,
+        "remote_ip": "142.250.67.2077",
+        "msg": "Updated Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "UPDATE",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}]}]",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}]}]"
+                    }
+                ]
+            }
+        }
     }
 ]

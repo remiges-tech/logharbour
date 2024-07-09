@@ -1,18 +1,21 @@
 [
     {
-        "app": "crux",
-        "system": "merceadm-Latitude-3420",
-        "module": "",
+        "id": "0",
+        "app": "amazon",
+        "system": "narmada.broadside.co",
+        "module": "UCC",
         "type": "A",
         "pri": "Info",
-        "when": "2024-02-29T07:28:00.099424231Z",
-        "who": "Tushar",
-        "op": "",
-        "class": "wfinstance",
-        "instance": "2",
+        "when": "2024-05-06T15:21:48.882Z",
+        "who": "Jannie",
+        "op": "DELETE",
+        "class": "config",
+        "instance": "3",
         "status": 0,
-        "remote_ip": "192.168.1.100",
-        "msg": "GetWFinstanceNew request received",
-        "data": "{}"
+        "remote_ip": "142.250.67.206",
+        "msg": "Deleted Successfully",
+        "data": {
+            "activity_data": "&quot;Finished execution of WorkflowUpdate()&quot;"
+        }
     }
-]       
+]

@@ -2,10 +2,8 @@ package logharbour_test
 
 import (
 	"context"
-	"crypto/tls"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"testing"
 	"time"
@@ -14,15 +12,15 @@ import (
 	"github.com/remiges-tech/logharbour/logharbour"
 	estestutils "github.com/remiges-tech/logharbour/logharbour/test"
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
+	"github.com/testcontainers/testcontainers-go/modules/elasticsearch"
 )
 
 var (
 	indexBody   = logharbour.ESLogsMapping
 	typedClient *es.TypedClient
-	filepath  = "../test/testData/testData.json"
-	indexName = "logharbour"
-	timeout   = 500 * time.Second
+	filepath    = "../test/testData/testData.json"
+	indexName   = "logharbour"
+	timeout     = 500 * time.Second
 )
 
 func TestMain(m *testing.M) {
@@ -31,19 +29,12 @@ func TestMain(m *testing.M) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	// Define container request for Elasticsearch.
-	// we are using bitnami elasticsearch for testing purpose so authentication details are not required
-	req := testcontainers.ContainerRequest{
-		Image:        "bitnami/elasticsearch:latest",
-		ExposedPorts: []string{"9200/tcp"},
-		WaitingFor:   wait.ForHTTP("/").WithPort("9200").WithStartupTimeout(timeout),
-	}
-
-	// Create and start the Elasticsearch container
-	elasticsearchContainer, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
-		ContainerRequest: req,
-		Started:          true,
-	})
+	// creates an instance of the Elasticsearch container
+	elasticsearchContainer, err := elasticsearch.RunContainer(
+		ctx,
+		testcontainers.WithImage("docker.elastic.co/elasticsearch/elasticsearch:8.9.0"),
+		elasticsearch.WithPassword("elastic"),
+	)
 	if err != nil {
 		log.Fatalf("failed to start container: %s", err)
 	}
@@ -54,26 +45,13 @@ func TestMain(m *testing.M) {
 		}
 	}()
 
-	// Get the host and port of the running container
-	host, err := elasticsearchContainer.Host(ctx)
-	if err != nil {
-		log.Fatalf("failed to get container host: %s", err)
-	}
-
-	port, err := elasticsearchContainer.MappedPort(ctx, "9200")
-	if err != nil {
-		log.Fatalf("failed to get mapped port: %s", err)
-	}
-
 	cfg := es.Config{
 		Addresses: []string{
-			fmt.Sprintf("http://%s:%s", host, port.Port()),
+			elasticsearchContainer.Settings.Address,
 		},
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true, // Disable SSL verification
-			},
-		},
+		Username: "elastic",
+		Password: elasticsearchContainer.Settings.Password,
+		CACert:   elasticsearchContainer.Settings.CACert,
 	}
 
 	// NewTypedClient create a new elasticsearch client with the configuration from cfg

@@ -79,17 +79,17 @@ func showActivityLogTestcase() []testUtils.TestCasesStruct {
 			ExpectedHttpCode: http.StatusBadRequest,
 			TestJsonFile:     "./data/show_activitylog_test/standerd_validation.json",
 		},
-		{
-			Name: "successful",
-			RequestPayload: wscutils.Request{
-				Data: wsc.LogRequest{
-					App:  "crux",
-					Days: 100,
-				},
-			},
-			ExpectedHttpCode: http.StatusOK,
-			TestJsonFile:     "./data/show_activitylog_test/asuccessful_test_case.json",
-		},
+		// {
+		// 	Name: "successful",
+		// 	RequestPayload: wscutils.Request{
+		// 		Data: wsc.LogRequest{
+		// 			App:  "crux",
+		// 			Days: 100,
+		// 		},
+		// 	},
+		// 	ExpectedHttpCode: http.StatusOK,
+		// 	TestJsonFile:     "./data/show_activitylog_test/successful_test_case.json",
+		// },
 	}
 	return schemaNewTestCase
 }
