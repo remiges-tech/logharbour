@@ -1,82 +1,125 @@
 [
     {
         "id": "199",
-        "company": "amazon",
-        "user": "sufiyaans",
-        "amc": "A",
-        "category": "Info",
-        "timestamp": "2024-05-06T15:21:48.94Z",
-        "username": "Jaylin",
-        "operation": "DELETE",
-        "target": "ruleset",
-        "value": 2,
-        "extra": 0,
-        "ip": "253.193.213.205",
-        "message": "Deleted Successfully",
-        "code": "0xc0004dc0c0"
+        "app": "amazon",
+        "system": "sufiyaans",
+        "module": "AMC",
+        "type": "A",
+        "pri": "Info",
+        "when": "2024-05-06T15:21:48.940Z",
+        "who": "Jaylin",
+        "op": "DELETE",
+        "class": "ruleset",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "253.193.213.205",
+        "msg": "Deleted Successfully",
+        "data": {
+            "activity_data": "&quot;Finished execution of WorkflowUpdate()&quot;"
+        }
     },
     {
         "id": "194",
-        "company": "amazon",
-        "user": "anikets",
-        "amc": "D",
-        "category": "Debug1",
-        "timestamp": "2024-05-06T15:21:48.939Z",
-        "username": "Haleigh",
-        "operation": "INSERT",
-        "target": "config",
-        "value": 4,
-        "extra": 0,
-        "ip": "122.17.134.143",
-        "message": "Inserted Successfully",
-        "code": "0xc0004dc100"
+        "app": "amazon",
+        "system": "anikets",
+        "module": "AMC",
+        "type": "D",
+        "pri": "Debug1",
+        "when": "2024-05-06T15:21:48.939Z",
+        "who": "Haleigh",
+        "op": "INSERT",
+        "class": "config",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "122.17.134.143",
+        "msg": "Inserted Successfully",
+        "data": {
+            "debug_data": {
+                "pid": 1,
+                "runtime": "",
+                "file": "clientFn.go",
+                "line": 432,
+                "func": "getQuery()",
+                "stackTrace": "",
+                "data": ""
+            }
+        }
     },
     {
         "id": "183",
-        "company": "amazon",
-        "user": "kanchanb",
-        "amc": "Login",
-        "category": "Info",
-        "timestamp": "2024-05-06T15:21:48.936Z",
-        "username": "Dino",
-        "operation": "INSERT",
-        "target": "schema",
-        "value": 4,
-        "extra": 0,
-        "ip": "c8ff:5fce:4cc3:b42c:1d51:7dcb:4c71:170e",
-        "message": "Inserted Successfully",
-        "code": "0xc0004dc140"
+        "app": "amazon",
+        "system": "kanchanb",
+        "module": "Login",
+        "type": "A",
+        "pri": "Info",
+        "when": "2024-05-06T15:21:48.936Z",
+        "who": "Dino",
+        "op": "INSERT",
+        "class": "schema",
+        "instance": "4",
+        "status": 0,
+        "remote_ip": "c8ff:5fce:4cc3:b42c:1d51:7dcb:4c71:170e",
+        "msg": "Inserted Successfully",
+        "data": {
+            "activity_data": "&quot;Finished execution of WorkflowUpdate()&quot;"
+        }
     },
     {
         "id": "180",
-        "company": "amazon",
-        "user": "narmada.broadside.co",
-        "amc": "UCC",
-        "category": "Warn",
-        "timestamp": "2024-05-06T15:21:48.935Z",
-        "username": "Efrain",
-        "operation": "INSERT",
-        "target": "schema",
-        "value": 2,
-        "extra": 0,
-        "ip": "114.29.161.245",
-        "message": "Inserted Successfully",
-        "code": "0xc0004dc180"
+        "app": "amazon",
+        "system": "narmada.broadside.co",
+        "module": "UCC",
+        "type": "C",
+        "pri": "Warn",
+        "when": "2024-05-06T15:21:48.935Z",
+        "who": "Efrain",
+        "op": "INSERT",
+        "class": "schema",
+        "instance": "2",
+        "status": 0,
+        "remote_ip": "114.29.161.245",
+        "msg": "Inserted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "INSERT",
+                "changes": [
+                    {
+                        "field": "ruleset",
+                        "old_value": "",
+                        "new_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]"
+                    }
+                ]
+            }
+        }
     },
     {
         "id": "181",
-        "company": "amazon",
-        "user": "anikets",
-        "amc": "Login",
-        "category": "Debug2",
-        "timestamp": "2024-05-06T15:21:48.935Z",
-        "username": "Hilma",
-        "operation": "DELETE",
-        "target": "app",
-        "value": 1,
-        "extra": 0,
-        "ip": "38.197.198.129",
-        "message": "Deleted Successfully",
-        "code": "0xc0004dc1c0"
+        "app": "amazon",
+        "system": "anikets",
+        "module": "Login",
+        "type": "C",
+        "pri": "Debug2",
+        "when": "2024-05-06T15:21:48.935Z",
+        "who": "Hilma",
+        "op": "DELETE",
+        "class": "app",
+        "instance": "1",
+        "status": 0,
+        "remote_ip": "38.197.198.129",
+        "msg": "Deleted Successfully",
+        "data": {
+            "change_data": {
+                "entity": "ruleset",
+                "op": "DELETE",
+                "changes": [
+                    {
+                        "field": "schema",
+                        "old_value": "[{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"start\"},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"getcustdetails\"],\"properties\":{\"nextstep\":\"getcustdetails\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"dpandbankaccvalid\",\"kycvalid\",\"nomauth\"],\"properties\":{\"nextstep\":\"auth_done\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"getcustdetails\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"physical\"}],\"ruleactions\":{\"tasks\":[\"aof\",\"kycvalid\",\"nomauth\",\"bankaccvalid\"],\"properties\":{\"nextstep\":\"aof\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"kycvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"dpandbankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"bankaccvalid\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"nomauth\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"aof\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}},{\"rulepattern\":[{\"attr\":\"step\",\"op\":\"eq\",\"val\":\"sendauthlinktoclient\"},{\"attr\":\"stepfailed\",\"op\":\"eq\",\"val\":false},{\"attr\":\"mode\",\"op\":\"eq\",\"val\":\"demat\"}],\"ruleactions\":{\"tasks\":[],\"properties\":{\"done\":\"true\"}}}]",
+                        "new_value": ""
+                    }
+                ]
+            }
+        }
     }
 ]

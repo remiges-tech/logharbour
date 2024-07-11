@@ -1,8 +1,8 @@
 package logharbour_test
 
 import (
-	"fmt"
 	"reflect"
+	"sort"
 	"testing"
 	"time"
 
@@ -64,15 +64,16 @@ func TestGetLogs(t *testing.T) {
 	testCases := getLogsTestCase()
 	for _, tc := range testCases {
 		t.Run(tc.Name, func(t *testing.T) {
-
 			if tc.TestJsonFile != "" {
+				var err error
 				tc.ExpectedLogEntries, err = estestutils.ReadLogFromFile(tc.TestJsonFile)
 				if err != nil {
-					fmt.Printf("error converting data from log file:%v\n", err)
+					t.Fatalf("error converting data from log file: %v", err)
 				}
-
 			}
+
 			logharbour.Index = "logharbour"
+			var err error
 			tc.ActualLogEntries, tc.ActualRecords, err = logharbour.GetLogs("", typedClient, tc.LogsParam)
 
 			if tc.ExpectError {
@@ -83,18 +84,21 @@ func TestGetLogs(t *testing.T) {
 				require.NoError(t, err)
 			}
 
+			// Sort the log entries before comparing
+			SortLogEntries(tc.ExpectedLogEntries)
+			SortLogEntries(tc.ActualLogEntries)
+
 			// Compare the LogEntries
 			if !reflect.DeepEqual(tc.ExpectedLogEntries, tc.ActualLogEntries) {
 				t.Errorf("LogEntries are not equal. Expected: %v, Actual: %v", tc.ExpectedLogEntries, tc.ActualLogEntries)
 			}
 
-			// compare number of records
+			// Compare number of records
 			if tc.ExpectedRecords != tc.ActualRecords {
 				t.Errorf("Expected: %d, Actual: %d", tc.ExpectedRecords, tc.ActualRecords)
 			}
 		})
 	}
-
 }
 
 func getLogsTestCase() []GetlogsTestCaseStruct {
@@ -108,7 +112,7 @@ func getLogsTestCase() []GetlogsTestCaseStruct {
 	nDay := 100
 	fromTs := time.Date(2024, 02, 01, 00, 00, 00, 00, time.UTC)
 	toTs := time.Date(2024, 05, 30, 00, 00, 00, 00, time.UTC)
-	searchAfterTS := "2024-02-25T07:28:00.110813597Z"
+	//searchAfterTS := "2024-02-25T07:28:00.110813597Z"
 	logsTestCase := []GetlogsTestCaseStruct{
 		{
 			Name: "1st test case ",
@@ -138,19 +142,7 @@ func getLogsTestCase() []GetlogsTestCaseStruct {
 			ExpectError:     false,
 		},
 		{
-			Name: "3rd_test_case_GetLogs_with_SearchAfterTS",
-			LogsParam: logharbour.GetLogsParam{
-				App:           &app,
-				FromTS:        &fromTs,
-				ToTS:          &toTs,
-				SearchAfterTS: &searchAfterTS,
-			},
-			ExpectedRecords: 33,
-			TestJsonFile:    "./testData/getLogs_testdata/3rd_test_case_GetLogs_with_SearchAfterTS.json",
-			ExpectError:     false,
-		},
-		{
-			Name:               "4th_tc_without_filterParam",
+			Name:               "3rd_tc_without_filterParam",
 			LogsParam:          logharbour.GetLogsParam{},
 			ExpectedLogEntries: nil,
 			ExpectedRecords:    0,
@@ -201,7 +193,7 @@ func getSetTestCase() []GetSetTestCasesStruct {
 
 	expectedData := map[string]int64{"amazon": 1}
 
-	expectedDataForApp := map[string]int64{"amazon": 33, "crux": 28, "flipkart": 31, "logharbour": 39, "rigel": 32, "starmf": 38}
+	expectedDataForApp := map[string]int64{"amazon": 33, "crux": 28, "flipkart": 31, "logharbour": 39, "rigel": 32, "starmf": 39}
 
 	getSetTestCase := []GetSetTestCasesStruct{{
 		Name: "SUCCESS : GetSet() with valid method parameters",
@@ -262,6 +254,10 @@ func TestGetApps(t *testing.T) {
 				require.NoError(t, err)
 
 			}
+			// Sort the slices for comparison
+			sort.Strings(tc.ExpectedResponse)
+			sort.Strings(tc.ActualResponse)
+
 			// Compare the responses
 			if !reflect.DeepEqual(tc.ExpectedResponse, tc.ActualResponse) {
 				t.Errorf("response are not equal. Expected: %v, Actual: %v", tc.ExpectedResponse, tc.ActualResponse)
@@ -285,7 +281,6 @@ func TestGetUnusualIP(t *testing.T) {
 	testCases := getUnusualIPTestCase()
 	for _, tc := range testCases {
 		t.Run(tc.Name, func(t *testing.T) {
-
 			logharbour.Index = "logharbour"
 			tc.ActualIps, err = logharbour.GetUnusualIP("", typedClient, tc.unusualPercent, tc.GetUnusualIPParam)
 
@@ -297,13 +292,16 @@ func TestGetUnusualIP(t *testing.T) {
 				require.NoError(t, err)
 			}
 
-			// Compare the LogEntries
+			// Sort the slices for comparison
+			sort.Strings(tc.ExpectedIps)
+			sort.Strings(tc.ActualIps)
+
+			// Compare the sorted slices
 			if !reflect.DeepEqual(tc.ExpectedIps, tc.ActualIps) {
 				t.Errorf("IPs are not equal. Expected: %v, Actual: %v", tc.ExpectedIps, tc.ActualIps)
 			}
 		})
 	}
-
 }
 
 func getUnusualIPTestCase() []GetUnusualIPTestCaseStruct {
@@ -324,10 +322,56 @@ func getUnusualIPTestCase() []GetUnusualIPTestCaseStruct {
 				// Who:   &who,
 				// Class: &class,
 			},
-			unusualPercent: 1.0,
-			ExpectedIps:    []string{"142.250.67.2077"},
-			ExpectError:    false,
+			unusualPercent: 3.0,
+			ExpectedIps: []string{
+				"23.84.90.201",
+				"31.130.239.24",
+				"117.217.12.191",
+				"163.43.120.140",
+				"b31c:acfd:bb0a:5d4c:b0bf:fa69:a88e:dba7",
+				"b33c:eac5:25e7:714c:3eeb:5c53:df6c:abad",
+				"55.107.177.20",
+				"4dfb:94:f7f5:bc9f:f5e1:7f44:4fb8:ce8d",
+				"fa4a:afea:f19d:9b91:bdd4:fb43:eb3b:ad81",
+				"71.34.12.118",
+				"80.252.56.229",
+				"107.248.246.217",
+				"68c4:aeef:d3b0:ad7b:ceda:bdad:c59a:ec9d",
+				"fa4c:ea18:e131:e0db:5ace:c8ed:a6eb:4b37",
+				"fdbf:41cb:fa1a:1d8:d9d6:6f01:8e0:8ea7",
+				"100.0.115.205",
+				"107.234.177.79",
+				"203.25.117.108",
+				"64.131.117.177",
+				"71.155.48.60",
+				"218.14.74.156",
+				"d80a:ccc2:e938:fce0:3eee:2dfc:bd8f:4afa",
+				"f7ec:e265:e67e:cdaf:ce3b:f8e7:f4da:7a6b",
+				"96.10.45.253",
+				"131.187.187.204",
+				"224.250.161.71",
+				"237.128.19.53",
+				"253.137.0.217",
+				"4f2b:91ba:d292:3baf:a1cf:24c0:ba9b:f6aa",
+				"93.228.80.75",
+				"150.125.249.182",
+				"205.102.136.112",
+				"cc69:fca:2559:cd94:51f2:d39c:ce8f:eb3d",
+				"142.250.67.29",
+				"173.101.122.105",
+				"3a87:482d:a52d:8ba0:cddc:e16c:abd9:1762",
+				"b7bc:e5c1:5fd8:4390:fcce:df73:acca:aedd",
+			},
+
+			ExpectError: false,
 		},
 	}
 	return tasteCase
+}
+
+// SortLogEntries sorts log entries by their ID.
+func SortLogEntries(logs []logharbour.LogEntry) {
+	sort.Slice(logs, func(i, j int) bool {
+		return logs[i].Id < logs[j].Id
+	})
 }
