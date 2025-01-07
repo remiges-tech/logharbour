@@ -261,6 +261,28 @@ func (l *Logger) newLogEntry(message string, data *LogData) LogEntry {
 	}
 }
 
+// newLogEntry creates a new log entry with the specified message and data.
+func (l *Logger) WithSpanAndTrace(spanId, traceID string) {
+	entry := LogEntry{
+		App:        l.app,
+		System:     l.system,
+		Module:     l.module,
+		Pri:        l.pri,
+		Who:        l.who,
+		Op:         l.op,
+		When:       time.Now().UTC(),
+		Class:      l.class,
+		InstanceId: l.instanceId,
+		Status:     l.status,
+		Error:      l.err,
+		RemoteIP:   l.remoteIP,
+		SpanId:     spanId,
+		TraceId:    traceID,
+	}
+	l.log(entry)
+
+}
+
 // LogDataChange logs a data change event.
 func (l *Logger) LogDataChange(message string, data ChangeInfo) {
 	for i := range data.Changes {

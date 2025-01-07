@@ -179,6 +179,8 @@ type LogEntry struct {
 	RemoteIP   string      `json:"remote_ip,omitempty"` // IP address of the caller from where the operation is being performed.
 	Msg        string      `json:"msg,omitempty"`       // A descriptive message for the log entry.
 	Data       *LogData    `json:"data,omitempty"`      // The payload of the log entry, can be any type.
+	SpanId     string      `json:"span_id,omitempty"`   // Span ID of the tracing system
+	TraceId    string      `json:"trace_id,omitempty"`  // Trace ID of the tracing system
 }
 
 type LogData struct {
