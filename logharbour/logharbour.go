@@ -159,7 +159,11 @@ func (l *Logger) WithStatus(status Status) *Logger {
 // Err sets the "error" field for the logger.
 func (l *Logger) Error(err error) *Logger {
 	newLogger := l.clone()
-	newLogger.err = err.Error()
+	if err != nil {
+		newLogger.err = err.Error()
+	} else {
+		newLogger.err = "<nil>" // Or "" or however we want nil errors represented
+	}
 	return newLogger
 }
 
