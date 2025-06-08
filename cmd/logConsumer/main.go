@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"os/signal"
 	"strconv"
@@ -16,11 +16,46 @@ import (
 	"github.com/remiges-tech/logharbour/logharbour"
 )
 
+var logger *slog.Logger
+
+func setupLogger(level string) {
+	var logLevel slog.Level
+	switch strings.ToLower(level) {
+	case "debug":
+		logLevel = slog.LevelDebug
+	case "info":
+		logLevel = slog.LevelInfo
+	case "warn", "warning":
+		logLevel = slog.LevelWarn
+	case "error":
+		logLevel = slog.LevelError
+	default:
+		logLevel = slog.LevelInfo
+	}
+
+	opts := &slog.HandlerOptions{
+		Level: logLevel,
+		AddSource: true,
+	}
+	
+	handler := slog.NewTextHandler(os.Stdout, opts)
+	logger = slog.New(handler)
+	slog.SetDefault(logger)
+}
+
 func getEnv(key, fallback string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value
 	}
 	return fallback
+}
+
+func getMapKeys(m map[string]interface{}) []string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	return keys
 }
 
 func startKafkaConsumer(consumer logharbour.Consumer, batchSize int) (<-chan error, error) {
@@ -29,8 +64,12 @@ func startKafkaConsumer(consumer logharbour.Consumer, batchSize int) (<-chan err
 
 func handleErrors(errs <-chan error) {
 	go func() {
+		errorCount := 0
 		for err := range errs {
-			log.Printf("Failed to process batch: %v", err)
+			errorCount++
+			logger.Error("Consumer error occurred", 
+				slog.String("error", err.Error()),
+				slog.Int("total_errors", errorCount))
 			// Decide what to do here: retry, ignore, etc.
 		}
 	}()
@@ -43,24 +82,44 @@ func waitForInterrupt() {
 }
 
 func stopKafkaConsumer(consumer logharbour.Consumer) {
+	stopStartTime := time.Now()
 	if err := consumer.Stop(); err != nil {
-		log.Fatalln("Failed to stop consumer: ", err)
+		logger.Error("Failed to stop consumer", slog.String("error", err.Error()))
+		os.Exit(1)
 	}
+	logger.Debug("Consumer stopped", slog.Duration("stop_duration", time.Since(stopStartTime)))
 }
 
 func retryOperation(operation func() error, maxAttempts int, initialBackoff time.Duration) error {
 	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		attemptStart := time.Now()
 		err := operation()
+		attemptDuration := time.Since(attemptStart)
+		
 		if err == nil {
+			if attempt > 1 {
+				logger.Info("Retry operation succeeded",
+					slog.Int("attempt", attempt),
+					slog.Duration("attempt_duration", attemptDuration))
+			}
 			return nil // Success
 		}
 
 		if attempt == maxAttempts {
+			logger.Error("Retry operation failed after all attempts",
+				slog.Int("max_attempts", maxAttempts),
+				slog.String("final_error", err.Error()),
+				slog.Duration("final_attempt_duration", attemptDuration))
 			return fmt.Errorf("after %d attempts, last error: %s", attempt, err)
 		}
 
 		wait := initialBackoff * time.Duration(1<<(attempt-1)) // Exponential backoff
-		log.Printf("Attempt %d failed, retrying in %v: %v", attempt, wait, err)
+		logger.Warn("Retry operation failed, retrying",
+			slog.Int("attempt", attempt),
+			slog.Int("max_attempts", maxAttempts),
+			slog.Duration("wait_duration", wait),
+			slog.String("error", err.Error()),
+			slog.Duration("attempt_duration", attemptDuration))
 		time.Sleep(wait)
 	}
 	return fmt.Errorf("reached max attempts without success")
@@ -81,9 +140,19 @@ func main() {
 		}
 		return 10
 	}(), "Kafka consumer batch size")
+	consumerGroup := flag.String("consumerGroup", getEnv("KAFKA_CONSUMER_GROUP", "logharbour-consumer-group"), "Kafka consumer group ID")
+	useConsumerGroup := flag.Bool("useConsumerGroup", getEnv("USE_CONSUMER_GROUP", "true") == "true", "Use consumer group instead of regular consumer")
+	logLevel := flag.String("logLevel", getEnv("LOG_LEVEL", "info"), "Log level: debug, info, warn, error")
 
 	// Parse flags
 	flag.Parse()
+
+	// Setup logging
+	setupLogger(*logLevel)
+	
+	logger.Info("Starting LogHarbour Consumer",
+		slog.String("version", "1.0.0"),
+		slog.String("log_level", *logLevel))
 
 	// Process offset type
 	var specificOffset int64 = -1
@@ -98,73 +167,174 @@ func main() {
 		if parsedOffset, err := strconv.ParseInt(*offsetType, 10, 64); err == nil {
 			specificOffset = parsedOffset
 			offsetTypeEnum = logharbour.OffsetSpecific
+			logger.Debug("Using specific offset", slog.Int64("offset", specificOffset))
 		} else {
 			// If not a valid number, default to earliest
-			log.Printf("Invalid offset type: %s. Using 'earliest' instead", *offsetType)
+			logger.Warn("Invalid offset type, using 'earliest' instead",
+				slog.String("provided_offset", *offsetType),
+				slog.String("fallback", "earliest"))
 			offsetTypeEnum = logharbour.OffsetEarliest
 		}
 	}
 
-	log.Printf("Elasticsearch Addresses: %s", *esAddresses)
-	log.Printf("Kafka Brokers: %s", *kafkaBrokers)
-	log.Printf("Kafka Topic: %s", *kafkaTopic)
-	log.Printf("Elasticsearch Index: %s", *esIndex)
-	log.Printf("Kafka Offset Type: %s (value: %v, specific offset: %d)", *offsetType, offsetTypeEnum, specificOffset)
-	log.Printf("Kafka Batch Size: %d", *batchSize)
+	logger.Info("Consumer configuration",
+		slog.String("elasticsearch_addresses", *esAddresses),
+		slog.String("kafka_brokers", *kafkaBrokers),
+		slog.String("kafka_topic", *kafkaTopic),
+		slog.String("elasticsearch_index", *esIndex),
+		slog.String("offset_type", *offsetType),
+		slog.Any("offset_enum", offsetTypeEnum),
+		slog.Int64("specific_offset", specificOffset),
+		slog.Int("batch_size", *batchSize),
+		slog.Bool("use_consumer_group", *useConsumerGroup),
+		slog.String("consumer_group_id", *consumerGroup))
 
+	logger.Debug("Creating Elasticsearch client")
+	startTime := time.Now()
 	esClient, err := createElasticsearchClient(*esAddresses)
 	if err != nil {
-		log.Fatalf("Error creating the Elasticsearch client: %s", err)
+		logger.Error("Failed to create Elasticsearch client", 
+			slog.String("error", err.Error()),
+			slog.String("addresses", *esAddresses))
+		os.Exit(1)
 	}
+	logger.Debug("Elasticsearch client created", 
+		slog.Duration("duration", time.Since(startTime)))
 
+	logger.Debug("Setting up Elasticsearch index")
+	startTime = time.Now()
 	err = setupElasticsearchIndex(esClient, *esIndex)
 	if err != nil {
-		log.Fatalf("Error setting up Elasticsearch index: %s", err)
+		logger.Error("Failed to setup Elasticsearch index", 
+			slog.String("error", err.Error()),
+			slog.String("index", *esIndex))
+		os.Exit(1)
 	}
+	logger.Debug("Elasticsearch index setup completed", 
+		slog.Duration("duration", time.Since(startTime)),
+		slog.String("index", *esIndex))
 
 	handler := func(messages []*sarama.ConsumerMessage) error {
-		for _, message := range messages {
-			// log debug
-			// log.Printf("Received message from topic %s: %s", message.Topic, string(message.Value))
-			// err := esClient.Write(*esIndex, string(message.Key), string(message.Value)) // Use the esIndex variable here
+		batchStartTime := time.Now()
+		batchSize := len(messages)
+		
+		logger.Debug("Processing message batch",
+			slog.Int("batch_size", batchSize),
+			slog.String("topic", messages[0].Topic),
+			slog.Int("partition", int(messages[0].Partition)))
+
+		successCount := 0
+		errorCount := 0
+		
+		for i, message := range messages {
+			messageStartTime := time.Now()
+			
+			logger.Debug("Processing message",
+				slog.Int("message_index", i),
+				slog.Int64("offset", message.Offset),
+				slog.Int("partition", int(message.Partition)),
+				slog.Time("timestamp", message.Timestamp),
+				slog.Int("value_size_bytes", len(message.Value)))
+
 			var logEntry map[string]interface{}
 			err := json.Unmarshal(message.Value, &logEntry)
 			if err != nil {
-				log.Printf("Failed to unmarshal log message: %v", err)
+				errorCount++
+				logger.Warn("Failed to unmarshal log message", 
+					slog.String("error", err.Error()),
+					slog.Int64("offset", message.Offset),
+					slog.Int("message_size", len(message.Value)))
 				continue
 			}
 
 			id, ok := logEntry["id"].(string)
 			if !ok {
-				log.Printf("Missing or invalid 'id' field in log message")
+				errorCount++
+				logger.Warn("Missing or invalid 'id' field in log message",
+					slog.Int64("offset", message.Offset),
+					slog.Any("log_entry_keys", getMapKeys(logEntry)))
 				continue
 			}
+
+			writeStartTime := time.Now()
 			err = retryOperation(func() error {
 				return esClient.Write(*esIndex, id, string(message.Value))
-			}, 10, 1*time.Second) // Adjust maxAttempts and initialBackoff as needed
+			}, 10, 1*time.Second)
+			
 			if err != nil {
-				log.Printf("Failed to write message %v to Elasticsearch: %v", message.Value, err)
+				errorCount++
+				logger.Error("Failed to write message to Elasticsearch after retries", 
+					slog.String("error", err.Error()),
+					slog.String("document_id", id),
+					slog.Int64("offset", message.Offset),
+					slog.Duration("write_duration", time.Since(writeStartTime)))
 				return err
 			}
+			
+			successCount++
+			logger.Debug("Message written to Elasticsearch successfully",
+				slog.String("document_id", id),
+				slog.Int64("offset", message.Offset),
+				slog.Duration("write_duration", time.Since(writeStartTime)),
+				slog.Duration("total_message_duration", time.Since(messageStartTime)))
 		}
+		
+		batchDuration := time.Since(batchStartTime)
+		logger.Info("Batch processing completed",
+			slog.Int("batch_size", batchSize),
+			slog.Int("success_count", successCount),
+			slog.Int("error_count", errorCount),
+			slog.Duration("batch_duration", batchDuration),
+			slog.Float64("messages_per_second", float64(successCount)/batchDuration.Seconds()))
+		
 		return nil
 	}
 
-	consumer, err := createKafkaConsumer(*kafkaBrokers, *kafkaTopic, handler, offsetTypeEnum, specificOffset)
-	if err != nil {
-		log.Fatalln("Failed to create consumer: ", err)
+	var consumer logharbour.Consumer
+	logger.Debug("Creating Kafka consumer")
+	consumerCreateStart := time.Now()
+	
+	if *useConsumerGroup {
+		logger.Info("Creating consumer group",
+			slog.String("group_id", *consumerGroup),
+			slog.String("topic", *kafkaTopic))
+		consumer, err = createKafkaConsumerGroup(*kafkaBrokers, *consumerGroup, *kafkaTopic, handler, offsetTypeEnum)
+	} else {
+		logger.Info("Creating regular consumer",
+			slog.String("topic", *kafkaTopic))
+		consumer, err = createKafkaConsumer(*kafkaBrokers, *kafkaTopic, handler, offsetTypeEnum, specificOffset)
 	}
+	
+	if err != nil {
+		logger.Error("Failed to create consumer", 
+			slog.String("error", err.Error()),
+			slog.Bool("consumer_group_mode", *useConsumerGroup))
+		os.Exit(1)
+	}
+	
+	logger.Debug("Kafka consumer created", 
+		slog.Duration("creation_duration", time.Since(consumerCreateStart)))
 
+	logger.Info("Starting Kafka consumer")
+	consumerStartTime := time.Now()
 	errs, err := startKafkaConsumer(consumer, *batchSize)
 	if err != nil {
-		log.Fatalln("Failed to start consumer: ", err)
+		logger.Error("Failed to start consumer", 
+			slog.String("error", err.Error()))
+		os.Exit(1)
 	}
+	
+	logger.Info("Kafka consumer started successfully",
+		slog.Duration("startup_duration", time.Since(consumerStartTime)))
 
 	handleErrors(errs)
 
+	logger.Info("Consumer is running. Press Ctrl+C to stop.")
 	waitForInterrupt()
 
+	logger.Info("Shutdown signal received, stopping consumer")
 	stopKafkaConsumer(consumer)
+	logger.Info("Consumer stopped gracefully")
 }
 
 func createElasticsearchClient(addresses string) (*logharbour.ElasticsearchClient, error) {
@@ -176,6 +346,10 @@ func createElasticsearchClient(addresses string) (*logharbour.ElasticsearchClien
 
 func createKafkaConsumer(brokers, topic string, handler logharbour.MessageHandler, offsetType logharbour.OffsetType, specificOffset int64) (logharbour.Consumer, error) {
 	return logharbour.NewConsumer(strings.Split(brokers, ","), topic, handler, offsetType, specificOffset)
+}
+
+func createKafkaConsumerGroup(brokers, groupID, topic string, handler logharbour.MessageHandler, offsetType logharbour.OffsetType) (logharbour.Consumer, error) {
+	return logharbour.NewConsumerGroup(strings.Split(brokers, ","), groupID, topic, handler, offsetType)
 }
 
 func indexExists(client *logharbour.ElasticsearchClient, indexName string) (bool, error) {

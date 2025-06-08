@@ -1,6 +1,9 @@
 package logharbour
 
 import (
+	"context"
+	"log/slog"
+
 	"github.com/IBM/sarama"
 )
 
@@ -30,6 +33,98 @@ type kafkaConsumer struct {
 	topic    string
 	handler  MessageHandler
 	offset   int64 // The offset to start consuming from
+}
+
+type kafkaConsumerGroup struct {
+	consumerGroup sarama.ConsumerGroup
+	topic         string
+	handler       MessageHandler
+	batchSize     int
+	ctx           context.Context
+	cancel        context.CancelFunc
+}
+
+// ConsumerGroupHandler implements sarama.ConsumerGroupHandler interface
+type ConsumerGroupHandler struct {
+	handler   MessageHandler
+	batchSize int
+}
+
+func (h *ConsumerGroupHandler) Setup(sarama.ConsumerGroupSession) error {
+	return nil
+}
+
+func (h *ConsumerGroupHandler) Cleanup(sarama.ConsumerGroupSession) error {
+	return nil
+}
+
+func (h *ConsumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+	batch := make([]*sarama.ConsumerMessage, 0, h.batchSize)
+	
+	for {
+		select {
+		case message := <-claim.Messages():
+			if message == nil {
+				// Process remaining batch if any
+				if len(batch) > 0 {
+					if err := h.handler(batch); err != nil {
+						return err
+					}
+				}
+				return nil
+			}
+			
+			batch = append(batch, message)
+			session.MarkMessage(message, "")
+			
+			if len(batch) >= h.batchSize {
+				if err := h.handler(batch); err != nil {
+					return err
+				}
+				batch = batch[:0]
+			}
+		case <-session.Context().Done():
+			// Process remaining batch if any
+			if len(batch) > 0 {
+				if err := h.handler(batch); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}
+}
+
+// NewConsumerGroup creates a new Kafka consumer group
+func NewConsumerGroup(brokers []string, groupID, topic string, handler MessageHandler, offsetType OffsetType) (Consumer, error) {
+	config := sarama.NewConfig()
+	config.Consumer.Return.Errors = true
+	config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategyRoundRobin
+	
+	// Set offset based on offsetType
+	switch offsetType {
+	case OffsetEarliest:
+		config.Consumer.Offsets.Initial = sarama.OffsetOldest
+	case OffsetLatest:
+		config.Consumer.Offsets.Initial = sarama.OffsetNewest
+	default:
+		config.Consumer.Offsets.Initial = sarama.OffsetOldest
+	}
+	
+	consumerGroup, err := sarama.NewConsumerGroup(brokers, groupID, config)
+	if err != nil {
+		return nil, err
+	}
+	
+	ctx, cancel := context.WithCancel(context.Background())
+	
+	return &kafkaConsumerGroup{
+		consumerGroup: consumerGroup,
+		topic:         topic,
+		handler:       handler,
+		ctx:           ctx,
+		cancel:        cancel,
+	}, nil
 }
 
 // NewConsumer creates a new Kafka consumer with the specified offset behavior
@@ -150,4 +245,54 @@ func (kc *kafkaConsumer) Stop() error {
 		return err
 	}
 	return nil
+}
+
+// Start begins consuming messages using consumer group
+func (kcg *kafkaConsumerGroup) Start(batchSize int) (<-chan error, error) {
+	kcg.batchSize = batchSize
+	errs := make(chan error, 1)
+	
+	handler := &ConsumerGroupHandler{
+		handler:   kcg.handler,
+		batchSize: batchSize,
+	}
+	
+	go func() {
+		defer close(errs)
+		for {
+			// Check if context is cancelled
+			if kcg.ctx.Err() != nil {
+				slog.Debug("Consumer group context cancelled, stopping consumption")
+				return
+			}
+			
+			slog.Debug("Consumer group starting consumption cycle", slog.String("topic", kcg.topic))
+			if err := kcg.consumerGroup.Consume(kcg.ctx, []string{kcg.topic}, handler); err != nil {
+				slog.Error("Error from consumer group", 
+					slog.String("error", err.Error()),
+					slog.String("topic", kcg.topic))
+				errs <- err
+				return
+			}
+		}
+	}()
+	
+	// Handle consumer group errors
+	go func() {
+		errorCount := 0
+		for err := range kcg.consumerGroup.Errors() {
+			errorCount++
+			slog.Error("Consumer group error", 
+				slog.String("error", err.Error()),
+				slog.Int("error_count", errorCount))
+			errs <- err
+		}
+	}()
+	
+	return errs, nil
+}
+
+func (kcg *kafkaConsumerGroup) Stop() error {
+	kcg.cancel()
+	return kcg.consumerGroup.Close()
 }

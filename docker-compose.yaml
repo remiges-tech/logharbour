@@ -50,6 +50,12 @@ services:
       ELASTICSEARCH_ADDRESSES: "http://elasticsearch:9200"
       KAFKA_BROKERS: "kafka:9092"
       KAFKA_TOPIC: "log_topic"
+      KAFKA_OFFSET_TYPE: "earliest"
+      KAFKA_BATCH_SIZE: "50"
+      # Consumer group is now default with ID "logharbour-consumer-group"
+      # Override if needed:
+      # KAFKA_CONSUMER_GROUP: "custom-group-id"
+      # USE_CONSUMER_GROUP: "false"  # To disable consumer groups
     depends_on:
       - kafka
       - elasticsearch

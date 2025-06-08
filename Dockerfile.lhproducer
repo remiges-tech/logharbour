@@ -7,8 +7,8 @@ WORKDIR /go/src/app
 # Copy the current directory contents into the container at /go/src/app
 COPY . .
 
-# Build the Go app for consumer
-RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o lh-producer ./examples/kafka/benchmark/.
+# Build the Go app for producer
+RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o lh-producer ./examples/kafka/benchmark
 
 # Use a small image
 FROM alpine:latest  
