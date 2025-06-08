@@ -33,23 +33,26 @@ services:
     image: lhproducer:latest
     networks:
       - lhnet
-    command: ["./lh-producer", "-nMessages=100000", "-nGoroutines=10"]
+    command: ["sh", "-c", "sleep 15 && ./lh-producer -nMessages=100000 -nGoroutines=10"]
     environment:
-      KAFKA_BROKERS: "kafka:9094"
+      KAFKA_BROKERS: "kafka:9092"
       KAFKA_TOPIC: "log_topic"
     depends_on:
       - kafka
+    restart: on-failure
 
   lhconsumer:
     image: 'lhconsumer:latest'
     networks:
       - lhnet
+    command: ["sh", "-c", "sleep 20 && ./lh-consumer"]
     environment:
       ELASTICSEARCH_ADDRESSES: "http://elasticsearch:9200"
-      KAFKA_BROKERS: "kafka:9094"
+      KAFKA_BROKERS: "kafka:9092"
       KAFKA_TOPIC: "log_topic"
     depends_on:
       - kafka
       - elasticsearch
+    restart: on-failure
 
 

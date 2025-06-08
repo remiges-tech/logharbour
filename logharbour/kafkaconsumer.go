@@ -7,6 +7,18 @@ import (
 // MessageHandler is a function type that processes messages from Kafka.
 type MessageHandler func(messages []*sarama.ConsumerMessage) error
 
+// OffsetType represents different offset options
+type OffsetType string
+
+const (
+	// OffsetEarliest starts consuming from the oldest available message
+	OffsetEarliest OffsetType = "earliest"
+	// OffsetLatest starts consuming only new messages
+	OffsetLatest OffsetType = "latest"
+	// OffsetSpecific uses a specific offset (handled via int64 parameter)
+	OffsetSpecific OffsetType = "specific"
+)
+
 // Consumer defines the interface for a Kafka consumer.
 type Consumer interface {
 	Start(batchSize int) (<-chan error, error)
@@ -17,9 +29,11 @@ type kafkaConsumer struct {
 	consumer sarama.Consumer
 	topic    string
 	handler  MessageHandler
+	offset   int64 // The offset to start consuming from
 }
 
-func NewConsumer(brokers []string, topic string, handler MessageHandler) (Consumer, error) {
+// NewConsumer creates a new Kafka consumer with the specified offset behavior
+func NewConsumer(brokers []string, topic string, handler MessageHandler, offsetType OffsetType, specificOffset int64) (Consumer, error) {
 	// Initialize Kafka consumer configuration
 	kafkaConfig := sarama.NewConfig()
 	kafkaConfig.Consumer.Return.Errors = true
@@ -30,10 +44,30 @@ func NewConsumer(brokers []string, topic string, handler MessageHandler) (Consum
 		return nil, err
 	}
 
+	// Determine which offset to use
+	var offset int64
+	switch offsetType {
+	case OffsetEarliest:
+		offset = sarama.OffsetOldest
+	case OffsetLatest:
+		offset = sarama.OffsetNewest
+	case OffsetSpecific:
+		// Use specific offset if provided, otherwise default to oldest
+		if specificOffset >= 0 {
+			offset = specificOffset
+		} else {
+			offset = sarama.OffsetOldest
+		}
+	default:
+		// Default to oldest
+		offset = sarama.OffsetOldest
+	}
+
 	return &kafkaConsumer{
 		consumer: consumer,
 		topic:    topic,
 		handler:  handler,
+		offset:   offset,
 	}, nil
 }
 
@@ -74,7 +108,8 @@ func (kc *kafkaConsumer) getPartitions() ([]int32, error) {
 // It also starts a goroutine to process the messages from the partition.
 // This allows for messages from multiple partitions to be processed simultaneously.
 func (kc *kafkaConsumer) consumePartition(partition int32, batchSize int, errs chan error) error {
-	pc, err := kc.consumer.ConsumePartition(kc.topic, partition, sarama.OffsetOldest)
+	// Use the configured offset instead of hardcoded sarama.OffsetOldest
+	pc, err := kc.consumer.ConsumePartition(kc.topic, partition, kc.offset)
 	if err != nil {
 		return err
 	}

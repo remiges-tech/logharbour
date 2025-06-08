@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"time"
 
@@ -22,8 +23,8 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
-func startKafkaConsumer(consumer logharbour.Consumer) (<-chan error, error) {
-	return consumer.Start(10)
+func startKafkaConsumer(consumer logharbour.Consumer, batchSize int) (<-chan error, error) {
+	return consumer.Start(batchSize)
 }
 
 func handleErrors(errs <-chan error) {
@@ -71,11 +72,45 @@ func main() {
 	kafkaBrokers := flag.String("kafkaBrokers", getEnv("KAFKA_BROKERS", "localhost:9092"), "Kafka brokers (comma-separated)")
 	kafkaTopic := flag.String("kafkaTopic", getEnv("KAFKA_TOPIC", "log_topic"), "Kafka topic")
 	esIndex := flag.String("esIndex", getEnv("ELASTICSEARCH_INDEX", "logs"), "Elasticsearch index name")
+	offsetType := flag.String("offsetType", getEnv("KAFKA_OFFSET_TYPE", "earliest"), "Kafka offset type: 'earliest', 'latest', or a specific number")
+	batchSize := flag.Int("batchSize", func() int {
+		if val := getEnv("KAFKA_BATCH_SIZE", "10"); val != "" {
+			if size, err := strconv.Atoi(val); err == nil {
+				return size
+			}
+		}
+		return 10
+	}(), "Kafka consumer batch size")
+
+	// Parse flags
+	flag.Parse()
+
+	// Process offset type
+	var specificOffset int64 = -1
+	var offsetTypeEnum logharbour.OffsetType
+	switch *offsetType {
+	case "earliest":
+		offsetTypeEnum = logharbour.OffsetEarliest
+	case "latest":
+		offsetTypeEnum = logharbour.OffsetLatest
+	default:
+		// Try to parse as a specific offset
+		if parsedOffset, err := strconv.ParseInt(*offsetType, 10, 64); err == nil {
+			specificOffset = parsedOffset
+			offsetTypeEnum = logharbour.OffsetSpecific
+		} else {
+			// If not a valid number, default to earliest
+			log.Printf("Invalid offset type: %s. Using 'earliest' instead", *offsetType)
+			offsetTypeEnum = logharbour.OffsetEarliest
+		}
+	}
 
 	log.Printf("Elasticsearch Addresses: %s", *esAddresses)
 	log.Printf("Kafka Brokers: %s", *kafkaBrokers)
 	log.Printf("Kafka Topic: %s", *kafkaTopic)
-	log.Printf("Elasticsearch Index: %s", *esIndex) // Added line
+	log.Printf("Elasticsearch Index: %s", *esIndex)
+	log.Printf("Kafka Offset Type: %s (value: %v, specific offset: %d)", *offsetType, offsetTypeEnum, specificOffset)
+	log.Printf("Kafka Batch Size: %d", *batchSize)
 
 	esClient, err := createElasticsearchClient(*esAddresses)
 	if err != nil {
@@ -115,12 +150,12 @@ func main() {
 		return nil
 	}
 
-	consumer, err := createKafkaConsumer(*kafkaBrokers, *kafkaTopic, handler)
+	consumer, err := createKafkaConsumer(*kafkaBrokers, *kafkaTopic, handler, offsetTypeEnum, specificOffset)
 	if err != nil {
 		log.Fatalln("Failed to create consumer: ", err)
 	}
 
-	errs, err := startKafkaConsumer(consumer)
+	errs, err := startKafkaConsumer(consumer, *batchSize)
 	if err != nil {
 		log.Fatalln("Failed to start consumer: ", err)
 	}
@@ -139,8 +174,8 @@ func createElasticsearchClient(addresses string) (*logharbour.ElasticsearchClien
 	return logharbour.NewElasticsearchClient(esConfig)
 }
 
-func createKafkaConsumer(brokers, topic string, handler logharbour.MessageHandler) (logharbour.Consumer, error) {
-	return logharbour.NewConsumer(strings.Split(brokers, ","), topic, handler)
+func createKafkaConsumer(brokers, topic string, handler logharbour.MessageHandler, offsetType logharbour.OffsetType, specificOffset int64) (logharbour.Consumer, error) {
+	return logharbour.NewConsumer(strings.Split(brokers, ","), topic, handler, offsetType, specificOffset)
 }
 
 func indexExists(client *logharbour.ElasticsearchClient, indexName string) (bool, error) {
