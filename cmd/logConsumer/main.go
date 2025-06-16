@@ -70,7 +70,13 @@ func handleErrors(errs <-chan error) {
 			logger.Error("Consumer error occurred", 
 				slog.String("error", err.Error()),
 				slog.Int("total_errors", errorCount))
-			// Decide what to do here: retry, ignore, etc.
+			
+			// Check if this is a panic error and exit immediately
+			if err != nil && strings.Contains(err.Error(), "panic in") {
+				logger.Error("Panic detected in consumer, exiting process", 
+					slog.String("error", err.Error()))
+				os.Exit(1)
+			}
 		}
 	}()
 }

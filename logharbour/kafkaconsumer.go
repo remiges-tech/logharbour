@@ -2,7 +2,10 @@ package logharbour
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
+	"runtime/debug"
+	"time"
 
 	"github.com/IBM/sarama"
 )
@@ -59,6 +62,18 @@ func (h *ConsumerGroupHandler) Cleanup(sarama.ConsumerGroupSession) error {
 }
 
 func (h *ConsumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+	// Panic recovery - log and return error to trigger rebalance
+	defer func() {
+		if r := recover(); r != nil {
+			slog.Error("Panic recovered in ConsumeClaim",
+				slog.String("topic", claim.Topic()),
+				slog.Int("partition", int(claim.Partition())),
+				slog.Any("panic", r),
+				slog.String("stack_trace", string(debug.Stack())))
+			// Don't continue processing - let the consumer group handle the error
+		}
+	}()
+	
 	batch := make([]*sarama.ConsumerMessage, 0, h.batchSize)
 	
 	for {
@@ -79,9 +94,18 @@ func (h *ConsumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession,
 			
 			if len(batch) >= h.batchSize {
 				if err := h.handler(batch); err != nil {
+					slog.Error("Failed to handle batch", 
+						slog.String("error", err.Error()),
+						slog.Int("batch_size", len(batch)))
 					return err
 				}
 				batch = batch[:0]
+				
+				// Log current offset information
+				slog.Debug("Batch processed, current offset marked",
+					slog.Int64("offset", message.Offset),
+					slog.Int("partition", int(message.Partition)),
+					slog.String("topic", message.Topic))
 			}
 		case <-session.Context().Done():
 			// Process remaining batch if any
@@ -100,6 +124,10 @@ func NewConsumerGroup(brokers []string, groupID, topic string, handler MessageHa
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
 	config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategyRoundRobin
+	
+	// Explicitly enable auto-commit with a shorter interval
+	config.Consumer.Offsets.AutoCommit.Enable = true
+	config.Consumer.Offsets.AutoCommit.Interval = 1 * time.Second
 	
 	// Set offset based on offsetType
 	switch offsetType {
@@ -219,6 +247,27 @@ func (kc *kafkaConsumer) consumePartition(partition int32, batchSize int, errs c
 // This allows for efficient processing of messages, especially when the handler function
 // is designed to process batches of messages.
 func (kc *kafkaConsumer) processMessages(pc sarama.PartitionConsumer, batchSize int, errs chan error) {
+	// Panic recovery - log and exit the goroutine
+	defer func() {
+		if r := recover(); r != nil {
+			err := fmt.Errorf("panic in processMessages: %v\nStack trace:\n%s", r, debug.Stack())
+			slog.Error("Panic recovered in partition consumer",
+				slog.String("topic", kc.topic),
+				slog.Any("panic", r),
+				slog.String("stack_trace", string(debug.Stack())))
+			
+			// Send error to channel
+			select {
+			case errs <- err:
+			default:
+				slog.Error("Error channel full, could not send panic error")
+			}
+			
+			// Exit the goroutine - don't continue processing
+			return
+		}
+	}()
+	
 	batch := make([]*sarama.ConsumerMessage, 0, batchSize)
 	for message := range pc.Messages() {
 		batch = append(batch, message)
@@ -259,6 +308,24 @@ func (kcg *kafkaConsumerGroup) Start(batchSize int) (<-chan error, error) {
 	
 	go func() {
 		defer close(errs)
+		// Panic recovery - log and exit the goroutine
+		defer func() {
+			if r := recover(); r != nil {
+				err := fmt.Errorf("panic in consumer group consumption: %v\nStack trace:\n%s", r, debug.Stack())
+				slog.Error("Panic recovered in consumer group",
+					slog.String("topic", kcg.topic),
+					slog.Any("panic", r),
+					slog.String("stack_trace", string(debug.Stack())))
+				
+				// Send error to channel before closing
+				select {
+				case errs <- err:
+				default:
+					slog.Error("Error channel full, could not send panic error")
+				}
+			}
+		}()
+		
 		for {
 			// Check if context is cancelled
 			if kcg.ctx.Err() != nil {
@@ -279,6 +346,24 @@ func (kcg *kafkaConsumerGroup) Start(batchSize int) (<-chan error, error) {
 	
 	// Handle consumer group errors
 	go func() {
+		// Panic recovery - log and exit the goroutine
+		defer func() {
+			if r := recover(); r != nil {
+				err := fmt.Errorf("panic in consumer group error handler: %v\nStack trace:\n%s", r, debug.Stack())
+				slog.Error("Panic recovered in consumer group error handler",
+					slog.String("topic", kcg.topic),
+					slog.Any("panic", r),
+					slog.String("stack_trace", string(debug.Stack())))
+				
+				// Send error to channel
+				select {
+				case errs <- err:
+				default:
+					slog.Error("Error channel full, could not send panic error")
+				}
+			}
+		}()
+		
 		errorCount := 0
 		for err := range kcg.consumerGroup.Errors() {
 			errorCount++
