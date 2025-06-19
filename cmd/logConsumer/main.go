@@ -139,12 +139,12 @@ func main() {
 	esIndex := flag.String("esIndex", getEnv("ELASTICSEARCH_INDEX", "logs"), "Elasticsearch index name")
 	offsetType := flag.String("offsetType", getEnv("KAFKA_OFFSET_TYPE", "earliest"), "Kafka offset type: 'earliest', 'latest', or a specific number")
 	batchSize := flag.Int("batchSize", func() int {
-		if val := getEnv("KAFKA_BATCH_SIZE", "10"); val != "" {
+		if val := getEnv("KAFKA_BATCH_SIZE", "1000"); val != "" {
 			if size, err := strconv.Atoi(val); err == nil {
 				return size
 			}
 		}
-		return 10
+		return 1000
 	}(), "Kafka consumer batch size")
 	consumerGroup := flag.String("consumerGroup", getEnv("KAFKA_CONSUMER_GROUP", "logharbour-consumer-group"), "Kafka consumer group ID")
 	useConsumerGroup := flag.Bool("useConsumerGroup", getEnv("USE_CONSUMER_GROUP", "true") == "true", "Use consumer group instead of regular consumer")
@@ -221,6 +221,23 @@ func main() {
 		slog.String("index", *esIndex))
 
 	handler := func(messages []*sarama.ConsumerMessage) error {
+		// Error Handling Overview:
+		// 1. Validation Phase: Invalid messages are logged and skipped (not sent to ES)
+		// 2. Bulk Indexing Phase: Documents are sent to ES in a single bulk request
+		// 3. Retry Logic: Network/connection failures trigger retries of entire batch
+		// 4. Partial Failures: Some documents may fail (e.g., mapping errors) while others succeed
+		// 5. Error Propagation: Any failures return error to prevent Kafka offset commit
+		//
+		// Error Categories:
+		// - Validation Errors: Bad data that can't be parsed (invalid JSON, missing ID)
+		//   Action: Skip message, never sent to Elasticsearch
+		//   Metric: validation_errors count
+		// - Indexing Errors: Valid data that Elasticsearch rejects (mapping conflicts, doc too large)
+		//   Action: Document sent but failed, captured in bulk response
+		//   Metric: error_count/failed count
+		//
+		// This separation helps identify if issues are from bad data (validation) or ES config (indexing).
+		
 		batchStartTime := time.Now()
 		batchSize := len(messages)
 		
@@ -229,12 +246,11 @@ func main() {
 			slog.String("topic", messages[0].Topic),
 			slog.Int("partition", int(messages[0].Partition)))
 
-		successCount := 0
-		errorCount := 0
+		// Phase 1: Validation - Prepare documents for bulk indexing
+		bulkDocs := make([]logharbour.BulkDocument, 0, batchSize)
+		validationErrors := 0
 		
 		for i, message := range messages {
-			messageStartTime := time.Now()
-			
 			logger.Debug("Processing message",
 				slog.Int("message_index", i),
 				slog.Int64("offset", message.Offset),
@@ -245,7 +261,8 @@ func main() {
 			var logEntry map[string]interface{}
 			err := json.Unmarshal(message.Value, &logEntry)
 			if err != nil {
-				errorCount++
+				// Validation error: Skip this message, it won't be sent to Elasticsearch
+				validationErrors++
 				logger.Warn("Failed to unmarshal log message", 
 					slog.String("error", err.Error()),
 					slog.Int64("offset", message.Offset),
@@ -255,43 +272,98 @@ func main() {
 
 			id, ok := logEntry["id"].(string)
 			if !ok {
-				errorCount++
+				// Validation error: Document must have an ID for Elasticsearch
+				validationErrors++
 				logger.Warn("Missing or invalid 'id' field in log message",
 					slog.Int64("offset", message.Offset),
 					slog.Any("log_entry_keys", getMapKeys(logEntry)))
 				continue
 			}
 
-			writeStartTime := time.Now()
-			err = retryOperation(func() error {
-				return esClient.Write(*esIndex, id, string(message.Value))
-			}, 10, 1*time.Second)
-			
+			bulkDocs = append(bulkDocs, logharbour.BulkDocument{
+				ID:   id,
+				Body: string(message.Value),
+			})
+		}
+
+		if len(bulkDocs) == 0 {
+			// All messages failed validation - nothing to send to Elasticsearch
+			logger.Warn("No valid documents to index in batch",
+				slog.Int("batch_size", batchSize),
+				slog.Int("validation_errors", validationErrors))
+			return nil
+		}
+
+		// Phase 2: Bulk Indexing - Send all valid documents to Elasticsearch
+		writeStartTime := time.Now()
+		var bulkResult *logharbour.BulkWriteResult
+		err := retryOperation(func() error {
+			var err error
+			bulkResult, err = esClient.BulkWrite(*esIndex, bulkDocs)
 			if err != nil {
-				errorCount++
-				logger.Error("Failed to write message to Elasticsearch after retries", 
-					slog.String("error", err.Error()),
-					slog.String("document_id", id),
-					slog.Int64("offset", message.Offset),
-					slog.Duration("write_duration", time.Since(writeStartTime)))
+				// Network/connection error - retry entire batch
 				return err
 			}
+			// If all documents failed (e.g., index closed), treat as error for retry
+			if bulkResult.Failed == len(bulkDocs) {
+				return fmt.Errorf("all documents failed to index")
+			}
+			return nil
+		}, 10, 1*time.Second)
+		
+		writeDuration := time.Since(writeStartTime)
+		
+		if err != nil {
+			logger.Error("Failed to bulk write to Elasticsearch after retries", 
+				slog.String("error", err.Error()),
+				slog.Int("documents_count", len(bulkDocs)),
+				slog.Duration("write_duration", writeDuration))
+			return err
+		}
+		
+		// Phase 3: Error Analysis - Log results and handle partial failures
+		if bulkResult.Failed > 0 {
+			// Partial failure: Some documents succeeded, some failed
+			// Common causes: mapping conflicts, field validation errors, document too large
+			logger.Warn("Bulk write completed with some failures",
+				slog.Int("successful", bulkResult.Successful),
+				slog.Int("failed", bulkResult.Failed),
+				slog.Int("error_count", len(bulkResult.Errors)),
+				slog.Duration("write_duration", writeDuration))
 			
-			successCount++
-			logger.Debug("Message written to Elasticsearch successfully",
-				slog.String("document_id", id),
-				slog.Int64("offset", message.Offset),
-				slog.Duration("write_duration", time.Since(writeStartTime)),
-				slog.Duration("total_message_duration", time.Since(messageStartTime)))
+			// Log first few errors for debugging (full list available in bulkResult.Errors)
+			maxErrors := 5
+			if len(bulkResult.Errors) < maxErrors {
+				maxErrors = len(bulkResult.Errors)
+			}
+			for i := 0; i < maxErrors; i++ {
+				logger.Error("Document indexing failed",
+					slog.String("document_id", bulkResult.Errors[i].DocumentID),
+					slog.String("error", bulkResult.Errors[i].Error),
+					slog.Int("status", bulkResult.Errors[i].Status))
+			}
+			if len(bulkResult.Errors) > maxErrors {
+				logger.Warn("More errors occurred",
+					slog.Int("additional_errors", len(bulkResult.Errors)-maxErrors))
+			}
 		}
 		
 		batchDuration := time.Since(batchStartTime)
 		logger.Info("Batch processing completed",
 			slog.Int("batch_size", batchSize),
-			slog.Int("success_count", successCount),
-			slog.Int("error_count", errorCount),
+			slog.Int("validation_errors", validationErrors),
+			slog.Int("documents_sent", len(bulkDocs)),
+			slog.Int("success_count", bulkResult.Successful),
+			slog.Int("error_count", bulkResult.Failed),
 			slog.Duration("batch_duration", batchDuration),
-			slog.Float64("messages_per_second", float64(successCount)/batchDuration.Seconds()))
+			slog.Float64("messages_per_second", float64(bulkResult.Successful)/batchDuration.Seconds()))
+		
+		// Phase 4: Error Propagation - Prevent Kafka offset commit on failures
+		// By returning an error, we ensure the Kafka consumer doesn't commit the offset,
+		// allowing these messages to be reprocessed on next startup
+		if bulkResult.Failed > 0 {
+			return fmt.Errorf("%d documents failed to index", bulkResult.Failed)
+		}
 		
 		return nil
 	}

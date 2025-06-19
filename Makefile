@@ -22,4 +22,9 @@ docker_build_producer:
 docker_clean_producer:
 	docker rmi $(IMAGE_NAME_PRODUCER):$(TAG)
 
-.PHONY: all docker_build_consumer docker_clean_consumer docker_build_producer docker_clean_producer
+# Target to run end-to-end bulk indexing test
+test_bulk_indexing:
+	@echo "Running end-to-end bulk indexing test..."
+	@bash ./cmd/logConsumer/test_bulk_indexing_e2e.sh
+
+.PHONY: all docker_build_consumer docker_clean_consumer docker_build_producer docker_clean_producer test_bulk_indexing
