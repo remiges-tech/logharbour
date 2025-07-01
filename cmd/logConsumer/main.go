@@ -62,9 +62,27 @@ func startKafkaConsumer(consumer logharbour.Consumer, batchSize int) (<-chan err
 	return consumer.Start(batchSize)
 }
 
-func handleErrors(errs <-chan error) {
+// handleErrors monitors the consumer error channel and detects when the consumer dies.
+// 
+// Consumer Death Detection Mechanism:
+// When the Kafka consumer encounters a fatal error (e.g., connection failure), the
+// consumer goroutine exits and closes its error channel. This function detects that
+// closure and signals the main goroutine via the returned 'done' channel.
+//
+// This addresses a critical issue where the consumer would silently fail but the
+// process would continue running, appearing healthy to monitoring systems while
+// actually doing no work.
+//
+// Returns a channel that will be closed when the error handler goroutine exits,
+// which happens when:
+// 1. The consumer's error channel is closed (consumer died)
+// 2. A panic error is detected (process exits immediately via os.Exit)
+func handleErrors(errs <-chan error) (<-chan struct{}) {
+	done := make(chan struct{})
 	go func() {
+		defer close(done)
 		errorCount := 0
+		// Range over the error channel - this loop exits when the channel is closed
 		for err := range errs {
 			errorCount++
 			logger.Error("Consumer error occurred", 
@@ -78,14 +96,12 @@ func handleErrors(errs <-chan error) {
 				os.Exit(1)
 			}
 		}
+		// If we reach here, the error channel was closed, meaning the consumer died
+		logger.Error("Consumer error channel closed - consumer has stopped running")
 	}()
+	return done
 }
 
-func waitForInterrupt() {
-	signals := make(chan os.Signal, 1)
-	signal.Notify(signals, os.Interrupt)
-	<-signals
-}
 
 func stopKafkaConsumer(consumer logharbour.Consumer) {
 	stopStartTime := time.Now()
@@ -405,12 +421,47 @@ func main() {
 	logger.Info("Kafka consumer started successfully",
 		slog.Duration("startup_duration", time.Since(consumerStartTime)))
 
-	handleErrors(errs)
+	// Start monitoring consumer errors and get a channel that signals consumer death
+	consumerDone := handleErrors(errs)
 
 	logger.Info("Consumer is running. Press Ctrl+C to stop.")
-	waitForInterrupt()
+	
+	// Consumer Health Monitoring:
+	// This select statement waits for one of two events:
+	// 1. Consumer death (via consumerDone channel)
+	// 2. User interrupt (Ctrl+C)
+	//
+	// This fixes a critical issue where the Kafka consumer goroutine would exit
+	// on connection errors but the main process would continue running indefinitely,
+	// making it appear healthy to monitoring systems while doing no actual work.
+	//
+	// Example scenario this addresses:
+	// 1. Consumer starts and connects to Kafka successfully
+	// 2. Network issue or Kafka becomes unavailable
+	// 3. Consumer's Consume() method returns error and goroutine exits
+	// 4. Error channel closes, triggering consumerDone
+	// 5. Process exits with code 1, signaling failure to orchestrators
+	select {
+	case <-consumerDone:
+		// Consumer died unexpectedly - exit immediately with error code
+		// This ensures the failure is visible to container orchestrators,
+		// systemd, or other process managers that can restart the service
+		logger.Error("Consumer has stopped unexpectedly, exiting process")
+		// TODO: Implement retry mechanism with exponential backoff instead of exiting
+		// - Add configurable retry attempts and backoff duration
+		// - Attempt to recreate the consumer and restart consumption
+		// - Only exit after max retries are exhausted
+		// - Consider implementing circuit breaker pattern for better resilience
+		os.Exit(1)
+	case <-func() <-chan os.Signal {
+		signals := make(chan os.Signal, 1)
+		signal.Notify(signals, os.Interrupt)
+		return signals
+	}():
+		// Normal shutdown path - user pressed Ctrl+C
+		logger.Info("Shutdown signal received, stopping consumer")
+	}
 
-	logger.Info("Shutdown signal received, stopping consumer")
 	stopKafkaConsumer(consumer)
 	logger.Info("Consumer stopped gracefully")
 }
