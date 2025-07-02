@@ -1,0 +1,15 @@
+# Elasticsearch data
+es_data/
+
+# Logs
+*.log
+
+# Environment files
+.env
+
+# MacOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

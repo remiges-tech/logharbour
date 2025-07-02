@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+    container_name: logharbour-test-es
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
+  setup:
+    image: curlimages/curl:latest
+    container_name: logharbour-test-setup
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    volumes:
+      - ./:/scripts
+    command: /scripts/create-test-index.sh
+    environment:
+      - ES_URL=http://elasticsearch:9200
+
+volumes:
+  es_data:
