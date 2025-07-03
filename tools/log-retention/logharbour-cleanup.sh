@@ -17,6 +17,7 @@ TYPE="${TYPE:-}"
 PRIORITY="${PRIORITY:-}"
 BATCH_SIZE="${BATCH_SIZE:-1000}"
 VERBOSE="${VERBOSE:-false}"
+FORCE="${FORCE:-false}"
 
 # Colors for output
 RED='\033[0;31m'
@@ -166,6 +167,7 @@ OPTIONS:
     -p, --priority PRIORITY Filter by priority
     -n, --dry-run           Show what would be deleted without actually deleting
     -v, --verbose           Enable verbose output
+    -f, --force             Skip confirmation for large deletions (use with caution)
     --url URL               Elasticsearch URL (default: http://localhost:9200)
     --index INDEX           Elasticsearch index (default: logharbour)
     --username USERNAME     Elasticsearch username
@@ -185,6 +187,9 @@ EXAMPLES:
     # Delete with authentication
     $0 --username elastic --password mypassword --days 90
 
+    # Force deletion without confirmation (for cron jobs)
+    $0 --days 30 --force
+
 ENVIRONMENT VARIABLES:
     ES_URL              Elasticsearch URL
     ES_INDEX            Elasticsearch index name
@@ -193,6 +198,7 @@ ENVIRONMENT VARIABLES:
     RETENTION_DAYS      Default retention period
     DRY_RUN             Set to 'true' for dry run
     VERBOSE             Set to 'true' for verbose output
+    FORCE               Set to 'true' to skip confirmations
 EOF
 }
 
@@ -247,6 +253,10 @@ while [[ $# -gt 0 ]]; do
             BATCH_SIZE="$2"
             shift 2
             ;;
+        -f|--force)
+            FORCE="true"
+            shift
+            ;;
         *)
             log_error "Unknown option: $1"
             usage
@@ -293,13 +303,25 @@ if [ "$DRY_RUN" = "true" ]; then
     log_info "To perform actual deletion, run without --dry-run flag"
 else
     # Confirm deletion for large numbers
-    if [ "$count" -gt 10000 ]; then
+    if [ "$count" -gt 10000 ] && [ "$FORCE" != "true" ]; then
         log_warn "About to delete $count documents. This is a large number!"
-        read -p "Are you sure you want to continue? (yes/no): " confirm
-        if [ "$confirm" != "yes" ]; then
-            log_info "Deletion cancelled"
-            exit 0
+        
+        # Check if running interactively
+        if [ -t 0 ]; then
+            # Interactive mode - ask for confirmation
+            read -p "Are you sure you want to continue? (yes/no): " confirm
+            if [ "$confirm" != "yes" ]; then
+                log_info "Deletion cancelled"
+                exit 0
+            fi
+        else
+            # Non-interactive mode (like cron) - require --force flag
+            log_error "Large deletion ($count documents) requires confirmation."
+            log_error "Use --force flag to proceed in non-interactive mode."
+            exit 1
         fi
+    elif [ "$count" -gt 10000 ] && [ "$FORCE" = "true" ]; then
+        log_warn "Force mode enabled. Proceeding with deletion of $count documents."
     fi
     
     delete_documents

@@ -152,6 +152,7 @@ docker-compose down -v
 | `-p, --priority PRIORITY` | Filter by priority | - |
 | `-n, --dry-run` | Preview without deleting | false |
 | `-v, --verbose` | Enable verbose output | false |
+| `-f, --force` | Skip confirmation prompts | false |
 | `--url URL` | Elasticsearch URL | http://localhost:9200 |
 | `--index INDEX` | Index name | logharbour |
 | `--username USERNAME` | ES username | - |
@@ -183,10 +184,13 @@ To run the cleanup automatically:
 crontab -e
 
 # Run daily at 2 AM, delete logs older than 30 days
-0 2 * * * /path/to/logharbour-cleanup.sh --days 30 >> /var/log/logharbour-cleanup.log 2>&1
+0 2 * * * /path/to/logharbour-cleanup.sh --days 30 --force >> /var/log/logharbour-cleanup.log 2>&1
 
 # Run weekly on Sunday, delete debug logs older than 7 days
-0 3 * * 0 /path/to/logharbour-cleanup.sh --days 7 --type D >> /var/log/logharbour-cleanup.log 2>&1
+0 3 * * 0 /path/to/logharbour-cleanup.sh --days 7 --type D --force >> /var/log/logharbour-cleanup.log 2>&1
+
+# Alternative: Use environment variable
+0 2 * * * FORCE=true /path/to/logharbour-cleanup.sh --days 30 >> /var/log/logharbour-cleanup.log 2>&1
 ```
 
 ## Safety Features
@@ -195,6 +199,8 @@ crontab -e
 2. **Document Count**: Shows number of documents to be deleted
 3. **Sample Documents**: Displays 5 sample documents before deletion
 4. **Large Deletion Confirmation**: Prompts for confirmation when deleting >10,000 documents
+   - In interactive mode: Asks for yes/no confirmation
+   - In non-interactive mode (cron): Requires `--force` flag or fails safely
 5. **Error Handling**: Stops on any error to prevent partial deletions
 
 ## Production Usage
