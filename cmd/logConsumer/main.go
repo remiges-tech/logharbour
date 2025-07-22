@@ -58,8 +58,8 @@ func getMapKeys(m map[string]interface{}) []string {
 	return keys
 }
 
-func startKafkaConsumer(consumer logharbour.Consumer, batchSize int) (<-chan error, error) {
-	return consumer.Start(batchSize)
+func startKafkaConsumer(consumer logharbour.Consumer, batchSize int, batchTimeout time.Duration) (<-chan error, error) {
+	return consumer.Start(batchSize, batchTimeout)
 }
 
 // handleErrors monitors the consumer error channel and detects when the consumer dies.
@@ -162,6 +162,14 @@ func main() {
 		}
 		return 1000
 	}(), "Kafka consumer batch size")
+	batchTimeout := flag.Duration("batchTimeout", func() time.Duration {
+		if val := getEnv("KAFKA_BATCH_TIMEOUT", "60s"); val != "" {
+			if duration, err := time.ParseDuration(val); err == nil {
+				return duration
+			}
+		}
+		return 60 * time.Second
+	}(), "Kafka consumer batch timeout")
 	consumerGroup := flag.String("consumerGroup", getEnv("KAFKA_CONSUMER_GROUP", "logharbour-consumer-group"), "Kafka consumer group ID")
 	useConsumerGroup := flag.Bool("useConsumerGroup", getEnv("USE_CONSUMER_GROUP", "true") == "true", "Use consumer group instead of regular consumer")
 	logLevel := flag.String("logLevel", getEnv("LOG_LEVEL", "info"), "Log level: debug, info, warn, error")
@@ -208,6 +216,7 @@ func main() {
 		slog.Any("offset_enum", offsetTypeEnum),
 		slog.Int64("specific_offset", specificOffset),
 		slog.Int("batch_size", *batchSize),
+		slog.Duration("batch_timeout", *batchTimeout),
 		slog.Bool("use_consumer_group", *useConsumerGroup),
 		slog.String("consumer_group_id", *consumerGroup))
 
@@ -411,7 +420,7 @@ func main() {
 
 	logger.Info("Starting Kafka consumer")
 	consumerStartTime := time.Now()
-	errs, err := startKafkaConsumer(consumer, *batchSize)
+	errs, err := startKafkaConsumer(consumer, *batchSize, *batchTimeout)
 	if err != nil {
 		logger.Error("Failed to start consumer", 
 			slog.String("error", err.Error()))

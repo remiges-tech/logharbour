@@ -27,7 +27,7 @@ const (
 
 // Consumer defines the interface for a Kafka consumer.
 type Consumer interface {
-	Start(batchSize int) (<-chan error, error)
+	Start(batchSize int, batchTimeout time.Duration) (<-chan error, error)
 	Stop() error
 }
 
@@ -43,14 +43,16 @@ type kafkaConsumerGroup struct {
 	topic         string
 	handler       MessageHandler
 	batchSize     int
+	batchTimeout  time.Duration
 	ctx           context.Context
 	cancel        context.CancelFunc
 }
 
 // ConsumerGroupHandler implements sarama.ConsumerGroupHandler interface
 type ConsumerGroupHandler struct {
-	handler   MessageHandler
-	batchSize int
+	handler      MessageHandler
+	batchSize    int
+	batchTimeout time.Duration
 }
 
 func (h *ConsumerGroupHandler) Setup(sarama.ConsumerGroupSession) error {
@@ -75,6 +77,8 @@ func (h *ConsumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession,
 	}()
 	
 	batch := make([]*sarama.ConsumerMessage, 0, h.batchSize)
+	timer := time.NewTimer(h.batchTimeout)
+	defer timer.Stop()
 	
 	for {
 		select {
@@ -101,12 +105,34 @@ func (h *ConsumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession,
 				}
 				batch = batch[:0]
 				
+				// Reset timer after processing a full batch
+				if !timer.Stop() {
+					<-timer.C
+				}
+				timer.Reset(h.batchTimeout)
+				
 				// Log current offset information
 				slog.Debug("Batch processed, current offset marked",
 					slog.Int64("offset", message.Offset),
 					slog.Int("partition", int(message.Partition)),
 					slog.String("topic", message.Topic))
 			}
+		case <-timer.C:
+			// Timeout reached, process partial batch if any
+			if len(batch) > 0 {
+				slog.Debug("Batch timeout reached, processing partial batch",
+					slog.Int("batch_size", len(batch)),
+					slog.Int("expected_size", h.batchSize))
+				
+				if err := h.handler(batch); err != nil {
+					slog.Error("Failed to handle partial batch", 
+						slog.String("error", err.Error()),
+						slog.Int("batch_size", len(batch)))
+					return err
+				}
+				batch = batch[:0]
+			}
+			timer.Reset(h.batchTimeout)
 		case <-session.Context().Done():
 			// Process remaining batch if any
 			if len(batch) > 0 {
@@ -203,7 +229,7 @@ func NewConsumer(brokers []string, topic string, handler MessageHandler, offsetT
 // The method returns a channel that emits errors encountered during message consumption. This allows
 // the caller to handle these errors asynchronously. The channel should be continuously read from
 // to prevent blocking the consumer.
-func (kc *kafkaConsumer) Start(batchSize int) (<-chan error, error) {
+func (kc *kafkaConsumer) Start(batchSize int, batchTimeout time.Duration) (<-chan error, error) {
 	errs := make(chan error)
 
 	partitionList, err := kc.getPartitions()
@@ -212,7 +238,7 @@ func (kc *kafkaConsumer) Start(batchSize int) (<-chan error, error) {
 	}
 
 	for _, partition := range partitionList {
-		err := kc.consumePartition(partition, batchSize, errs)
+		err := kc.consumePartition(partition, batchSize, batchTimeout, errs)
 		if err != nil {
 			return nil, err
 		}
@@ -230,14 +256,14 @@ func (kc *kafkaConsumer) getPartitions() ([]int32, error) {
 // consumePartition starts consuming messages from a specific partition.
 // It also starts a goroutine to process the messages from the partition.
 // This allows for messages from multiple partitions to be processed simultaneously.
-func (kc *kafkaConsumer) consumePartition(partition int32, batchSize int, errs chan error) error {
+func (kc *kafkaConsumer) consumePartition(partition int32, batchSize int, batchTimeout time.Duration, errs chan error) error {
 	// Use the configured offset instead of hardcoded sarama.OffsetOldest
 	pc, err := kc.consumer.ConsumePartition(kc.topic, partition, kc.offset)
 	if err != nil {
 		return err
 	}
 
-	go kc.processMessages(pc, batchSize, errs)
+	go kc.processMessages(pc, batchSize, batchTimeout, errs)
 
 	return nil
 }
@@ -246,7 +272,7 @@ func (kc *kafkaConsumer) consumePartition(partition int32, batchSize int, errs c
 // It creates batches of messages and calls handleBatch to process each batch.
 // This allows for efficient processing of messages, especially when the handler function
 // is designed to process batches of messages.
-func (kc *kafkaConsumer) processMessages(pc sarama.PartitionConsumer, batchSize int, errs chan error) {
+func (kc *kafkaConsumer) processMessages(pc sarama.PartitionConsumer, batchSize int, batchTimeout time.Duration, errs chan error) {
 	// Panic recovery - log and exit the goroutine
 	defer func() {
 		if r := recover(); r != nil {
@@ -269,15 +295,43 @@ func (kc *kafkaConsumer) processMessages(pc sarama.PartitionConsumer, batchSize 
 	}()
 	
 	batch := make([]*sarama.ConsumerMessage, 0, batchSize)
-	for message := range pc.Messages() {
-		batch = append(batch, message)
-		if len(batch) >= batchSize {
-			kc.handleBatch(batch, errs)
-			batch = batch[:0]
+	timer := time.NewTimer(batchTimeout)
+	defer timer.Stop()
+	
+	for {
+		select {
+		case message, ok := <-pc.Messages():
+			if !ok {
+				// Channel closed, process remaining batch
+				if len(batch) > 0 {
+					kc.handleBatch(batch, errs)
+				}
+				return
+			}
+			
+			batch = append(batch, message)
+			if len(batch) >= batchSize {
+				kc.handleBatch(batch, errs)
+				batch = batch[:0]
+				
+				// Reset timer after processing a full batch
+				if !timer.Stop() {
+					<-timer.C
+				}
+				timer.Reset(batchTimeout)
+			}
+		case <-timer.C:
+			// Timeout reached, process partial batch if any
+			if len(batch) > 0 {
+				slog.Debug("Batch timeout reached, processing partial batch",
+					slog.Int("batch_size", len(batch)),
+					slog.Int("expected_size", batchSize))
+				
+				kc.handleBatch(batch, errs)
+				batch = batch[:0]
+			}
+			timer.Reset(batchTimeout)
 		}
-	}
-	if len(batch) > 0 {
-		kc.handleBatch(batch, errs)
 	}
 }
 
@@ -297,13 +351,15 @@ func (kc *kafkaConsumer) Stop() error {
 }
 
 // Start begins consuming messages using consumer group
-func (kcg *kafkaConsumerGroup) Start(batchSize int) (<-chan error, error) {
+func (kcg *kafkaConsumerGroup) Start(batchSize int, batchTimeout time.Duration) (<-chan error, error) {
 	kcg.batchSize = batchSize
+	kcg.batchTimeout = batchTimeout
 	errs := make(chan error, 1)
 	
 	handler := &ConsumerGroupHandler{
-		handler:   kcg.handler,
-		batchSize: batchSize,
+		handler:      kcg.handler,
+		batchSize:    batchSize,
+		batchTimeout: batchTimeout,
 	}
 	
 	go func() {
