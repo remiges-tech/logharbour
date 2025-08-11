@@ -1,10 +1,14 @@
 package main
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log/slog"
+	"net/http"
 	"os"
 	"os/signal"
 	"strconv"
@@ -173,6 +177,10 @@ func main() {
 	consumerGroup := flag.String("consumerGroup", getEnv("KAFKA_CONSUMER_GROUP", "logharbour-consumer-group"), "Kafka consumer group ID")
 	useConsumerGroup := flag.Bool("useConsumerGroup", getEnv("USE_CONSUMER_GROUP", "true") == "true", "Use consumer group instead of regular consumer")
 	logLevel := flag.String("logLevel", getEnv("LOG_LEVEL", "info"), "Log level: debug, info, warn, error")
+	
+	esUsername := flag.String("esUsername", getEnv("ELASTICSEARCH_USERNAME", ""), "Elasticsearch username (optional, enables authentication when provided)")
+	esPassword := flag.String("esPassword", getEnv("ELASTICSEARCH_PASSWORD", ""), "Elasticsearch password (optional)")
+	esCACert := flag.String("esCACert", getEnv("ELASTICSEARCH_CA_CERT", ""), "Path to Elasticsearch CA certificate (optional, for HTTPS)")
 
 	// Parse flags
 	flag.Parse()
@@ -218,11 +226,14 @@ func main() {
 		slog.Int("batch_size", *batchSize),
 		slog.Duration("batch_timeout", *batchTimeout),
 		slog.Bool("use_consumer_group", *useConsumerGroup),
-		slog.String("consumer_group_id", *consumerGroup))
+		slog.String("consumer_group_id", *consumerGroup),
+		slog.Bool("elasticsearch_auth_enabled", *esPassword != ""),
+		slog.String("elasticsearch_username", *esUsername),
+		slog.Bool("elasticsearch_tls_ca_provided", *esCACert != ""))
 
 	logger.Debug("Creating Elasticsearch client")
 	startTime := time.Now()
-	esClient, err := createElasticsearchClient(*esAddresses)
+	esClient, err := createElasticsearchClient(*esAddresses, *esUsername, *esPassword, *esCACert)
 	if err != nil {
 		logger.Error("Failed to create Elasticsearch client", 
 			slog.String("error", err.Error()),
@@ -475,11 +486,58 @@ func main() {
 	logger.Info("Consumer stopped gracefully")
 }
 
-func createElasticsearchClient(addresses string) (*logharbour.ElasticsearchClient, error) {
+func createElasticsearchClient(addresses, username, password, caCertPath string) (*logharbour.ElasticsearchClient, error) {
 	esConfig := elasticsearch.Config{
 		Addresses: strings.Split(addresses, ","),
 	}
+
+	if password != "" {
+		esConfig.Username = username
+		esConfig.Password = password
+		
+		if username == "" {
+			esConfig.Username = "elastic"
+		}
+		
+		logger.Info("Elasticsearch authentication enabled",
+			slog.String("username", esConfig.Username))
+	} else {
+		logger.Info("Elasticsearch authentication disabled (no credentials provided)")
+	}
+
+	if caCertPath != "" {
+		transport, err := createTLSTransport(caCertPath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create TLS transport: %w", err)
+		}
+		esConfig.Transport = transport
+		logger.Info("Elasticsearch TLS configuration enabled",
+			slog.String("ca_cert_path", caCertPath))
+	}
+
 	return logharbour.NewElasticsearchClient(esConfig)
+}
+
+func createTLSTransport(caCertPath string) (*http.Transport, error) {
+	caCert, err := ioutil.ReadFile(caCertPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read CA certificate: %w", err)
+	}
+
+	caCertPool := x509.NewCertPool()
+	if !caCertPool.AppendCertsFromPEM(caCert) {
+		return nil, fmt.Errorf("failed to parse CA certificate")
+	}
+
+	tlsConfig := &tls.Config{
+		RootCAs: caCertPool,
+	}
+
+	transport := &http.Transport{
+		TLSClientConfig: tlsConfig,
+	}
+
+	return transport, nil
 }
 
 func createKafkaConsumer(brokers, topic string, handler logharbour.MessageHandler, offsetType logharbour.OffsetType, specificOffset int64) (logharbour.Consumer, error) {

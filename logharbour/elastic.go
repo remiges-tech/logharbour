@@ -2,9 +2,11 @@ package logharbour
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"strings"
 
 	"github.com/elastic/go-elasticsearch/v8"
@@ -211,3 +213,12 @@ func (ec *ElasticsearchClient) BulkWrite(index string, documents []BulkDocument)
 
 // 	return fmt.Errorf("reached max attempts without success")
 // }
+
+// InsecureTransport returns an HTTP transport that skips TLS certificate verification.
+func InsecureTransport() *http.Transport {
+	return &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: true,
+		},
+	}
+}
