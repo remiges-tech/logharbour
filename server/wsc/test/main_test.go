@@ -134,9 +134,11 @@ func registerRoutes(typedClient *es.TypedClient) (*gin.Engine, error) {
 	// GeoLite2-City database
 	geoLiteCityDb, err := geoip2.Open(geoLiteDbPath)
 	if err != nil {
-		log.Fatalf("Failed to create GeoLite2-City db connection: %v", err)
+		log.Printf("Warning: Failed to create GeoLite2-City db connection: %v. IP geolocation tests will be skipped.", err)
+		geoLiteCityDb = nil
+	} else {
+		defer geoLiteCityDb.Close()
 	}
-	defer geoLiteCityDb.Close()
 
 	// router
 	gin.SetMode(gin.TestMode)

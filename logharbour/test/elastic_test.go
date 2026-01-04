@@ -2,7 +2,6 @@ package logharbour_test
 
 import (
 	"fmt"
-	"log"
 	"reflect"
 	"testing"
 	"time"
@@ -343,7 +342,8 @@ func TestUnusualIPList(t *testing.T) {
 			// GeoLite2-City database
 			geoLiteCityDb, err := geoip2.Open(geoLiteDbPath)
 			if err != nil {
-				log.Fatalf("Failed to create GeoLite2-City db connection: %v", err)
+				t.Skipf("Skipping test: GeoLite2-City.mmdb not found: %v", err)
+				return
 			}
 			defer geoLiteCityDb.Close()
 

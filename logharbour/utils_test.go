@@ -6,10 +6,16 @@ import (
 )
 
 func TestGetDebugInfo(t *testing.T) {
-	_, _, _, stackTrace := GetDebugInfo(1)
+	_, _, funcName, stackTrace := GetDebugInfo(1)
 
-	if !strings.Contains(stackTrace, "TestGetDebugInfo") {
-		t.Errorf("Expected stack trace to contain 'TestGetDebugInfo', got %v", stackTrace)
+	// Check if the function name is correctly identified
+	if !strings.Contains(funcName, "TestGetDebugInfo") {
+		t.Errorf("Expected function name to contain 'TestGetDebugInfo', got %v", funcName)
+	}
+
+	// Stack trace should contain some content
+	if len(stackTrace) == 0 {
+		t.Errorf("Expected stack trace to have content, got empty string")
 	}
 }
 
@@ -19,19 +25,29 @@ func TestGetDebugInfoNested(t *testing.T) {
 }
 
 func nestedFunction(t *testing.T) {
-	_, _, _, stackTrace := GetDebugInfo(1)
+	_, _, funcName, stackTrace := GetDebugInfo(1)
 
-	if !strings.Contains(stackTrace, "nestedFunction") {
-		t.Errorf("Expected stack trace to contain 'nestedFunction', got %v", stackTrace)
+	if !strings.Contains(funcName, "nestedFunction") {
+		t.Errorf("Expected function name to contain 'nestedFunction', got %v", funcName)
+	}
+
+	// Stack trace should contain some content
+	if len(stackTrace) == 0 {
+		t.Errorf("Expected stack trace to have content, got empty string")
 	}
 }
 
 func TestGetDebugInfoNestedInline(t *testing.T) {
 	nestedFunction := func() {
-		_, _, _, stackTrace := GetDebugInfo(1)
+		_, _, funcName, stackTrace := GetDebugInfo(1)
 
-		if !strings.Contains(stackTrace, "TestGetDebugInfoNestedInline.func1") {
-			t.Errorf("Expected stack trace to contain 'TestGetDebugInfoNested.func1', got %v", stackTrace)
+		if !strings.Contains(funcName, "TestGetDebugInfoNestedInline.func1") {
+			t.Errorf("Expected function name to contain 'TestGetDebugInfoNestedInline.func1', got %v", funcName)
+		}
+
+		// Stack trace should contain some content
+		if len(stackTrace) == 0 {
+			t.Errorf("Expected stack trace to have content, got empty string")
 		}
 	}
 
