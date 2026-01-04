@@ -63,6 +63,7 @@ type Logger struct {
 	status     Status              // Status of the operation.
 	err        string              // Error associated with the operation.
 	remoteIP   string              // IP address of the remote endpoint.
+	traceId    string              // Trace ID for distributed tracing.
 	writer     io.Writer           // Writer interface for log entries.
 	validator  *validator.Validate // Validator for log entries.
 	mu         sync.Mutex          // Mutex for thread-safe operations.
@@ -83,6 +84,7 @@ func (l *Logger) clone() *Logger {
 		status:     l.status,
 		err:        l.err,
 		remoteIP:   l.remoteIP,
+		traceId:    l.traceId,
 		writer:     l.writer,
 		validator:  l.validator,
 	}
@@ -193,6 +195,14 @@ func (l *Logger) WithRemoteIP(remoteIP string) *Logger {
 	return newLogger
 }
 
+// WithTraceID returns a new Logger with the 'traceId' field set to the specified value.
+// Trace ID is used to correlate logs across services for the same request.
+func (l *Logger) WithTraceID(traceId string) *Logger {
+	newLogger := l.clone()
+	newLogger.traceId = traceId
+	return newLogger
+}
+
 // log writes a log entry. It locks the Logger's mutex to prevent concurrent write operations.
 // If there's a problem with writing the log entry or if the log entry is invalid,
 // it attempts to write the error and the log entry to the fallback writer (if available).
@@ -260,12 +270,15 @@ func (l *Logger) newLogEntry(message string, data *LogData) LogEntry {
 		Status:     l.status,
 		Error:      l.err,
 		RemoteIP:   l.remoteIP,
+		TraceId:    l.traceId,
 		Msg:        message,
 		Data:       data,
 	}
 }
 
-// newLogEntry creates a new log entry with the specified message and data.
+// Deprecated: WithSpanAndTrace does not follow the fluent pattern.
+// It logs an empty entry immediately instead of returning a configured Logger.
+// Use WithTraceID() and WithHTTPRequest() instead.
 func (l *Logger) WithSpanAndTrace(spanId, traceID string) {
 	entry := LogEntry{
 		App:        l.app,
