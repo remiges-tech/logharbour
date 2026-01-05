@@ -89,19 +89,25 @@ func (h *ConsumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession,
 					if err := h.handler(batch); err != nil {
 						return err
 					}
+					for _, msg := range batch {
+						session.MarkMessage(msg, "")
+					}
 				}
 				return nil
 			}
 			
 			batch = append(batch, message)
-			session.MarkMessage(message, "")
-			
+
 			if len(batch) >= h.batchSize {
 				if err := h.handler(batch); err != nil {
-					slog.Error("Failed to handle batch", 
+					slog.Error("Failed to handle batch",
 						slog.String("error", err.Error()),
 						slog.Int("batch_size", len(batch)))
 					return err
+				}
+				// Mark messages as processed only after handler succeeds
+				for _, msg := range batch {
+					session.MarkMessage(msg, "")
 				}
 				batch = batch[:0]
 				
@@ -123,12 +129,15 @@ func (h *ConsumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession,
 				slog.Debug("Batch timeout reached, processing partial batch",
 					slog.Int("batch_size", len(batch)),
 					slog.Int("expected_size", h.batchSize))
-				
+
 				if err := h.handler(batch); err != nil {
-					slog.Error("Failed to handle partial batch", 
+					slog.Error("Failed to handle partial batch",
 						slog.String("error", err.Error()),
 						slog.Int("batch_size", len(batch)))
 					return err
+				}
+				for _, msg := range batch {
+					session.MarkMessage(msg, "")
 				}
 				batch = batch[:0]
 			}
@@ -138,6 +147,9 @@ func (h *ConsumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession,
 			if len(batch) > 0 {
 				if err := h.handler(batch); err != nil {
 					return err
+				}
+				for _, msg := range batch {
+					session.MarkMessage(msg, "")
 				}
 			}
 			return nil
