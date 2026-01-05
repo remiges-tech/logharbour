@@ -182,6 +182,9 @@ func main() {
 	esPassword := flag.String("esPassword", getEnv("ELASTICSEARCH_PASSWORD", ""), "Elasticsearch password (optional)")
 	esCACert := flag.String("esCACert", getEnv("ELASTICSEARCH_CA_CERT", ""), "Path to Elasticsearch CA certificate (optional, for HTTPS)")
 
+	dlqEnabled := flag.Bool("dlqEnabled", getEnv("KAFKA_DLQ_ENABLED", "false") == "true", "Enable Dead Letter Queue for failed messages")
+	dlqTopic := flag.String("dlqTopic", getEnv("KAFKA_DLQ_TOPIC", ""), "DLQ topic name (default: <source_topic>_dlq)")
+
 	// Parse flags
 	flag.Parse()
 
@@ -252,9 +255,29 @@ func main() {
 			slog.String("index", *esIndex))
 		os.Exit(1)
 	}
-	logger.Debug("Elasticsearch index setup completed", 
+	logger.Debug("Elasticsearch index setup completed",
 		slog.Duration("duration", time.Since(startTime)),
 		slog.String("index", *esIndex))
+
+	// Set default DLQ topic if not provided
+	if *dlqTopic == "" {
+		*dlqTopic = *kafkaTopic + "_dlq"
+	}
+
+	// Create DLQ producer if enabled
+	var dlqProducer sarama.SyncProducer
+	if *dlqEnabled {
+		var err error
+		dlqProducer, err = createDLQProducer(*kafkaBrokers)
+		if err != nil {
+			logger.Error("Failed to create DLQ producer",
+				slog.String("error", err.Error()))
+			os.Exit(1)
+		}
+		defer dlqProducer.Close()
+		logger.Info("DLQ enabled",
+			slog.String("dlq_topic", *dlqTopic))
+	}
 
 	handler := func(messages []*sarama.ConsumerMessage) error {
 		// Error Handling Overview:
@@ -262,17 +285,16 @@ func main() {
 		// 2. Bulk Indexing Phase: Documents are sent to ES in a single bulk request
 		// 3. Retry Logic: Network/connection failures trigger retries of entire batch
 		// 4. Partial Failures: Some documents may fail (e.g., mapping errors) while others succeed
-		// 5. Error Propagation: Any failures return error to prevent Kafka offset commit
+		// 5. Error Propagation: Indexing failures return error (without DLQ) or nil (with DLQ)
 		//
 		// Error Categories:
 		// - Validation Errors: Bad data that can't be parsed (invalid JSON, missing ID)
-		//   Action: Skip message, never sent to Elasticsearch
-		//   Metric: validation_errors count
+		//   Action: Skip message, send to DLQ if enabled, otherwise LOST
 		// - Indexing Errors: Valid data that Elasticsearch rejects (mapping conflicts, doc too large)
-		//   Action: Document sent but failed, captured in bulk response
-		//   Metric: error_count/failed count
+		//   Action: Send to DLQ if enabled, otherwise return error to block offset commit
 		//
-		// This separation helps identify if issues are from bad data (validation) or ES config (indexing).
+		// WARNING: Without DLQ (disabled by default), validation errors cause silent message loss.
+		// Enable DLQ with KAFKA_DLQ_ENABLED=true to preserve failed messages.
 		
 		batchStartTime := time.Now()
 		batchSize := len(messages)
@@ -299,20 +321,26 @@ func main() {
 			if err != nil {
 				// Validation error: Skip this message, it won't be sent to Elasticsearch
 				validationErrors++
-				logger.Warn("Failed to unmarshal log message", 
+				logger.Warn("Failed to unmarshal log message",
 					slog.String("error", err.Error()),
 					slog.Int64("offset", message.Offset),
 					slog.Int("message_size", len(message.Value)))
+				if dlqProducer != nil {
+					sendToDLQ(dlqProducer, *dlqTopic, message, "json_unmarshal_error: "+err.Error())
+				}
 				continue
 			}
 
 			id, ok := logEntry["id"].(string)
-			if !ok {
+			if !ok || id == "" {
 				// Validation error: Document must have an ID for Elasticsearch
 				validationErrors++
 				logger.Warn("Missing or invalid 'id' field in log message",
 					slog.Int64("offset", message.Offset),
 					slog.Any("log_entry_keys", getMapKeys(logEntry)))
+				if dlqProducer != nil {
+					sendToDLQ(dlqProducer, *dlqTopic, message, "missing_id_field")
+				}
 				continue
 			}
 
@@ -575,4 +603,41 @@ func setupElasticsearchIndex(client *logharbour.ElasticsearchClient, indexName s
 		}
 	}
 	return nil
+}
+
+func createDLQProducer(brokers string) (sarama.SyncProducer, error) {
+	config := sarama.NewConfig()
+	config.Producer.Return.Successes = true
+	config.Producer.RequiredAcks = sarama.WaitForAll
+	config.Producer.Retry.Max = 3
+
+	return sarama.NewSyncProducer(strings.Split(brokers, ","), config)
+}
+
+func sendToDLQ(producer sarama.SyncProducer, topic string, originalMsg *sarama.ConsumerMessage, reason string) {
+	headers := []sarama.RecordHeader{
+		{Key: []byte("dlq_reason"), Value: []byte(reason)},
+		{Key: []byte("original_topic"), Value: []byte(originalMsg.Topic)},
+		{Key: []byte("original_partition"), Value: []byte(fmt.Sprintf("%d", originalMsg.Partition))},
+		{Key: []byte("original_offset"), Value: []byte(fmt.Sprintf("%d", originalMsg.Offset))},
+	}
+
+	msg := &sarama.ProducerMessage{
+		Topic:   topic,
+		Value:   sarama.ByteEncoder(originalMsg.Value),
+		Headers: headers,
+	}
+
+	_, _, err := producer.SendMessage(msg)
+	if err != nil {
+		logger.Error("Failed to send message to DLQ",
+			slog.String("error", err.Error()),
+			slog.String("dlq_topic", topic),
+			slog.Int64("original_offset", originalMsg.Offset))
+	} else {
+		logger.Debug("Message sent to DLQ",
+			slog.String("dlq_topic", topic),
+			slog.String("reason", reason),
+			slog.Int64("original_offset", originalMsg.Offset))
+	}
 }
