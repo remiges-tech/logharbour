@@ -1,5 +1,22 @@
 package logharbour
 
+// ESLogsMapping defines the Elasticsearch index mapping for log entries.
+//
+// Migration for existing indices:
+//
+// If you have an existing index created before trace_id/span_id fields were added,
+// you can update the mapping in place without reindexing:
+//
+//	PUT /<index_name>/_mapping
+//	{
+//	  "properties": {
+//	    "trace_id": { "type": "keyword" },
+//	    "span_id": { "type": "keyword" }
+//	  }
+//	}
+//
+// This adds the new fields to existing indices. Documents without these fields
+// will simply have null values when queried.
 const ESLogsMapping = `{
   "mappings": {
     "properties": {
@@ -44,6 +61,12 @@ const ESLogsMapping = `{
       },
       "remote_ip": {
         "type": "ip"
+      },
+      "trace_id": {
+        "type": "keyword"
+      },
+      "span_id": {
+        "type": "keyword"
       },
       "msg": {
         "type": "text"

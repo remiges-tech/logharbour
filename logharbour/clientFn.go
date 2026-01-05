@@ -30,6 +30,7 @@ const (
 	instance       = "instance"
 	op             = "op"
 	remote_ip      = "remote_ip"
+	trace_id       = "trace_id"
 	pri            = "pri"
 	id             = "id" // document id
 	layout         = "2006-01-02T15:04:05Z"
@@ -65,6 +66,7 @@ type GetLogsParam struct {
 	SearchAfterTS    *string
 	SearchAfterDocID *string
 	Field            *string
+	TraceID          *string
 }
 
 type GetUnusualIPParam struct {
@@ -141,6 +143,9 @@ func GetLogs(querytoken string, client *elasticsearch.TypedClient, logParam GetL
 	if ok, remoteIp := termQueryForField(remote_ip, logParam.RemoteIP); ok {
 
 		queries = append(queries, remoteIp)
+	}
+	if ok, traceId := termQueryForField(trace_id, logParam.TraceID); ok {
+		queries = append(queries, traceId)
 	}
 
 	if logParam.Priority != nil {
