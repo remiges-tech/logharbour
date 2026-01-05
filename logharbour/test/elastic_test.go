@@ -105,6 +105,7 @@ func getLogsTestCase() []GetlogsTestCaseStruct {
 	class := "wfinstance"
 	instance := "2"
 	remote_ip := "192.168.1.100"
+	traceID := "abc123-trace-id-xyz"
 	pri := logharbour.Info
 	nDay := 100
 	fromTs := time.Date(2024, 02, 01, 00, 00, 00, 00, time.UTC)
@@ -155,6 +156,16 @@ func getLogsTestCase() []GetlogsTestCaseStruct {
 			ExpectedLogEntries: nil,
 			ExpectedRecords:    0,
 			ExpectError:        true,
+		},
+		{
+			Name: "5th_tc_GetLogs_with_TraceID",
+			LogsParam: logharbour.GetLogsParam{
+				App:     &app,
+				TraceID: &traceID,
+			},
+			ExpectedRecords: 1,
+			TestJsonFile:    "./testData/getLogs_testdata/5th_tc_GetLogs_with_TraceID.json",
+			ExpectError:     false,
 		},
 	}
 	return logsTestCase
