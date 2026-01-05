@@ -306,6 +306,7 @@ func main() {
 
 		// Phase 1: Validation - Prepare documents for bulk indexing
 		bulkDocs := make([]logharbour.BulkDocument, 0, batchSize)
+		docIDToMessage := make(map[string]*sarama.ConsumerMessage)
 		validationErrors := 0
 		
 		for i, message := range messages {
@@ -348,6 +349,7 @@ func main() {
 				ID:   id,
 				Body: string(message.Value),
 			})
+			docIDToMessage[id] = message
 		}
 
 		if len(bulkDocs) == 0 {
@@ -410,6 +412,14 @@ func main() {
 				logger.Warn("More errors occurred",
 					slog.Int("additional_errors", len(bulkResult.Errors)-maxErrors))
 			}
+
+			// Send failed documents to DLQ
+			if dlqProducer != nil {
+				sentToDLQ := handleIndexingFailures(bulkResult.Errors, docIDToMessage, dlqProducer, *dlqTopic)
+				logger.Info("Sent failed documents to DLQ",
+					slog.Int("sent_count", sentToDLQ),
+					slog.Int("failed_count", bulkResult.Failed))
+			}
 		}
 		
 		batchDuration := time.Since(batchStartTime)
@@ -424,8 +434,9 @@ func main() {
 		
 		// Phase 4: Error Propagation - Prevent Kafka offset commit on failures
 		// By returning an error, we ensure the Kafka consumer doesn't commit the offset,
-		// allowing these messages to be reprocessed on next startup
-		if bulkResult.Failed > 0 {
+		// allowing these messages to be reprocessed on next startup.
+		// With DLQ enabled, failed messages are safely stored, so we allow offset commit.
+		if bulkResult.Failed > 0 && dlqProducer == nil {
 			return fmt.Errorf("%d documents failed to index", bulkResult.Failed)
 		}
 		
@@ -640,4 +651,22 @@ func sendToDLQ(producer sarama.SyncProducer, topic string, originalMsg *sarama.C
 			slog.String("reason", reason),
 			slog.Int64("original_offset", originalMsg.Offset))
 	}
+}
+
+// handleIndexingFailures sends documents that failed ES indexing to the DLQ.
+// Returns the number of documents sent to DLQ.
+func handleIndexingFailures(
+	errors []logharbour.BulkError,
+	docIDToMessage map[string]*sarama.ConsumerMessage,
+	dlqProducer sarama.SyncProducer,
+	dlqTopic string,
+) int {
+	sentCount := 0
+	for _, docErr := range errors {
+		if originalMsg, ok := docIDToMessage[docErr.DocumentID]; ok {
+			sendToDLQ(dlqProducer, dlqTopic, originalMsg, "indexing_error: "+docErr.Error)
+			sentCount++
+		}
+	}
+	return sentCount
 }
