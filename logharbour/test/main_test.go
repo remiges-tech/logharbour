@@ -32,11 +32,16 @@ func TestMain(m *testing.M) {
 	defer cancel()
 
 	// Define container request for Elasticsearch.
-	// we are using bitnami elasticsearch for testing purpose so authentication details are not required
+	// Using official Elasticsearch image with security disabled for testing
 	req := testcontainers.ContainerRequest{
-		Image:        "bitnami/elasticsearch:latest",
+		Image:        "docker.elastic.co/elasticsearch/elasticsearch:8.12.0",
 		ExposedPorts: []string{"9200/tcp"},
-		WaitingFor:   wait.ForHTTP("/").WithPort("9200").WithStartupTimeout(timeout),
+		Env: map[string]string{
+			"discovery.type":         "single-node",
+			"xpack.security.enabled": "false",
+			"ES_JAVA_OPTS":           "-Xms512m -Xmx512m",
+		},
+		WaitingFor: wait.ForHTTP("/").WithPort("9200").WithStartupTimeout(timeout),
 	}
 
 	// Create and start the Elasticsearch container

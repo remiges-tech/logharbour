@@ -6,11 +6,15 @@ networks:
 
 services:
   elasticsearch:
-    image: 'bitnami/elasticsearch:latest'
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:8.12.0'
     networks:
       - lhnet
     ports:
       - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
 
   kafka:
     image: 'bitnami/kafka:latest'
