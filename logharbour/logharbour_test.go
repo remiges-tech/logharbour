@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"sync/atomic"
 	"testing"
 )
 
@@ -139,29 +140,24 @@ func TestErrMethods(t *testing.T) {
 }
 
 func TestLoggerContextPriorityPropagation(t *testing.T) {
-	// Create a shared LoggerContext with default priority
 	lctx := NewLoggerContext(Info)
-
-	// Create a new Logger with the shared context
 	logger := NewLogger(lctx, "myApp", &bytes.Buffer{})
-
-	// Create new loggers using WithModule
 	logger1 := logger.WithModule("module1")
 	logger2 := logger1.WithModule("module2")
 
-	// Change the priority in the original context
 	lctx.ChangeMinLogPriority(Warn)
 
-	// Check that the priority change propagated to all loggers
 	t.Run("Priority propagation to logger1", func(t *testing.T) {
-		if logger1.context.minLogPriority != Warn {
-			t.Errorf("Expected logger1 priority to be %v, got %v", Warn, logger1.context.minLogPriority)
+		minPri := LogPriority(atomic.LoadInt32(&logger1.context.minLogPriority))
+		if minPri != Warn {
+			t.Errorf("expected logger1 priority to be %v, got %v", Warn, minPri)
 		}
 	})
 
 	t.Run("Priority propagation to logger2", func(t *testing.T) {
-		if logger2.context.minLogPriority != Warn {
-			t.Errorf("Expected logger2 priority to be %v, got %v", Warn, logger2.context.minLogPriority)
+		minPri := LogPriority(atomic.LoadInt32(&logger2.context.minLogPriority))
+		if minPri != Warn {
+			t.Errorf("expected logger2 priority to be %v, got %v", Warn, minPri)
 		}
 	})
 }
@@ -411,3 +407,204 @@ func TestLogger_Logf(t *testing.T) {
 		t.Errorf("expected msg to be %q, got %q", expectedMsg, logEntry.Msg)
 	}
 }
+
+func TestLogging_SkippedWhenFiltered(t *testing.T) {
+	tests := []struct {
+		name       string
+		logFunc    func(l *Logger)
+		debugMode  bool
+		loggerPri  LogPriority
+		contextPri LogPriority
+	}{
+		{
+			name: "Log skipped when priority below minimum",
+			logFunc: func(l *Logger) {
+				l.Log("should not appear")
+			},
+			loggerPri:  Info,
+			contextPri: Warn,
+		},
+		{
+			name: "Logf skipped when priority below minimum",
+			logFunc: func(l *Logger) {
+				l.Logf("should not appear: %d", 42)
+			},
+			loggerPri:  Info,
+			contextPri: Warn,
+		},
+		{
+			name: "LogActivity skipped when priority below minimum",
+			logFunc: func(l *Logger) {
+				l.LogActivity("should not appear", map[string]any{"key": "value"})
+			},
+			loggerPri:  Info,
+			contextPri: Warn,
+		},
+		{
+			name: "LogActivityf skipped when priority below minimum",
+			logFunc: func(l *Logger) {
+				l.LogActivityf(map[string]any{"key": "value"}, "user %s action", "john")
+			},
+			loggerPri:  Info,
+			contextPri: Warn,
+		},
+		{
+			name: "LogDataChange skipped when priority below minimum",
+			logFunc: func(l *Logger) {
+				changeInfo := NewChangeInfo("Entity", "Update")
+				changeInfo.AddChange("field", "old", "new")
+				l.LogDataChange("should not appear", *changeInfo)
+			},
+			loggerPri:  Info,
+			contextPri: Warn,
+		},
+		{
+			name: "LogDataChangef skipped when priority below minimum",
+			logFunc: func(l *Logger) {
+				changeInfo := NewChangeInfo("Entity", "Update")
+				changeInfo.AddChange("field", "old", "new")
+				l.LogDataChangef(*changeInfo, "change %d", 42)
+			},
+			loggerPri:  Info,
+			contextPri: Warn,
+		},
+		{
+			name: "LogDebug skipped when debug mode off",
+			logFunc: func(l *Logger) {
+				l.LogDebug("should not appear", map[string]any{"key": "value"})
+			},
+			debugMode:  false,
+			loggerPri:  Debug0,
+			contextPri: Debug0,
+		},
+		{
+			name: "LogDebug skipped when priority below minimum",
+			logFunc: func(l *Logger) {
+				l.LogDebug("should not appear", map[string]any{"key": "value"})
+			},
+			debugMode:  true,
+			loggerPri:  Info,
+			contextPri: Warn,
+		},
+		{
+			name: "LogDebugf skipped when debug mode off",
+			logFunc: func(l *Logger) {
+				l.LogDebugf(map[string]any{"key": "value"}, "debug %s", "message")
+			},
+			debugMode:  false,
+			loggerPri:  Debug0,
+			contextPri: Debug0,
+		},
+		{
+			name: "LogDebugf skipped when priority below minimum",
+			logFunc: func(l *Logger) {
+				l.LogDebugf(map[string]any{"key": "value"}, "debug %s", "message")
+			},
+			debugMode:  true,
+			loggerPri:  Info,
+			contextPri: Warn,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var buf bytes.Buffer
+			ctx := NewLoggerContext(tt.contextPri)
+			ctx.SetDebugMode(tt.debugMode)
+			logger := NewLogger(ctx, "TestApp", &buf).WithPriority(tt.loggerPri)
+
+			tt.logFunc(logger)
+
+			if buf.Len() > 0 {
+				t.Errorf("expected no output when filtered, got: %s", buf.String())
+			}
+		})
+	}
+}
+
+func TestLogDebugf(t *testing.T) {
+	var buf bytes.Buffer
+	ctx := NewLoggerContext(Debug0)
+	ctx.SetDebugMode(true)
+	logger := NewLogger(ctx, "TestApp", &buf)
+
+	logger.LogDebugf(map[string]any{"session": "abc123"}, "user %s logged in", "john")
+
+	var logEntry LogEntry
+	err := json.Unmarshal(buf.Bytes(), &logEntry)
+	if err != nil {
+		t.Fatalf("failed to unmarshal logged message: %v", err)
+	}
+
+	expectedMsg := "user john logged in"
+	if logEntry.Msg != expectedMsg {
+		t.Errorf("expected msg to be %q, got %q", expectedMsg, logEntry.Msg)
+	}
+
+	if logEntry.Type != Debug {
+		t.Errorf("expected type to be Debug, got %v", logEntry.Type)
+	}
+
+	if logEntry.Data.DebugData == nil {
+		t.Fatalf("expected DebugData to be non-nil")
+	}
+}
+
+func TestLogActivityf(t *testing.T) {
+	var buf bytes.Buffer
+	ctx := NewLoggerContext(Info)
+	logger := NewLogger(ctx, "TestApp", &buf)
+
+	activityData := map[string]any{"action": "click", "element": "button"}
+	logger.LogActivityf(activityData, "user %s performed action on %s", "john", "homepage")
+
+	var logEntry LogEntry
+	err := json.Unmarshal(buf.Bytes(), &logEntry)
+	if err != nil {
+		t.Fatalf("failed to unmarshal logged message: %v", err)
+	}
+
+	expectedMsg := "user john performed action on homepage"
+	if logEntry.Msg != expectedMsg {
+		t.Errorf("expected msg to be %q, got %q", expectedMsg, logEntry.Msg)
+	}
+
+	if logEntry.Type != Activity {
+		t.Errorf("expected type to be Activity, got %v", logEntry.Type)
+	}
+}
+
+func TestLogDataChangef(t *testing.T) {
+	var buf bytes.Buffer
+	ctx := NewLoggerContext(Info)
+	logger := NewLogger(ctx, "TestApp", &buf)
+
+	changeInfo := NewChangeInfo("User", "Update")
+	changeInfo.AddChange("email", "old@example.com", "new@example.com")
+
+	logger.LogDataChangef(*changeInfo, "user %d updated profile", 42)
+
+	var logEntry LogEntry
+	err := json.Unmarshal(buf.Bytes(), &logEntry)
+	if err != nil {
+		t.Fatalf("failed to unmarshal logged message: %v", err)
+	}
+
+	expectedMsg := "user 42 updated profile"
+	if logEntry.Msg != expectedMsg {
+		t.Errorf("expected msg to be %q, got %q", expectedMsg, logEntry.Msg)
+	}
+
+	if logEntry.Type != Change {
+		t.Errorf("expected type to be Change, got %v", logEntry.Type)
+	}
+
+	if logEntry.Data.ChangeData == nil {
+		t.Fatalf("expected ChangeData to be non-nil")
+	}
+
+	if logEntry.Data.ChangeData.Entity != "User" {
+		t.Errorf("expected entity to be 'User', got %q", logEntry.Data.ChangeData.Entity)
+	}
+}
+
