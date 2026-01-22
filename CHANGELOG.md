@@ -2,6 +2,13 @@
 
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [v0.25.0] - 2026-01-22
+
+### Performance
+
+- **Early return in logging methods** - skip JSON marshaling, stack traces, and `fmt.Sprintf` when log priority is below minimum or debug mode is off
+- **Lock-free priority check** - replaced mutex with atomic operations for `minLogPriority` reads
+
 ## [v0.24.0] - 2026-01-12
 
 ### Added
@@ -48,6 +55,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - TLS/HTTPS with CA certificate
   - Environment variables: `ELASTICSEARCH_USERNAME`, `ELASTICSEARCH_PASSWORD`, `ELASTICSEARCH_CA_CERT`
 
+[v0.25.0]: https://github.com/remiges-tech/logharbour/compare/v0.24.0...v0.25.0
 [v0.24.0]: https://github.com/remiges-tech/logharbour/compare/v0.23.0...v0.24.0
 [v0.23.0]: https://github.com/remiges-tech/logharbour/compare/v0.22.0...v0.23.0
 [v0.22.0]: https://github.com/remiges-tech/logharbour/releases/tag/v0.22.0
