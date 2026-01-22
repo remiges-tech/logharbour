@@ -19,11 +19,10 @@ const DefaultPriority = Info
 // LoggerContext provides a shared context (state) for instances of Logger.
 // It contains a minLogPriority field that determines the minimum log priority level
 // that should be logged by any Logger using this context.
-// The mu Mutex ensures that all operations on the minLogPriority field are mutually exclusive,
-// regardless of which goroutine they are performed in.
+// Both minLogPriority and debugMode use atomic operations for lock-free access.
 type LoggerContext struct {
-	minLogPriority LogPriority
-	debugMode      int32 // int32 to represent the boolean flag atomically
+	minLogPriority int32 // atomic, stores LogPriority value
+	debugMode      int32 // atomic, represents boolean flag
 	mu             sync.Mutex
 }
 
@@ -32,7 +31,7 @@ type LoggerContext struct {
 // Logger instances.
 func NewLoggerContext(minLogPriority LogPriority) *LoggerContext {
 	return &LoggerContext{
-		minLogPriority: minLogPriority,
+		minLogPriority: int32(minLogPriority),
 	}
 }
 
@@ -239,9 +238,8 @@ func (l *Logger) log(entry LogEntry) {
 
 // shouldLog determines whether a log entry should be written based on its priority.
 func (l *Logger) shouldLog(p LogPriority) bool {
-	l.context.mu.Lock()
-	defer l.context.mu.Unlock()
-	return p >= l.context.minLogPriority
+	minPri := LogPriority(atomic.LoadInt32(&l.context.minLogPriority))
+	return p >= minPri
 }
 
 // formatAndWriteEntry formats a log entry as JSON and writes it to the Logger's writer.
@@ -302,6 +300,9 @@ func (l *Logger) WithSpanAndTrace(spanId, traceID string) {
 
 // LogDataChange logs a data change event.
 func (l *Logger) LogDataChange(message string, data ChangeInfo) {
+	if !l.shouldLog(l.pri) {
+		return
+	}
 	for i := range data.Changes {
 		data.Changes[i].OldVal = convertToString(data.Changes[i].OldVal)
 		data.Changes[i].NewVal = convertToString(data.Changes[i].NewVal)
@@ -317,6 +318,9 @@ func (l *Logger) LogDataChange(message string, data ChangeInfo) {
 
 // LogActivity logs an activity event.
 func (l *Logger) LogActivity(message string, data ActivityInfo) {
+	if !l.shouldLog(l.pri) {
+		return
+	}
 	var logData LogData
 	var entry LogEntry
 	if data != nil {
@@ -334,8 +338,8 @@ func (l *Logger) LogActivity(message string, data ActivityInfo) {
 
 // LogDebug logs a debug event.
 func (l *Logger) LogDebug(message string, data any) {
-	if !l.context.IsDebugModeSet() {
-		return // Skip logging if debugMode is not enabled
+	if !l.context.IsDebugModeSet() || !l.shouldLog(l.pri) {
+		return
 	}
 	debugInfo := DebugInfo{
 		Pid:          os.Getpid(),
@@ -363,6 +367,9 @@ func (l *Logger) LogDebug(message string, data any) {
 
 // Log logs a generic message as an activity event.
 func (l *Logger) Log(message string) {
+	if !l.shouldLog(l.pri) {
+		return
+	}
 	l.LogActivity(message, nil)
 }
 
@@ -381,11 +388,9 @@ func (lc *LoggerContext) IsDebugModeSet() bool {
 	return atomic.LoadInt32(&lc.debugMode) == 1 // Atomically read debugMode
 }
 
-// ChangePriority changes the priority level of the Logger.
+// ChangeMinLogPriority changes the minimum log priority level for all loggers sharing this context.
 func (lc *LoggerContext) ChangeMinLogPriority(minLogPriority LogPriority) {
-	lc.mu.Lock()
-	defer lc.mu.Unlock()
-	lc.minLogPriority = minLogPriority
+	atomic.StoreInt32(&lc.minLogPriority, int32(minLogPriority))
 }
 
 // Debug2 returns a new Logger with the 'priority' field set to Debug2.
@@ -463,24 +468,36 @@ func NewChangeInfo(entity, operation string) *ChangeInfo {
 
 // Logf is a variant of Log that takes a formatted message
 func (l *Logger) Logf(format string, args ...any) {
+	if !l.shouldLog(l.pri) {
+		return
+	}
 	message := fmt.Sprintf(format, args...)
 	l.Log(message)
 }
 
 // LogActivityf is a variant of LogActivity that takes a formatted message
 func (l *Logger) LogActivityf(data ActivityInfo, format string, args ...any) {
+	if !l.shouldLog(l.pri) {
+		return
+	}
 	message := fmt.Sprintf(format, args...)
 	l.LogActivity(message, data)
 }
 
 // LogDataChangef is a variant of LogDataChange that takes a formatted message
 func (l *Logger) LogDataChangef(data ChangeInfo, format string, args ...any) {
+	if !l.shouldLog(l.pri) {
+		return
+	}
 	message := fmt.Sprintf(format, args...)
 	l.LogDataChange(message, data)
 }
 
 // LogDebugf is a variant of LogDebug that takes a formatted message
 func (l *Logger) LogDebugf(data any, format string, args ...any) {
+	if !l.context.IsDebugModeSet() || !l.shouldLog(l.pri) {
+		return
+	}
 	message := fmt.Sprintf(format, args...)
 	l.LogDebug(message, data)
 }
