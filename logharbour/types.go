@@ -184,9 +184,10 @@ type LogEntry struct {
 }
 
 type LogData struct {
-	ChangeData   *ChangeInfo `json:"change_data,omitempty"`   // Data change information
-	ActivityData string      `json:"activity_data,omitempty"` // Activity information
-	DebugData    *DebugInfo  `json:"debug_data,omitempty"`    // Debug information
+	ChangeData        *ChangeInfo        `json:"change_data,omitempty"`         // Data change information
+	ChangeObjectsData *ChangeObjectsInfo `json:"change_objects_data,omitempty"` // Data change information
+	ActivityData      string             `json:"activity_data,omitempty"`       // Activity information
+	DebugData         *DebugInfo         `json:"debug_data,omitempty"`          // Debug information
 }
 
 // ChangeDetail holds information about a single field change in a data change.
@@ -209,6 +210,12 @@ type ChangeDetail struct {
 //		 logger.LogDataChange("User details updated", *changeInfo)
 //	}
 type ChangeInfo struct {
+	Entity  string         `json:"entity"`
+	Op      string         `json:"op"`
+	Changes []ChangeDetail `json:"changes"`
+}
+
+type ChangeObjectsInfo struct {
 	Entity  string         `json:"entity"`
 	Op      string         `json:"op"`
 	Changes []ChangeDetail `json:"changes"`

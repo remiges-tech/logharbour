@@ -316,6 +316,24 @@ func (l *Logger) LogDataChange(message string, data ChangeInfo) {
 	l.log(entry)
 }
 
+// LogChangeObjects logs a data change event.
+func (l *Logger) LogChangeObjects(message string, data ChangeObjectsInfo) {
+	if !l.shouldLog(l.pri) {
+		return
+	}
+	for i := range data.Changes {
+		data.Changes[i].OldVal = convertToString(data.Changes[i].OldVal)
+		data.Changes[i].NewVal = convertToString(data.Changes[i].NewVal)
+	}
+
+	logData := LogData{
+		ChangeObjectsData: &data,
+	}
+	entry := l.newLogEntry(message, &logData)
+	entry.Type = Change
+	l.log(entry)
+}
+
 // LogActivity logs an activity event.
 func (l *Logger) LogActivity(message string, data ActivityInfo) {
 	if !l.shouldLog(l.pri) {
